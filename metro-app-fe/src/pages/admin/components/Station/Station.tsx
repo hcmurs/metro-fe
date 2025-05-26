@@ -1,27 +1,27 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 
 const fakeRoutes = [
   {
     route_id: 1,
-    route_name: 'Route A',
-    route_code: 'RTA001',
+    route_name: "Route A",
+    route_code: "RTA001",
     distance: 12.4,
     quantity_station: 3,
-    status: 'active',
-    stations: ['Station A1', 'Station A2', 'Station A3'],
+    status: "active",
+    stations: ["Station A1", "Station A2", "Station A3"],
   },
   {
     route_id: 2,
-    route_name: 'Route B',
-    route_code: 'RTB002',
+    route_name: "Route B",
+    route_code: "RTB002",
     distance: 9.8,
     quantity_station: 4,
-    status: 'inactive',
-    stations: ['Station B1', 'Station B2', 'Station B3', 'Station B4'],
+    status: "inactive",
+    stations: ["Station B1", "Station B2", "Station B3", "Station B4"],
   },
 ];
 
-const generateFareMatrix = (route: typeof fakeRoutes[0]) => {
+const generateFareMatrix = (route: (typeof fakeRoutes)[0]) => {
   const matrix = [];
   for (let i = 0; i < route.stations.length; i++) {
     for (let j = 0; j < route.stations.length; j++) {
@@ -43,7 +43,7 @@ export default function Station() {
 
   const closeModal = () => setSelectedRouteId(null);
 
-  const selectedRoute = fakeRoutes.find(r => r.route_id === selectedRouteId);
+  const selectedRoute = fakeRoutes.find((r) => r.route_id === selectedRouteId);
   const fareMatrix = selectedRoute ? generateFareMatrix(selectedRoute) : [];
 
   return (
@@ -56,17 +56,32 @@ export default function Station() {
             onClick={() => setSelectedRouteId(route.route_id)}
           >
             <div className="flex justify-between items-center mb-2">
-              <h3 className="text-lg font-semibold text-gray-800">{route.route_name}</h3>
-              <span className={`text-xs font-medium px-2 py-1 rounded ${
-                route.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-              }`}>
+              <h3 className="text-lg font-semibold text-gray-800">
+                {route.route_name}
+              </h3>
+              <span
+                className={`text-xs font-medium px-2 py-1 rounded ${
+                  route.status === "active"
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-700"
+                }`}
+              >
                 {route.status}
               </span>
             </div>
             <div className="text-sm text-gray-600 space-y-1">
-              <p><span className="font-medium text-gray-700">Code:</span> {route.route_code}</p>
-              <p><span className="font-medium text-gray-700">Distance:</span> {route.distance} km</p>
-              <p><span className="font-medium text-gray-700">Stations:</span> {route.quantity_station}</p>
+              <p>
+                <span className="font-medium text-gray-700">Code:</span>{" "}
+                {route.route_code}
+              </p>
+              <p>
+                <span className="font-medium text-gray-700">Distance:</span>{" "}
+                {route.distance} km
+              </p>
+              <p>
+                <span className="font-medium text-gray-700">Stations:</span>{" "}
+                {route.quantity_station}
+              </p>
             </div>
           </div>
         ))}
@@ -79,7 +94,12 @@ export default function Station() {
               <h3 className="text-lg font-semibold">
                 Fare Matrix - {selectedRoute.route_name}
               </h3>
-              <button onClick={closeModal} className="text-gray-500 hover:text-gray-800 text-xl cursor-pointer">×</button>
+              <button
+                onClick={closeModal}
+                className="text-gray-500 hover:text-gray-800 text-xl cursor-pointer"
+              >
+                ×
+              </button>
             </div>
             <div className="overflow-y-auto max-h-[70vh]">
               <table className="min-w-full text-sm">
@@ -97,14 +117,19 @@ export default function Station() {
                       <td className="px-4 py-2">{fare.origin}</td>
                       <td className="px-4 py-2">{fare.destination}</td>
                       <td className="px-4 py-2">{fare.distance.toFixed(1)}</td>
-                      <td className="px-4 py-2">{fare.fare.toLocaleString()}₫</td>
+                      <td className="px-4 py-2">
+                        {fare.fare.toLocaleString()}₫
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
             <div className="p-4 border-t text-right">
-              <button onClick={closeModal} className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700 cursor-pointer">
+              <button
+                onClick={closeModal}
+                className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700 cursor-pointer"
+              >
                 Close
               </button>
             </div>

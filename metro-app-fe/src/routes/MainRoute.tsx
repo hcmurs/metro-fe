@@ -5,6 +5,7 @@ import Dashboard from "../pages/admin/components/Dashboard/Dashboard";
 import Station from "../pages/admin/components/Station/Station";
 import UserManagement from "../pages/admin/components/User/UserManagement";
 import Home from "../pages/Home";
+import Footer from "../components/Footer/Footer";
 
 export default function MainRoute() {
   return (
@@ -18,6 +19,7 @@ export default function MainRoute() {
           <Route path="route" element={<Station />} />
         </Route>
       </Routes>
+      <Footer/>
     </BrowserRouter>
   );
 }

@@ -8,4 +8,17 @@
 .fp-watermark {
   display: none !important;
 }
+.swiper .swiper-slide {
+  box-shadow: none !important;
+}
+
+.swiper-cards .swiper-slide-shadow {
+  display: none !important;
+}
+
+.swiper-cards .swiper-slide::before,
+.swiper-cards .swiper-slide::after {
+  box-shadow: none !important;
+  background: none !important;
+}
 

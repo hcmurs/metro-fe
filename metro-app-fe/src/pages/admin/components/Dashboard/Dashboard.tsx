@@ -16,88 +16,90 @@ const data = [
 
 export default function Dashboard() {
   return (
-    <div className=" grid grid-cols-1 gap-5 max-w-screen">
+    <div className='flex flex-col gap-5'>
       <h2 className="text-2xl font-bold">Metro Analytics Dashboard</h2>
+      <div className=" grid grid-cols-2 gap-5 max-w-screen">
 
-      <div className='bg-white p-4 rounded shadow flex flex-col gap-5 w-full'>
-        <h2 className="text-2xl font-bold ">Total Tickets Sold and Revenue Over Time</h2>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="report_date" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line dataKey="total_tickets_sold" stroke="#8884d8" />
-            <Line dataKey="total_revenue" stroke="#82ca9d" />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+        <div className='bg-white p-4 rounded shadow flex flex-col gap-5 w-full'>
+          <h2 className="text-2xl font-bold ">Total Tickets Sold and Revenue Over Time</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={data}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="report_date" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line dataKey="total_tickets_sold" stroke="#8884d8" />
+              <Line dataKey="total_revenue" stroke="#82ca9d" />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
 
-      <div className='bg-white p-4 rounded shadow flex flex-col gap-5'>
-        <h2 className="text-2xl font-bold">Peak vs. Off-Peak Ticket Sales</h2>
+        <div className='bg-white p-4 rounded shadow flex flex-col gap-5'>
+          <h2 className="text-2xl font-bold">Peak vs. Off-Peak Ticket Sales</h2>
 
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="report_date" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="peak_hour_tickets" fill="#ff7300" />
-            <Bar dataKey="off_peak_tickets" fill="#387908" />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={data}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="report_date" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="peak_hour_tickets" fill="#ff7300" />
+              <Bar dataKey="off_peak_tickets" fill="#387908" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
 
-      <div className='bg-white p-4 rounded shadow flex flex-col gap-5'>
-        <h2 className="text-2xl font-bold">Daily Ticket Sales Growth</h2>
+        <div className='bg-white p-4 rounded shadow flex flex-col gap-5'>
+          <h2 className="text-2xl font-bold">Daily Ticket Sales Growth</h2>
 
-        <ResponsiveContainer width="100%" height={300}>
-          <AreaChart data={data}>
-            <defs>
-              <linearGradient id="colorTickets" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <XAxis dataKey="report_date" />
-            <YAxis />
-            <CartesianGrid strokeDasharray="3 3" />
-            <Tooltip />
-            <Area type="monotone" dataKey="total_tickets_sold" stroke="#8884d8" fillOpacity={1} fill="url(#colorTickets)" />
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
+          <ResponsiveContainer width="100%" height={300}>
+            <AreaChart data={data}>
+              <defs>
+                <linearGradient id="colorTickets" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <XAxis dataKey="report_date" />
+              <YAxis />
+              <CartesianGrid strokeDasharray="3 3" />
+              <Tooltip />
+              <Area type="monotone" dataKey="total_tickets_sold" stroke="#8884d8" fillOpacity={1} fill="url(#colorTickets)" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
 
-      <div className='bg-white p-4 rounded shadow flex flex-col gap-5'>
-        <h2 className="text-2xl font-bold">Ticket Type Distribution</h2>
+        <div className='bg-white p-4 rounded shadow flex flex-col gap-5'>
+          <h2 className="text-2xl font-bold">Ticket Type Distribution</h2>
 
-        <ResponsiveContainer width="100%" height={300}>
-          <PieChart>
-            <Pie
-              data={[
-                { name: '1 Day', value: 2305 },
-                { name: '3 Days', value: 2299 },
-                { name: 'Week', value: 2059 },
-                { name: 'Month', value: 1043 },
-                { name: 'Student', value: 783 }
-              ]}
-              dataKey="value"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              outerRadius={100}
-              label
-            >
-              {COLORS.map((color, index) => (
-                <Cell key={`cell-${index}`} fill={color} />
-              ))}
-            </Pie>
-            <Tooltip />
-            <Legend />
-          </PieChart>
-        </ResponsiveContainer>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={[
+                  { name: '1 Day', value: 2305 },
+                  { name: '3 Days', value: 2299 },
+                  { name: 'Week', value: 2059 },
+                  { name: 'Month', value: 1043 },
+                  { name: 'Student', value: 783 }
+                ]}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={100}
+                label
+              >
+                {COLORS.map((color, index) => (
+                  <Cell key={`cell-${index}`} fill={color} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );

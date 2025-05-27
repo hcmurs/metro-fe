@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+/* Trong globals.css hoặc app.css */
+.swiper-button-next,
+.swiper-button-prev {
+  color: #9afbf3 !important;
+}
+.fp-watermark {
+  display: none !important;
+}
+

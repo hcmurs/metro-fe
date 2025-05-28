@@ -11,33 +11,6 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-interface HeroNewsItem {
-  id: number;
-  image: string;
-  category: string;
-  title: string;
-  author: string;
-  date: string;
-  comments: number;
-  views: string;
-}
-
-interface CategoryNewsItem {
-  id: number;
-  image: string;
-  title: string;
-  author: string;
-  date: string;
-  comments: number;
-  excerpt: string;
-}
-
-interface CategoryNews {
-  fashion: CategoryNewsItem[];
-  technology: CategoryNewsItem[];
-  lifestyle: CategoryNewsItem[];
-}
-
 export const getCategoryColor = (category: string): string => {
   const colors: Record<string, string> = {
     Fashion: "bg-pink-500",

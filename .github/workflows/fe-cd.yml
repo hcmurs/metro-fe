@@ -1,7 +1,7 @@
 name: Vercel CD for metro-fe
 on:
   push:
-    branches: ["dev", "main"]
+    branches: ["hehe"]
     paths:
       - "metro-app-fe/**"
 

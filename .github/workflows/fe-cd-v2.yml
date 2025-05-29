@@ -1,0 +1,37 @@
+name: Vercel CD for metro-fe
+on:
+  push:
+    branches: ["dev", "main"]
+    paths:
+      - "metro-app-fe/**"
+jobs:
+  copy-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy Source to Production Repo
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          git config --global user.name "lcaohoanq"
+          git config --global user.email "hoangclw@gmail.com"
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_ed25519
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          git clone git@github.com:lcaohoanq/metro-fe-prod.git production-repo
+          # Remove existing source files (except .git and other hidden files)
+          find production-repo -mindepth 1 -not -path '*/\.*' -delete
+          # Copy entire metro-app-fe source to production repo
+          cp -r metro-app-fe/* production-repo/
+          cd production-repo
+          git pull
+          git add .
+          if git diff --staged --quiet; then
+            git commit --allow-empty -m "Trigger CD"
+          else
+            git commit -m "Deploy source from ${{ github.ref_name }} branch"
+          fi
+          git push origin main

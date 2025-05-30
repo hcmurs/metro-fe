@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <footer className="bg-[#234047] text-white py-22 px-5 lg:px-20 h-150">
       <div className="text-center text-4xl font-bold mb-10">HCM METRO</div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 text-sm mb-20">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 text-sm mb-20 px-20">
         <div>
           <h3 className="text-lg font-bold mb-4">Metro Services</h3>
           <ul className="space-y-2">
@@ -61,13 +61,13 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row items-center mt-10 gap-4">
+      <div className="flex flex-col lg:flex-row items-center mt-10 gap-4 px-20">
         <input
           type="email"
           placeholder="YOUR EMAIL FOR METRO UPDATES"
-          className="rounded-full px-6 py-3 w-full lg:w-[600px] text-white bg-[#234047] border border-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+          className="rounded-full px-6 py-3 lg:w-[800px] text-black bg-white"
         />
-        <button className="bg-orange-600 text-white font-semibold px-10 py-3 rounded-full hover:bg-orange-700">
+        <button className="bg-orange-600 text-white font-semibold px-10 py-3 rounded-full hover:bg-orange-700 w-80 cursor-pointer">
           SUBSCRIBE
         </button>
       </div>

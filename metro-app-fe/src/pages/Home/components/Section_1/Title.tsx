@@ -8,7 +8,7 @@ export default function Title() {
         transition={{ duration: 1 }}
         className="flex flex-col gap-5"
       >
-        <div className="text-6xl font-bold text-slate-800">
+        <div className="lg:text-6xl md:text-4xl font-bold text-slate-800">
           <p>Metro HCMR</p>
           <p>Boost Your Day</p>
         </div>

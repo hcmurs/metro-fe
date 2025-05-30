@@ -2,9 +2,13 @@ import { Facebook, Twitter, Linkedin, Instagram, Mail, Phone } from 'lucide-reac
 
 export default function Footer() {
   return (
-    <footer className="bg-[#234047] text-white py-22 px-5 lg:px-20 h-150">
-      <div className="text-center text-4xl font-bold mb-10">HCM METRO</div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 text-sm mb-20 px-20">
+    <footer className="bg-[#234047] text-white py-16 px-4 sm:px-10 lg:px-20">
+      <div className="text-center text-2xl sm:text-3xl md:text-4xl font-bold mb-10">
+        HCM METRO
+      </div>
+
+      {/* Grid 4 cột */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-14 text-sm mb-20">
         <div>
           <h3 className="text-lg font-bold mb-4">Metro Services</h3>
           <ul className="space-y-2">
@@ -44,35 +48,29 @@ export default function Footer() {
         <div>
           <h3 className="text-lg font-bold mb-4">Connect With Us</h3>
           <p className="mb-4">Stay updated on metro news and schedules</p>
-          <div className="flex gap-3">
-            <div className="bg-white text-[#234047] w-10 h-10 flex items-center justify-center rounded-full">
-              <Facebook size={20} />
-            </div>
-            <div className="bg-white text-[#234047] w-10 h-10 flex items-center justify-center rounded-full">
-              <Twitter size={20} />
-            </div>
-            <div className="bg-white text-[#234047] w-10 h-10 flex items-center justify-center rounded-full">
-              <Linkedin size={20} />
-            </div>
-            <div className="bg-white text-[#234047] w-10 h-10 flex items-center justify-center rounded-full">
-              <Instagram size={20} />
-            </div>
+          <div className="flex gap-3 flex-wrap">
+            {[Facebook, Twitter, Linkedin, Instagram].map((Icon, i) => (
+              <div key={i} className="bg-white text-[#234047] w-10 h-10 flex items-center justify-center rounded-full">
+                <Icon size={20} />
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row items-center mt-10 gap-4 px-20">
+      {/* Email subscribe */}
+      <div className="flex flex-col md:flex-row items-center gap-4 mb-10">
         <input
           type="email"
           placeholder="YOUR EMAIL FOR METRO UPDATES"
-          className="rounded-full px-6 py-3 lg:w-[800px] text-black bg-white"
+          className="rounded-full px-6 py-3 w-full md:w-[500px] lg:w-[800px] text-black bg-white"
         />
-        <button className="bg-orange-600 text-white font-semibold px-10 py-3 rounded-full hover:bg-orange-700 w-80 cursor-pointer">
+        <button className="bg-orange-600 text-white font-semibold px-10 py-3 rounded-full hover:bg-orange-700 w-full md:w-auto">
           SUBSCRIBE
         </button>
       </div>
 
-      <p className="text-center text-sm mt-10 text-white">
+      <p className="text-center text-xs sm:text-sm text-white">
         © 2025 HCM Metro. All Rights Reserved. Operated by Metro Transit Authority
       </p>
     </footer>

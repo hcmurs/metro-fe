@@ -1,15 +1,13 @@
-import React from 'react';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation } from 'swiper/modules';
-
+import "swiper/css";
+import "swiper/css/navigation";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
 
 // Bạn thay thế ảnh dưới bằng ảnh thật (import hoặc dùng URL)
 const images = [
-  'https://png.pngtree.com/png-vector/20191214/ourmid/pngtree-vector-illustration-of-white-metro-train-png-image_2074332.jpg',
-  'https://png.pngtree.com/png-vector/20191214/ourmid/pngtree-vector-illustration-of-white-metro-train-png-image_2074332.jpg',
-  'https://png.pngtree.com/png-vector/20191214/ourmid/pngtree-vector-illustration-of-white-metro-train-png-image_2074332.jpg',
+  "https://png.pngtree.com/png-vector/20191214/ourmid/pngtree-vector-illustration-of-white-metro-train-png-image_2074332.jpg",
+  "https://png.pngtree.com/png-vector/20191214/ourmid/pngtree-vector-illustration-of-white-metro-train-png-image_2074332.jpg",
+  "https://png.pngtree.com/png-vector/20191214/ourmid/pngtree-vector-illustration-of-white-metro-train-png-image_2074332.jpg",
 ];
 
 export default function Carousel() {

@@ -1,0 +1,56 @@
+name: Vercel CD for metro-fe
+on:
+  push:
+    branches: ["hehe"]
+    paths:
+      - "metro-app-fe/**"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: "npm"
+          cache-dependency-path: metro-app-fe/package-lock.json # Add this line
+
+      - name: Install dependencies
+        working-directory: metro-app-fe
+        run: npm install
+
+      - name: Build the project
+        working-directory: metro-app-fe
+        run: npm run build
+
+      - name: Deploy to Production Repo
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          git config --global user.name "lcaohoanq"
+          git config --global user.email "hoangclw@gmail.com"
+
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_ed25519
+
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+          git clone git@github.com:lcaohoanq/metro-fe-prod.git production-repo
+          rm -rf production-repo/dist
+          cp -r metro-app-fe/dist production-repo/
+
+          cd production-repo
+          git pull
+          git add .
+          if git diff --staged --quiet; then
+            git commit --allow-empty -m "Trigger CD"
+          else
+            git commit -m "Deploy new build from ${{ github.ref_name }} branch"
+          fi
+          git push origin main

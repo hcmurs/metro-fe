@@ -2,7 +2,7 @@ import { Facebook, Twitter, Linkedin, Instagram, Mail, Phone } from 'lucide-reac
 
 export default function Footer() {
   return (
-    <footer className="bg-[#234047] text-white py-16 px-4 sm:px-10 lg:px-20">
+    <div className="bg-[#234047] text-white py-16 px-4 sm:px-10 lg:px-20 ">
       <div className="text-center text-2xl sm:text-3xl md:text-4xl font-bold mb-10">
         HCM METRO
       </div>
@@ -73,6 +73,6 @@ export default function Footer() {
       <p className="text-center text-xs sm:text-sm text-white">
         © 2025 HCM Metro. All Rights Reserved. Operated by Metro Transit Authority
       </p>
-    </footer>
+    </div>
   );
 }

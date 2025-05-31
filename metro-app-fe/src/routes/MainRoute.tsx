@@ -11,19 +11,21 @@ import NewsDetail from "../pages/NewsDetail";
 
 export default function MainRoute() {
   return (
-    <BrowserRouter>
-      <Header />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/news" element={<NewsPage />} />
-        <Route path="/news/:id" element={<NewsDetail />} />
-        <Route path="/admin" element={<Admin />}>
-          <Route path="" element={<Dashboard />} />
-          <Route path="users" element={<UserManagement />} />
-          <Route path="route" element={<Station />} />
-        </Route>
-      </Routes>
-      <Footer />
-    </BrowserRouter>
+    <div className="max-w-screen overflow-x-hidden">
+      <BrowserRouter>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/news" element={<NewsPage />} />
+          <Route path="/news/:id" element={<NewsDetail />} />
+          <Route path="/admin" element={<Admin />}>
+            <Route path="" element={<Dashboard />} />
+            <Route path="users" element={<UserManagement />} />
+            <Route path="route" element={<Station />} />
+          </Route>
+        </Routes>
+        <Footer />
+      </BrowserRouter>
+    </div>
   );
 }

@@ -1,6 +1,6 @@
 export default function ADS() {
   return (
-    <div className="flex flex-col gap-15">
+    <div className="flex flex-col gap-15 w-full justify-center items-center">
       <div className="text-5xl text-slate-800">Ads Services</div>
       <div className="flex flex-col">
         <p>"Metro HCMR – di chuyển nhanh, không kẹt xe.</p>

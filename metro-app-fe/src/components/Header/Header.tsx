@@ -25,7 +25,7 @@ export default function Header() {
         <button className="bg-[#e6fffd] text-slate-800 px-4 py-1 rounded-md text-sm font-semibold">
           BUY NOW
         </button>
-        <a href="#" className="text-sm text-slate-800">
+        <a href="/login" className="text-sm text-slate-800">
           LOGIN
         </a>
         <Search className="w-4 h-4 text-slate-800 cursor-pointer" />

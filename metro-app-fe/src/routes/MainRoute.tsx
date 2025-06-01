@@ -1,6 +1,4 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import Footer from "../components/Footer/Footer";
-import Header from "../components/Header/Header";
 import Admin from "../pages/admin/Admin";
 import Dashboard from "../pages/admin/components/Dashboard/Dashboard";
 import Station from "../pages/admin/components/Station/Station";
@@ -8,7 +6,7 @@ import UserManagement from "../pages/admin/components/User/UserManagement";
 import Home from "../pages/Home";
 import NewsPage from "../pages/News/News";
 import NewsDetail from "../pages/NewsDetail";
-import { LoginPage } from "../pages/login/LoginPage";
+import LoginPage from "../pages/login/LoginPage";
 import DefaultLayout from "../layouts/DefaultLayout/DefaultLayout";
 
 export default function MainRoute() {

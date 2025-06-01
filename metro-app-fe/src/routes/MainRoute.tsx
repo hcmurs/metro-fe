@@ -11,26 +11,28 @@ import DefaultLayout from "../layouts/DefaultLayout/DefaultLayout";
 
 export default function MainRoute() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Routes with header and footer */}
-        <Route element={<DefaultLayout />}>
-          <Route path="/home" element={<Home />} />
-          <Route path="/news" element={<NewsPage />} />
-          <Route path="/news/:id" element={<NewsDetail />} />
+    <div className="max-w-screen overflow-x-hidden">
+      <BrowserRouter>
+        <Routes>
+          {/* Routes with header and footer */}
+          <Route element={<DefaultLayout />}>
+            <Route path="/home" element={<Home />} />
+            <Route path="/news" element={<NewsPage />} />
+            <Route path="/news/:id" element={<NewsDetail />} />
 
-          <Route path="/admin" element={<Admin />}>
-            <Route index element={<Dashboard />} />
-            <Route path="users" element={<UserManagement />} />
-            <Route path="route" element={<Station />} />
+            <Route path="/admin" element={<Admin />}>
+              <Route index element={<Dashboard />} />
+              <Route path="users" element={<UserManagement />} />
+              <Route path="route" element={<Station />} />
+            </Route>
+
+            <Route path="/" element={<Navigate to="/home" replace />} />
           </Route>
 
-          <Route path="/" element={<Navigate to="/home" replace />} />
-        </Route>
-
-        {/* Route without header and footer */}
-        <Route path="/login" element={<LoginPage />} />
-      </Routes>
-    </BrowserRouter>
+          {/* Route without header and footer */}
+          <Route path="/login" element={<LoginPage />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
   );
 }

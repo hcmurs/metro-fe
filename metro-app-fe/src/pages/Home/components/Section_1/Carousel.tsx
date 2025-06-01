@@ -3,7 +3,7 @@ const images = "https://png.pngtree.com/png-vector/20191214/ourmid/pngtree-vecto
 export default function Carousel() {
   return (
     <div className="w-full mx-auto mt-10">
-      <img className="w-[600px] lg:min-w-[600px] md:min-w-[380px]" src={images} alt="Train image"/>
+      <img className="lg:w-[600px] w-0" src={images} alt="Train image"/>
     </div>
   );
 }

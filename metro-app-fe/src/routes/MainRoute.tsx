@@ -8,23 +8,31 @@ import UserManagement from "../pages/admin/components/User/UserManagement";
 import Home from "../pages/Home";
 import NewsPage from "../pages/News/News";
 import NewsDetail from "../pages/NewsDetail";
+import { LoginPage } from "../pages/login/LoginPage";
+import DefaultLayout from "../layouts/DefaultLayout/DefaultLayout";
 
 export default function MainRoute() {
   return (
     <BrowserRouter>
-      <Header />
       <Routes>
-        <Route path="/home" element={<Home />} />
-        <Route path="/news" element={<NewsPage />} />
-        <Route path="/news/:id" element={<NewsDetail />} />
-        <Route path="/admin" element={<Admin />}>
-          <Route path="" element={<Dashboard />} />
-          <Route path="users" element={<UserManagement />} />
-          <Route path="route" element={<Station />} />
+        {/* Routes with header and footer */}
+        <Route element={<DefaultLayout />}>
+          <Route path="/home" element={<Home />} />
+          <Route path="/news" element={<NewsPage />} />
+          <Route path="/news/:id" element={<NewsDetail />} />
+
+          <Route path="/admin" element={<Admin />}>
+            <Route index element={<Dashboard />} />
+            <Route path="users" element={<UserManagement />} />
+            <Route path="route" element={<Station />} />
+          </Route>
+
+          <Route path="/" element={<Navigate to="/home" replace />} />
         </Route>
-        <Route path="/" element={<Navigate to="/home" replace />} />
+
+        {/* Route without header and footer */}
+        <Route path="/login" element={<LoginPage />} />
       </Routes>
-      <Footer />
     </BrowserRouter>
   );
 }

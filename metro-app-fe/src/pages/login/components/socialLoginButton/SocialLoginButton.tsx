@@ -72,7 +72,7 @@ const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
 		<button
 			type="button"
 			onClick={() => onSocialLogin(provider)}
-			className={`w-full inline-flex justify-center py-2 px-4 border ${borderColor} rounded-md shadow-sm ${bgColor} ${textColor} text-sm font-medium`}
+			className={`cursor-pointer w-full inline-flex justify-center py-2 px-4 border ${borderColor} rounded-md shadow-sm ${bgColor} ${textColor} text-sm font-medium`}
 		>
 			<span className="sr-only">
 				Sign in with {provider.charAt(0).toUpperCase() + provider.slice(1)}

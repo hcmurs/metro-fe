@@ -9,30 +9,31 @@ import NewsDetail from "../pages/NewsDetail";
 import LoginPage from "../pages/login/LoginPage";
 import DefaultLayout from "../layouts/DefaultLayout/DefaultLayout";
 import SocialLoginPopup from "../pages/login/components/socialLoginPopup/SocialLoginPopup";
+import { FE_PATH } from "../constants/path";
 
 export default function MainRoute() {
   return (
-    <div className="max-w-screen overflow-x-hidden">
+    <div className="max-w-screen">
       <BrowserRouter>
         <Routes>
           {/* Routes with header and footer */}
           <Route element={<DefaultLayout />}>
-            <Route path="/home" element={<Home />} />
-            <Route path="/news" element={<NewsPage />} />
-            <Route path="/news/:id" element={<NewsDetail />} />
+            <Route path={FE_PATH.HOME} element={<Home />} />
+            <Route path={FE_PATH.NEWS} element={<NewsPage />} />
+            <Route path={FE_PATH.NEWS_DETAIL} element={<NewsDetail />} />
 
-            <Route path="/admin" element={<Admin />}>
+            <Route path={FE_PATH.ADMIN} element={<Admin />}>
               <Route index element={<Dashboard />} />
               <Route path="users" element={<UserManagement />} />
               <Route path="route" element={<Station />} />
             </Route>
 
-            <Route path="/" element={<Navigate to="/home" replace />} />
+            <Route path="/" element={<Navigate to={FE_PATH.HOME} replace />} />
           </Route>
 
           {/* Route without header and footer */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/oauth2/redirect" element={<SocialLoginPopup />} />
+          <Route path={FE_PATH.LOGIN} element={<LoginPage />} />
+          <Route path={FE_PATH.SOCIAL_LOGIN_REDIRECT} element={<SocialLoginPopup />} />
         </Routes>
       </BrowserRouter>
     </div>

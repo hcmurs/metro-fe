@@ -1,12 +1,12 @@
-import Background from '../../components/Background'
-import Title from './components/Section_1/Title'
-import Carousel from './components/Section_1/Carousel'
-import 'fullpage.js/dist/fullpage.min.css'
-import ADS from './components/Section_2/ADS'
-import ADSImage from './components/Section_2/ADSImage'
-import MetroAdsCarousel from './components/Section_3/MetroAdsCarousel'
-import AboutUsMetro from './components/Section_4/AboutUsMetro'
-import CustomerTestimonials from './components/Section_5/CustomerTestimonials'
+import Background from '../../components/Background';
+import Title from './components/Section_1/Title';
+import Carousel from './components/Section_1/Carousel';
+import 'fullpage.js/dist/fullpage.min.css';
+import ADS from './components/Section_2/ADS';
+import ADSImage from './components/Section_2/ADSImage';
+import MetroAdsCarousel from './components/Section_3/MetroAdsCarousel';
+import AboutUsMetro from './components/Section_4/AboutUsMetro';
+import CustomerTestimonials from './components/Section_5/CustomerTestimonials';
 
 export default function Home() {
   return (

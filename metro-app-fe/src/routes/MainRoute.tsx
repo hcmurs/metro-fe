@@ -8,6 +8,7 @@ import NewsPage from "../pages/News/News";
 import NewsDetail from "../pages/NewsDetail";
 import LoginPage from "../pages/login/LoginPage";
 import DefaultLayout from "../layouts/DefaultLayout/DefaultLayout";
+import SocialLoginPopup from "../pages/login/components/socialLoginPopup/SocialLoginPopup";
 
 export default function MainRoute() {
   return (
@@ -31,6 +32,7 @@ export default function MainRoute() {
 
           {/* Route without header and footer */}
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/oauth2/redirect" element={<SocialLoginPopup />} />
         </Routes>
       </BrowserRouter>
     </div>

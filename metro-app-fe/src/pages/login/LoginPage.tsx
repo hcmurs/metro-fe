@@ -1,6 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { EyeIcon, EyeOffIcon, UserIcon, LockIcon } from 'lucide-react';
 import SocialLoginButton from './components/socialLoginButton/SocialLoginButton';
+import { useNavigate } from 'react-router-dom';
+import { API_PATH } from '../../constants/path';
+import { useAuth } from '../../contexts/AuthContext';
+import { getUser } from '../../apis/user.api';
+import type { User } from '../../types/user.type';
 
 const LoginPage = () => {
 	const [showPassword, setShowPassword] = useState(false);
@@ -9,6 +14,10 @@ const LoginPage = () => {
 		password: '',
 		rememberMe: false,
 	});
+
+	const navigate = useNavigate();
+
+	const { login } = useAuth();
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value, type, checked } = e.target;
@@ -23,8 +32,38 @@ const LoginPage = () => {
 	}
 
 	const onSocialLogin = (provider: string) => {
-		console.log(provider);
+		const width = 1000;
+		const height = 700;
+		const left = window.innerWidth / 2 - width / 2;
+		const top = window.innerHeight / 2 - height / 2;
+		if (provider === 'google') {
+			window.open(
+				API_PATH.GOOGLE_LOGIN,
+				'GoogleLogin',
+				`width=${width},height=${height},top=${top},left=${left}`
+			);
+		}
 	}
+
+	useEffect(() => {
+		const handleMessage = (event: MessageEvent) => {
+			if (event.origin !== 'http://localhost:3000') return;
+			if (event.data.success) {
+				getUser()
+					.then((userData: User | null) => {
+						if (userData) {
+							login(userData);
+							console.log(userData)
+						}
+					});
+				navigate('/home', { replace: true });
+			}
+		};
+
+		window.addEventListener('message', handleMessage);
+
+		return () => window.removeEventListener('message', handleMessage);
+	}, []);
 
 	return (
 		<div className='w-full h-screen flex items-center justify-center bg-[#E0FDF9]'>
@@ -89,11 +128,11 @@ const LoginPage = () => {
 									type="checkbox"
 									checked={formData.rememberMe}
 									onChange={handleChange}
-									className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded"
+									className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded cursor-pointer"
 								/>
 								<label
 									htmlFor="remember-me"
-									className="ml-2 block text-sm text-gray-700"
+									className="ml-2 block text-sm text-gray-700 cursor-pointer"
 								>
 									Remember me
 								</label>
@@ -110,7 +149,7 @@ const LoginPage = () => {
 						<div>
 							<button
 								type="submit"
-								className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+								className="cursor-pointer w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700"
 							>
 								Sign in
 							</button>

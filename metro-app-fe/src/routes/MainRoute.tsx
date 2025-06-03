@@ -10,6 +10,7 @@ import LoginPage from "../pages/login/LoginPage";
 import DefaultLayout from "../layouts/DefaultLayout/DefaultLayout";
 import SocialLoginPopup from "../pages/login/components/socialLoginPopup/SocialLoginPopup";
 import { FE_PATH } from "../constants/path";
+import PublicRoute from "./PublicRoute";
 
 export default function MainRoute() {
   return (
@@ -32,8 +33,22 @@ export default function MainRoute() {
           </Route>
 
           {/* Route without header and footer */}
-          <Route path={FE_PATH.LOGIN} element={<LoginPage />} />
-          <Route path={FE_PATH.SOCIAL_LOGIN_REDIRECT} element={<SocialLoginPopup />} />
+          <Route 
+            path={FE_PATH.LOGIN} 
+            element={
+              <PublicRoute>
+                <LoginPage />
+              </PublicRoute>
+            } 
+          />
+          <Route 
+            path={FE_PATH.SOCIAL_LOGIN_REDIRECT} 
+            element={
+              <PublicRoute>
+                <SocialLoginPopup />
+              </PublicRoute>
+            } 
+          />
         </Routes>
       </BrowserRouter>
     </div>

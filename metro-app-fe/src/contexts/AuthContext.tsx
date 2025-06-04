@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { User } from '../types/user.type';
 import { getUser } from '../apis/user.api';
 import { logoutUser } from '../apis/auth.api';
+import type { ApiResponse } from '../types/api.type';
 
 interface AuthContextType {
   user: User | null;
@@ -42,9 +43,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     getUser()
-      .then((userData: User | null) => {
-        if (userData) {
-          setUser(userData);
+      .then((response: ApiResponse<User> | null) => {
+        if (response?.status === 200) {
+          setUser(response.data as User);
+        } else {
+          setUser(null);
         }
       })
       .catch(() => {

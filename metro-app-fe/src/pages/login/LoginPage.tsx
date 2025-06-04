@@ -6,6 +6,7 @@ import { API_PATH } from '../../constants/path';
 import { useAuth } from '../../contexts/AuthContext';
 import { getUser } from '../../apis/user.api';
 import type { User } from '../../types/user.type';
+import type { ApiResponse } from '../../types/api.type';
 
 const LoginPage = () => {
 	const [showPassword, setShowPassword] = useState(false);
@@ -50,10 +51,9 @@ const LoginPage = () => {
 			if (event.origin !== 'http://localhost:3000') return;
 			if (event.data.success) {
 				getUser()
-					.then((userData: User | null) => {
-						if (userData) {
-							login(userData);
-							console.log(userData)
+					.then((response: ApiResponse<User> | null) => {
+						if (response && response.status === 200) {
+							login(response.data as User);
 						}
 					});
 				navigate('/home', { replace: true });

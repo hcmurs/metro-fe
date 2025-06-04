@@ -75,14 +75,14 @@ export default function Header() {
                   </div>
                   <a
                     href="#"
-                    className="block px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 flex items-center"
+                    className="px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 flex items-center"
                   >
                     <User className="w-4 h-4 mr-2" />
                     Profile
                   </a>
                   <button
                     onClick={handleLogout}
-                    className="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center"
+                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center"
                   >
                     <LogOut className="w-4 h-4 mr-2" />
                     Logout
@@ -156,14 +156,14 @@ export default function Header() {
                     </div>
                     <a
                       href="#"
-                      className="block px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 flex items-center"
+                      className="px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 flex items-center"
                     >
                       <User className="w-4 h-4 mr-2" />
                       Profile
                     </a>
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center"
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center"
                     >
                       <LogOut className="w-4 h-4 mr-2" />
                       Logout

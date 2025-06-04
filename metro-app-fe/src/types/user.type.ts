@@ -5,6 +5,8 @@ export interface User {
 	role: string;
 	authProvider: string;
 	pictureUrl: string;
+	isStudent: boolean;
+  studentExpiredDate: string;
 	createdAt: string;
 	updatedAt: string;
 }

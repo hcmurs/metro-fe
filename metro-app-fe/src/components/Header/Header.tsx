@@ -22,16 +22,16 @@ export default function Header() {
         setUserMenuOpen(false);
       }
     }
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    }
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   const handleLogout = () => {
     logout();
     setUserMenuOpen(false);
-  }
+  };
 
   return (
     <div className="sticky top-0 bg-white shadow-sm z-50">
@@ -51,7 +51,9 @@ export default function Header() {
           <a href="#">PRICING PLANS</a>
           <a href="#">SHOP</a>
           <a href="#">SERVICES</a>
-          <a href="news">BLOG</a>
+          <a onClick={() => navigate("/news")} className="cursor-pointer">
+            BLOG
+          </a>
           <a href="#">CONTACT</a>
         </nav>
 
@@ -91,10 +93,7 @@ export default function Header() {
               )}
             </div>
           ) : (
-            <a
-              href="/login"
-              className="text-sm text-slate-800 hover:underline"
-            >
+            <a href="/login" className="text-sm text-slate-800 hover:underline">
               LOGIN
             </a>
           )}

@@ -11,6 +11,7 @@ import {
 import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import useBlogs from "../../queries/useBlogs";
+import LoadingCute from "../../components/LoadingCute";
 
 export const getCategoryColor = (category: string): string => {
   const colors: Record<string, string> = {
@@ -146,14 +147,7 @@ const NewsPage = () => {
 
   // Loading state
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading articles...</p>
-        </div>
-      </div>
-    );
+    return <LoadingCute />;
   }
 
   // Error state
@@ -201,12 +195,17 @@ const NewsPage = () => {
             <div
               key={news.id}
               className={`absolute inset-0 transition-opacity duration-1000 ${
-                index === currentSlide ? "opacity-100" : "opacity-0"
+                index === currentSlide
+                  ? "opacity-100 z-10"
+                  : "opacity-0 z-0 pointer-events-none"
               }`}
             >
               <div
                 className="relative w-full h-full cursor-pointer"
-                onClick={() => handleArticleClick(news.id)}
+                onClick={() => {
+                  console.log("Clicked blog ID:", news.id); // Debug logging
+                  handleArticleClick(news.id);
+                }}
               >
                 <img
                   src={news.image}
@@ -256,19 +255,19 @@ const NewsPage = () => {
         {/* Carousel Controls */}
         <button
           onClick={prevSlide}
-          className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-all duration-200"
+          className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-all duration-200 z-20"
         >
           <ChevronLeft className="w-6 h-6" />
         </button>
         <button
           onClick={nextSlide}
-          className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-all duration-200"
+          className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-all duration-200 z-20"
         >
           <ChevronRight className="w-6 h-6" />
         </button>
 
         {/* Carousel Indicators */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-2">
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-2 z-20">
           {heroNews.map((_, index) => (
             <button
               key={index}

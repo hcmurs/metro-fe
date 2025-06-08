@@ -9,9 +9,9 @@ import {
   User,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getCategoryColor } from "../News/News";
+import { getCategoryColor } from "../Blogs/Blogs";
 import useBlogDetail from "../../queries/useBlogsDetail";
-import LoadingCute from "../../components/LoadingCute";
+import BlogsDetailSkeletonLoading from "../../components/BlogsDetailSkeletonLoading";
 
 // For related articles
 interface RelatedArticle {
@@ -22,7 +22,7 @@ interface RelatedArticle {
   date: string;
 }
 
-const NewsDetail = () => {
+const BlogsDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -51,7 +51,7 @@ const NewsDetail = () => {
   ];
 
   if (isLoading) {
-    return <LoadingCute />;
+    return <BlogsDetailSkeletonLoading />;
   }
 
   if (error) {
@@ -331,4 +331,4 @@ const NewsDetail = () => {
   );
 };
 
-export default NewsDetail;
+export default BlogsDetail;

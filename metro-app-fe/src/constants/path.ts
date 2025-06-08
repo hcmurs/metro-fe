@@ -5,8 +5,8 @@ export const FE_PATH = {
   REGISTER: "/register",
   LOGOUT: "/logout",
   ADMIN: "/admin",
-  NEWS: "/news",
-  NEWS_DETAIL: "/news/:id",
+  NEWS: "/blogs",
+  NEWS_DETAIL: "/blogs/:id",
   USER: "/users",
   SOCIAL_LOGIN_REDIRECT: "/oauth2/redirect",
 } as const;
@@ -14,4 +14,4 @@ export const FE_PATH = {
 export const API_PATH = {
   ORIGIN: "http://localhost:8082/api/v1",
   GOOGLE_LOGIN: "http://localhost:8081/api/v1/oauth2/authorize/google",
-} as const
+} as const;

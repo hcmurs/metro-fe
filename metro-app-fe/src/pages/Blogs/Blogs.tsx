@@ -8,10 +8,10 @@ import {
   Share2,
   User,
 } from "lucide-react";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import BlogsSkeletonLoading from "../../components/BlogsSkeletonLoading/BlogsSkeletonLoading";
 import useBlogs from "../../queries/useBlogs";
-import LoadingCute from "../../components/LoadingCute";
 
 export const getCategoryColor = (category: string): string => {
   const colors: Record<string, string> = {
@@ -27,7 +27,7 @@ export const getCategoryColor = (category: string): string => {
   return colors[category] || "bg-gray-500";
 };
 
-const NewsPage = () => {
+const Blogs = () => {
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -142,12 +142,12 @@ const NewsPage = () => {
   };
 
   const handleArticleClick = (id: string) => {
-    navigate(`/news/${id}`);
+    navigate(`/blogs/${id}`);
   };
 
   // Loading state
   if (isLoading) {
-    return <LoadingCute />;
+    return <BlogsSkeletonLoading />;
   }
 
   // Error state
@@ -523,4 +523,4 @@ const NewsPage = () => {
   );
 };
 
-export default NewsPage;
+export default Blogs;

@@ -51,7 +51,7 @@ export default function Header() {
           <a href="#">PRICING PLANS</a>
           <a href="#">SHOP</a>
           <a href="#">SERVICES</a>
-          <a onClick={() => navigate("/news")} className="cursor-pointer">
+          <a onClick={() => navigate("/blogs")} className="cursor-pointer">
             BLOG
           </a>
           <a href="#">CONTACT</a>

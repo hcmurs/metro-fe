@@ -14,4 +14,5 @@ export const FE_PATH = {
 export const API_PATH = {
   ORIGIN: "http://localhost:8082/api/v1",
   GOOGLE_LOGIN: "http://localhost:8081/api/v1/oauth2/authorize/google",
+  BLOG: "http://localhost:4007/api/v1/blogs",
 } as const;

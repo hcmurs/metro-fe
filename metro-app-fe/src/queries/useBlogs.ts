@@ -1,6 +1,8 @@
 import axios from "axios";
 import type { Blog } from "../types/blog.type";
 import { useQuery } from "@tanstack/react-query";
+import type { ApiResponse } from "../types/api.type";
+import { API_PATH } from "../constants/path";
 
 type BlogResponse = {
   items: Blog[];
@@ -15,13 +17,9 @@ const fetchBlogsList = async (
   perPage: number
 ): Promise<Blog[]> => {
   try {
-    const res = await axios.get<BlogResponse>(
-      `https://pkb.lch.id.vn/api/collections/blogs/records?page=${page}&perPage=${perPage}`,
+    const res = await axios.get<ApiResponse<BlogResponse>>(
+      `${API_PATH.BLOG}?page=${page}&perPage=${perPage}`,
       {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_API_KEY}`,
-        },
         params: {
           page,
           perPage,
@@ -29,7 +27,7 @@ const fetchBlogsList = async (
       }
     );
     if (res.status === 200) {
-      return res.data.items;
+      return res.data.data.items;
     } else {
       throw new Error(`Error fetching blogs: ${res.statusText}`);
     }

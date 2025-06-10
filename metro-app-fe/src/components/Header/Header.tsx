@@ -9,7 +9,7 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, contextUser: user, contextLogout: logout } = useAuth();
 
   const userMenuRef = useRef<HTMLDivElement>(null);
 

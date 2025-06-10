@@ -1,15 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { User } from '../types/user.type';
-import { getUser } from '../apis/user.api';
-import { logoutUser } from '../apis/auth.api';
+import { apiFindUser } from '../apis/user.api';
+import { apiLogout } from '../apis/auth.api';
 import type { ApiResponse } from '../types/api.type';
 
 interface AuthContextType {
-  user: User | null;
+  contextUser: User | null;
   isAuthenticated: boolean;
-  login: (user: User) => void;
-  logout: () => void;
-  setUser: (user: User | null) => void;
+  contextLogin: (user: User) => void;
+  contextLogout: () => void;
+  setContextUser: (user: User | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -23,40 +23,40 @@ export const useAuth = () => {
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [contextUser, setContextUser] = useState<User | null>(null);
 
-  const isAuthenticated = !!user;
+  const isAuthenticated = !!contextUser;
 
-  const login = (userData: User) => {
-    setUser(userData);
+  const contextLogin = (userData: User) => {
+    setContextUser(userData);
   };
 
-  const logout = () => {
-    logoutUser()
+  const contextLogout = () => {
+    apiLogout()
       .then(() => {
-        setUser(null);
+        setContextUser(null);
       })
       .catch(() => {
-        setUser(null);
+        setContextUser(null);
       });
   };
 
   useEffect(() => {
-    getUser()
+    apiFindUser()
       .then((response: ApiResponse<User> | null) => {
         if (response?.status === 200) {
-          setUser(response.data as User);
+          setContextUser(response.data as User);
         } else {
-          setUser(null);
+          setContextUser(null);
         }
       })
       .catch(() => {
-        setUser(null);
+        setContextUser(null);
       });
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout, setUser }}>
+    <AuthContext.Provider value={{ contextUser: contextUser, isAuthenticated, contextLogin: contextLogin, contextLogout: contextLogout, setContextUser: setContextUser }}>
       {children}
     </AuthContext.Provider>
   );

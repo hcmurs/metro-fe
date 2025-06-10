@@ -1,8 +1,20 @@
+import { API_PATH } from "../constants/path";
+import type { ApiResponse } from "../types/api.type";
+import type { User } from "../types/user.type";
 import api from "./api";
 
-export const logoutUser = async (): Promise<void | null> => {
+export const apiLogout = async (): Promise<void | null> => {
   try {
-    await api.post("http://localhost:4003/api/auth/logout");
+    await api.post(API_PATH.LOGOUT);
+  } catch {
+    return null;
+  }
+};
+
+export const apiLocalLogin = async (username: string, password: string): Promise<ApiResponse<User> | null> => {
+  try {
+    const res = await api.post(API_PATH.LOCAL_LOGIN, { username, password });
+    return res.data as ApiResponse<User>;
   } catch {
     return null;
   }

@@ -4,9 +4,10 @@ import SocialLoginButton from './components/socialLoginButton/SocialLoginButton'
 import { useNavigate } from 'react-router-dom';
 import { API_PATH } from '../../constants/path';
 import { useAuth } from '../../contexts/AuthContext';
-import { getUser } from '../../apis/user.api';
+import { apiFindUser } from '../../apis/user.api';
 import type { User } from '../../types/user.type';
 import type { ApiResponse } from '../../types/api.type';
+import { apiLocalLogin } from '../../apis/auth.api';
 
 const LoginPage = () => {
 	const [showPassword, setShowPassword] = useState(false);
@@ -18,7 +19,7 @@ const LoginPage = () => {
 
 	const navigate = useNavigate();
 
-	const { login } = useAuth();
+	const { contextLogin, contextUser } = useAuth();
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value, type, checked } = e.target;
@@ -30,6 +31,10 @@ const LoginPage = () => {
 
 	const onLogin = (e: React.FormEvent) => {
 		e.preventDefault();
+		apiLocalLogin(formData.username, formData.password)
+			.then((response: ApiResponse<User> | null) => {
+				console.log(response);
+			});
 	}
 
 	const onSocialLogin = (provider: string) => {
@@ -49,11 +54,12 @@ const LoginPage = () => {
 	useEffect(() => {
 		const handleMessage = (event: MessageEvent) => {
 			if (event.origin !== 'http://localhost:3000') return;
+			if (contextUser !== null) return;
 			if (event.data.success) {
-				getUser()
+				apiFindUser()
 					.then((response: ApiResponse<User> | null) => {
 						if (response && response.status === 200) {
-							login(response.data as User);
+							contextLogin(response.data as User);
 						}
 					});
 				navigate('/home', { replace: true });

@@ -12,6 +12,6 @@ export const FE_PATH = {
 } as const;
 
 export const API_PATH = {
-  ORIGIN: "http://localhost:8082/api/v1",
-  GOOGLE_LOGIN: "http://localhost:8081/api/v1/oauth2/authorize/google",
+  ORIGIN: "http://localhost:4003/api",
+  GOOGLE_LOGIN: `http://localhost:4003/api/oauth2/authorize/google`,
 } as const

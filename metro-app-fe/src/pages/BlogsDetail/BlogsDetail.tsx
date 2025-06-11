@@ -8,11 +8,12 @@ import {
   Twitter,
   User,
 } from "lucide-react";
-import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getCategoryColor } from "../News/News";
+import { getCategoryColor } from "../Blogs/Blogs";
+import useBlogDetail from "../../queries/useBlogsDetail";
+import BlogsDetailSkeletonLoading from "../../components/BlogsDetailSkeletonLoading";
 
-// Mock function to get article by ID (in a real app, this would be an API call)
+// For related articles
 interface RelatedArticle {
   id: number;
   title: string;
@@ -21,92 +22,54 @@ interface RelatedArticle {
   date: string;
 }
 
-interface Article {
-  id: number;
-  category: string;
-  title: string;
-  author: string;
-  date: string;
-  comments: number;
-  views: string;
-  image: string;
-  content: string;
-  tags: string[];
-  related: RelatedArticle[];
-}
-
-const getArticleById = (id: string | undefined): Article => {
-  // This would fetch from an API in a real application
-  return {
-    id: parseInt(id as string),
-    category: "Technology",
-    title: "AI Revolution: How Machine Learning is Changing Our Lives",
-    author: "Alex Rivera",
-    date: "May 26, 2025",
-    comments: 156,
-    views: "8.9K",
-    image:
-      "https://images.unsplash.com/photo-1666597107756-ef489e9f1f09?w=1200&h=600&fit=crop",
-    content: `<p>Artificial intelligence (AI) and machine learning are transforming our world in ways we couldn't have imagined just a decade ago. From healthcare to transportation, education to entertainment, these technologies are revolutionizing industries and changing how we live, work, and interact.</p>
-        
-        <h2>The Rise of Machine Learning</h2>
-        <p>Machine learning, a subset of AI, has seen remarkable advancements in recent years. Unlike traditional programming, where humans write specific instructions for computers to follow, machine learning algorithms allow computers to learn from data and improve their performance over time without explicit programming.</p>
-        
-        <p>This approach has led to breakthroughs in image and speech recognition, natural language processing, and predictive analytics. Today's AI systems can recognize faces, understand spoken commands, translate languages, and even predict consumer behavior with astonishing accuracy.</p>`,
-    tags: ["AI", "Machine Learning", "Technology"],
-    related: [
-      {
-        id: 9,
-        title: "Cybersecurity Trends: Protecting Digital Assets",
-        image:
-          "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=250&fit=crop",
-        category: "Technology",
-        date: "May 23, 2025",
-      },
-      {
-        id: 10,
-        title: "Quantum Computing: The Future of Processing Power",
-        image:
-          "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400&h=250&fit=crop",
-        category: "Technology",
-        date: "May 21, 2025",
-      },
-    ],
-  };
-};
-
-const NewsDetail = () => {
+const BlogsDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [article, setArticle] = useState<Article | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Simulate API call
-    const fetchArticle = () => {
-      try {
-        setLoading(true);
-        const data = getArticleById(id);
-        setArticle(data);
-      } catch (error) {
-        console.error("Error fetching article:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Use our custom hook to fetch blog detail
+  const { data: blog, isLoading, error } = useBlogDetail(id);
 
-    fetchArticle();
-  }, [id]);
+  // Get related articles based on the same category
+  // In a real app, you would fetch related articles from the API
+  const relatedArticles: RelatedArticle[] = [
+    {
+      id: 9,
+      title: "Cybersecurity Trends: Protecting Digital Assets",
+      image:
+        "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=250&fit=crop",
+      category: blog?.category || "Technology",
+      date: "May 23, 2025",
+    },
+    {
+      id: 10,
+      title: "Quantum Computing: The Future of Processing Power",
+      image:
+        "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400&h=250&fit=crop",
+      category: blog?.category || "Technology",
+      date: "May 21, 2025",
+    },
+  ];
 
-  if (loading) {
+  if (isLoading) {
+    return <BlogsDetailSkeletonLoading />;
+  }
+
+  if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="min-h-screen flex flex-col items-center justify-center">
+        <h2 className="text-2xl font-bold mb-4">Error loading article</h2>
+        <p className="text-gray-600 mb-4">{error.message}</p>
+        <button
+          onClick={() => navigate(-1)}
+          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+        >
+          Go Back
+        </button>
       </div>
     );
   }
 
-  if (!article) {
+  if (!blog) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
         <h2 className="text-2xl font-bold mb-4">Article not found</h2>
@@ -119,6 +82,19 @@ const NewsDetail = () => {
       </div>
     );
   }
+
+  // Format date for display
+  const formattedDate = new Date(blog.date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+
+  // Format views for display
+  const formattedViews =
+    blog.views > 1000
+      ? `${(blog.views / 1000).toFixed(1)}K`
+      : blog.views.toString();
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -136,8 +112,8 @@ const NewsDetail = () => {
       {/* Hero Image */}
       <div className="w-full h-[50vh] relative">
         <img
-          src={article.image}
-          alt={article.title}
+          src={blog.image}
+          alt={blog.title}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
@@ -152,30 +128,30 @@ const NewsDetail = () => {
             <div className="-mt-20 relative z-10 bg-white p-8 rounded-lg shadow-lg mb-8">
               <span
                 className={`inline-block px-3 py-1 rounded-full text-sm font-medium text-white mb-4 ${getCategoryColor(
-                  article.category
+                  blog.category
                 )}`}
               >
-                {article.category}
+                {blog.category}
               </span>
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                {article.title}
+                {blog.title}
               </h1>
               <div className="flex flex-wrap items-center text-gray-600 gap-y-2">
                 <div className="flex items-center mr-6">
                   <User className="w-4 h-4 mr-2" />
-                  <span>{article.author}</span>
+                  <span>{blog.author}</span>
                 </div>
                 <div className="flex items-center mr-6">
                   <Calendar className="w-4 h-4 mr-2" />
-                  <span>{article.date}</span>
+                  <span>{formattedDate}</span>
                 </div>
                 <div className="flex items-center mr-6">
                   <MessageCircle className="w-4 h-4 mr-2" />
-                  <span>{article.comments} comments</span>
+                  <span>{blog.comments} comments</span>
                 </div>
                 <div className="flex items-center">
                   <Eye className="w-4 h-4 mr-2" />
-                  <span>{article.views} views</span>
+                  <span>{formattedViews} views</span>
                 </div>
               </div>
             </div>
@@ -183,23 +159,25 @@ const NewsDetail = () => {
             {/* Article Body */}
             <div
               className="prose prose-lg max-w-none mb-12"
-              dangerouslySetInnerHTML={{ __html: article.content }}
+              dangerouslySetInnerHTML={{ __html: blog.content }}
             ></div>
 
             {/* Tags */}
-            <div className="mb-12">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Tags</h3>
-              <div className="flex flex-wrap gap-2">
-                {article.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm"
-                  >
-                    {tag}
-                  </span>
-                ))}
+            {blog.tags && blog.tags.length > 0 && (
+              <div className="mb-12">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Tags</h3>
+                <div className="flex flex-wrap gap-2">
+                  {blog.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Share */}
             <div className="mb-12">
@@ -222,7 +200,7 @@ const NewsDetail = () => {
             {/* Comments Section */}
             <div>
               <h3 className="text-xl font-bold text-gray-900 mb-6">
-                Comments ({article.comments})
+                Comments ({blog.comments})
               </h3>
 
               {/* Comment Form */}
@@ -295,13 +273,16 @@ const NewsDetail = () => {
               <div className="flex items-center mb-4">
                 <div className="w-16 h-16 rounded-full bg-gray-300 mr-4"></div>
                 <div>
-                  <h4 className="font-bold text-gray-900">{article.author}</h4>
-                  <p className="text-sm text-gray-600">Technology Writer</p>
+                  <h4 className="font-bold text-gray-900">{blog.author}</h4>
+                  <p className="text-sm text-gray-600">
+                    {blog.category} Writer
+                  </p>
                 </div>
               </div>
               <p className="text-gray-700 mb-4">
-                Technology journalist with over 10 years of experience covering
-                AI and digital transformation.
+                Experienced writer with expertise in{" "}
+                {blog.category.toLowerCase()} topics and digital content
+                creation.
               </p>
             </div>
 
@@ -311,7 +292,7 @@ const NewsDetail = () => {
                 Related Articles
               </h3>
               <div className="space-y-4">
-                {article.related.map((related) => (
+                {relatedArticles.map((related) => (
                   <div
                     key={related.id}
                     className="block group cursor-pointer"
@@ -350,4 +331,4 @@ const NewsDetail = () => {
   );
 };
 
-export default NewsDetail;
+export default BlogsDetail;

@@ -51,10 +51,16 @@ const LoginPage = () => {
 		const height = 700;
 		const left = window.innerWidth / 2 - width / 2;
 		const top = window.innerHeight / 2 - height / 2;
-		if (provider === 'google') {
+		if (provider.toLowerCase() === 'google') {
 			window.open(
 				API_PATH.GOOGLE_LOGIN,
 				'GoogleLogin',
+				`width=${width},height=${height},top=${top},left=${left}`
+			);
+		} else if (provider.toLowerCase() === 'facebook') {
+			window.open(
+				API_PATH.FACEBOOK_LOGIN,
+				'FacebookLogin',
 				`width=${width},height=${height},top=${top},left=${left}`
 			);
 		}

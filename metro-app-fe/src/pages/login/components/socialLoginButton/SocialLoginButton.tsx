@@ -2,12 +2,14 @@ import React from 'react'
 
 type SocialLoginButtonProps = {
 	provider: 'google' | 'facebook'
-	onSocialLogin: (provider: string) => void
+	onSocialLogin: (provider: string) => void,
+	disabled: boolean
 }
 
 const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
 	provider,
 	onSocialLogin,
+	disabled = false
 }) => {
 	const getProviderStyles = () => {
 		switch (provider) {
@@ -71,6 +73,7 @@ const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
 	return (
 		<button
 			type="button"
+			disabled={disabled}
 			onClick={() => onSocialLogin(provider)}
 			className={`cursor-pointer w-full inline-flex justify-center py-2 px-4 border ${borderColor} rounded-md shadow-sm ${bgColor} ${textColor} text-sm font-medium`}
 		>

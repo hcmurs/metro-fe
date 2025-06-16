@@ -17,6 +17,7 @@ const LoginPage = () => {
 		rememberMe: false,
 	});
 	const [isLoading, setIsLoading] = useState(false);
+	const [isPopupOpen, setIsPopupOpen] = useState(false);
 
 	const navigate = useNavigate();
 
@@ -51,18 +52,31 @@ const LoginPage = () => {
 		const height = 700;
 		const left = window.innerWidth / 2 - width / 2;
 		const top = window.innerHeight / 2 - height / 2;
+
+		let popup: Window | null = null;
 		if (provider.toLowerCase() === 'google') {
-			window.open(
+			popup = window.open(
 				API_PATH.GOOGLE_LOGIN,
 				'GoogleLogin',
 				`width=${width},height=${height},top=${top},left=${left}`
 			);
 		} else if (provider.toLowerCase() === 'facebook') {
-			window.open(
+			popup = window.open(
 				API_PATH.FACEBOOK_LOGIN,
 				'FacebookLogin',
 				`width=${width},height=${height},top=${top},left=${left}`
 			);
+		}
+
+		if (popup) {
+			setIsPopupOpen(true);
+
+			const timer = setInterval(() => {
+				if (popup.closed) {
+					clearInterval(timer);
+					setIsPopupOpen(false);
+				}
+			}, 500);
 		}
 	}
 
@@ -77,6 +91,7 @@ const LoginPage = () => {
 							contextLogin(response.data as User);
 						}
 					});
+				setIsPopupOpen(false);
 				navigate('/home', { replace: true });
 			}
 		};
@@ -116,6 +131,7 @@ const LoginPage = () => {
 								<input
 									className="flex w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-10 h-11 border-gray-200 focus:border-teal-500 focus:ring-teal-500/20 transition-all duration-200"
 									id="username"
+									disabled={isPopupOpen}
 									placeholder="Enter your username or email"
 									required
 									value={formData.username}
@@ -137,6 +153,7 @@ const LoginPage = () => {
 								<input
 									className="flex w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-10 pr-10 h-11 border-gray-200 focus:border-teal-500 focus:ring-teal-500/20 transition-all duration-200"
 									id="password"
+									disabled={isPopupOpen}
 									placeholder="Enter your password"
 									required
 									type={showPassword ? 'text' : 'password'}
@@ -146,6 +163,7 @@ const LoginPage = () => {
 								/>
 								<button
 									type="button"
+									disabled={isPopupOpen}
 									className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
 									onClick={() => setShowPassword(!showPassword)}
 								>
@@ -163,6 +181,7 @@ const LoginPage = () => {
 								<input
 									id="remember-me"
 									name="rememberMe"
+									disabled={isPopupOpen}
 									type="checkbox"
 									checked={formData.rememberMe}
 									onChange={handleChange}
@@ -178,6 +197,7 @@ const LoginPage = () => {
 							<div className="text-sm">
 								<a
 									href="#"
+									onClick={e => isPopupOpen && e.preventDefault()}
 									className="font-medium text-teal-600 hover:text-teal-500"
 								>
 									Forgot password?
@@ -188,7 +208,7 @@ const LoginPage = () => {
 							<button
 								className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary hover:bg-primary/90 px-4 py-2 w-full h-11 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200 group"
 								type="submit"
-								disabled={isLoading}
+								disabled={isLoading || isPopupOpen}
 							>
 								{isLoading ? (
 									<div className="flex items-center space-x-2">
@@ -218,10 +238,12 @@ const LoginPage = () => {
 						<div className="mt-6 grid grid-cols-2 gap-3">
 							<SocialLoginButton
 								provider="google"
+								disabled={isPopupOpen}
 								onSocialLogin={(provider) => onSocialLogin(provider)}
 							/>
 							<SocialLoginButton
 								provider="facebook"
+								disabled={isPopupOpen}
 								onSocialLogin={(provider) => onSocialLogin(provider)}
 							/>
 						</div>
@@ -231,6 +253,7 @@ const LoginPage = () => {
 							Don't have an account?{' '}
 							<a
 								href="#"
+								onClick={e => isPopupOpen && e.preventDefault()}
 								className="font-medium text-teal-600 hover:text-teal-500"
 							>
 								Sign up now
@@ -239,6 +262,9 @@ const LoginPage = () => {
 					</div>
 				</div>
 			</div>
+			{isPopupOpen && (
+				<div className="fixed inset-0 w-screen h-scree bg-black/30 z-[9999] cursor-not-allowed"></div>
+			)}
 		</div>
 	)
 }

@@ -1,21 +1,33 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 const SocialLoginPopup = () => {
-	const navigate = useNavigate();
-
 	useEffect(() => {
+		const query = new URLSearchParams(window.location.search);
+		const error = query.get('error');
+
 		if (window.opener) {
-			window.opener.postMessage({ success: true }, 'http://localhost:3000');
+			if (error) {
+				window.opener.postMessage(
+					{ success: false, reason: error },
+					"http://localhost:3000"
+				);
+			} else {
+				window.opener.postMessage(
+					{ success: true },
+					"http://localhost:3000"
+				);
+			}
 			window.close();
 		}
 	}, []);
 
-	useEffect(() => {
-		navigate('/home', { replace: true });
-	}, []);
-
-	return <p>Login successfully, returning to homepage...</p>;
+	return (
+		<p>
+			{new URLSearchParams(window.location.search).get("error")
+				? "Login cancelled or failed. Closing popup..."
+				: "Login successful, closing popup..."}
+		</p>
+	);
 }
 
 export default SocialLoginPopup;

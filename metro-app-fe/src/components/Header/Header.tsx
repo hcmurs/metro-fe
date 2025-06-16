@@ -73,7 +73,7 @@ export default function Header() {
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 animate-fade-down">
                   <div className="px-4 py-2 text-sm text-slate-700 border-b border-gray-100">
                     <p className="font-medium">{user?.name}</p>
-                    <p className="text-xs text-gray-500">{user?.email}</p>
+                    <p className="text-xs text-gray-500 break-words">{user?.email}</p>
                   </div>
                   <a
                     href="#"
@@ -84,7 +84,7 @@ export default function Header() {
                   </a>
                   <button
                     onClick={handleLogout}
-                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center"
+                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center cursor-pointer"
                   >
                     <LogOut className="w-4 h-4 mr-2" />
                     Logout
@@ -151,7 +151,7 @@ export default function Header() {
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 animate-fade-down">
                     <div className="px-4 py-2 text-sm text-slate-700 border-b border-gray-100">
                       <p className="font-medium">{user?.name}</p>
-                      <p className="text-xs text-gray-500">{user?.email}</p>
+                      <p className="text-xs text-gray-500 break-words">{user?.email}</p>
                     </div>
                     <a
                       href="#"
@@ -162,7 +162,7 @@ export default function Header() {
                     </a>
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center"
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center cursor-pointer"
                     >
                       <LogOut className="w-4 h-4 mr-2" />
                       Logout

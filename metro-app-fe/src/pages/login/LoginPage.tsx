@@ -37,11 +37,12 @@ const LoginPage = () => {
 			.then((response: ApiResponse<User> | null) => {
 				if (response && response.status === 200) {
 					contextLogin(response.data as User);
-					setIsLoading(false);
 				} else if (response && response.status === 401) {
 					alert('Invalid username or password');
-					setIsLoading(false);
 				}
+			})
+			.finally(() => {
+				setIsLoading(false);
 			});
 	}
 

@@ -1,13 +1,13 @@
+import { ArrowRight, EyeIcon, EyeOffIcon, LockIcon, UserIcon } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { EyeIcon, EyeOffIcon, UserIcon, LockIcon } from 'lucide-react';
-import SocialLoginButton from './components/socialLoginButton/SocialLoginButton';
 import { useNavigate } from 'react-router-dom';
+import { apiLocalLogin } from '../../apis/auth.api';
+import { apiFindUser } from '../../apis/user.api';
 import { API_PATH } from '../../constants/path';
 import { useAuth } from '../../contexts/AuthContext';
-import { apiFindUser } from '../../apis/user.api';
-import type { User } from '../../types/user.type';
 import type { ApiResponse } from '../../types/api.type';
-import { apiLocalLogin } from '../../apis/auth.api';
+import type { User } from '../../types/user.type';
+import SocialLoginButton from './components/socialLoginButton/SocialLoginButton';
 
 const LoginPage = () => {
 	const [showPassword, setShowPassword] = useState(false);
@@ -16,6 +16,7 @@ const LoginPage = () => {
 		password: '',
 		rememberMe: false,
 	});
+	const [isLoading, setIsLoading] = useState(false);
 
 	const navigate = useNavigate();
 
@@ -31,9 +32,17 @@ const LoginPage = () => {
 
 	const onLogin = (e: React.FormEvent) => {
 		e.preventDefault();
+		setIsLoading(true);
 		apiLocalLogin(formData.username, formData.password)
 			.then((response: ApiResponse<User> | null) => {
-				console.log(response);
+				if (response && response.status === 200) {
+					contextLogin(response.data as User);
+				} else if (response && response.status === 401) {
+					alert('Invalid username or password');
+				}
+			})
+			.finally(() => {
+				setIsLoading(false);
 			});
 	}
 
@@ -72,50 +81,66 @@ const LoginPage = () => {
 	}, []);
 
 	return (
-		<div className='w-full h-screen flex items-center justify-center bg-[#E0FDF9]'>
+		<div className='w-full h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 via-white to-emerald-50'>
 			<div className="max-w-md w-full bg-white rounded-lg shadow-lg overflow-hidden m-auto">
-				<div className="bg-teal-600 py-6 px-8">
-					<h2 className="text-center text-3xl font-bold text-white">Sign In</h2>
+				<div className="flex flex-col p-5 pt-7 space-y-1">
+					<div className="flex justify-center mb-4">
+						<div className="w-12 h-12 bg-gradient-to-br from-teal-600 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
+							<UserIcon className="w-6 h-6 text-white" />
+						</div>
+					</div>
+					<h3 className="tracking-tight text-2xl font-bold text-center bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+						Welcome Back
+					</h3>
+					<p className="text-sm text-center text-gray-600">
+						Sign in to your account to continue
+					</p>
 				</div>
-				<div className="p-8">
+				<div className="p-8 pt-3 pb-6">
 					<form className="space-y-6" onSubmit={onLogin}>
-						<div>
-							<div className="relative">
-								<span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-									<UserIcon size={18} />
-								</span>
+						<div className="space-y-2">
+							<label
+								className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-sm font-medium text-gray-700"
+								htmlFor="username"
+							>
+								Username or Email
+							</label>
+							<div className="relative group mt-2">
+								<UserIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 group-focus-within:text-teal-600 transition-colors" />
 								<input
+									className="flex w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-10 h-11 border-gray-200 focus:border-teal-500 focus:ring-teal-500/20 transition-all duration-200"
 									id="username"
-									name="username"
-									type="text"
-									autoComplete="username"
+									placeholder="Enter your username or email"
 									required
 									value={formData.username}
 									onChange={handleChange}
-									className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md"
-									placeholder="Username or Email"
+									type="text"
+									name="username"
 								/>
 							</div>
 						</div>
-						<div>
-							<div className="relative">
-								<span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-									<LockIcon size={18} />
-								</span>
+						<div className="space-y-2">
+							<label
+								className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-sm font-medium text-gray-700"
+								htmlFor="password"
+							>
+								Password
+							</label>
+							<div className="relative group mt-2">
+								<LockIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 group-focus-within:text-teal-600 transition-colors" />
 								<input
+									className="flex w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-10 pr-10 h-11 border-gray-200 focus:border-teal-500 focus:ring-teal-500/20 transition-all duration-200"
 									id="password"
-									name="password"
-									type={showPassword ? 'text' : 'password'}
-									autoComplete="current-password"
+									placeholder="Enter your password"
 									required
+									type={showPassword ? 'text' : 'password'}
 									value={formData.password}
 									onChange={handleChange}
-									className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md"
-									placeholder="Password"
+									name="password"
 								/>
 								<button
 									type="button"
-									className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700"
+									className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
 									onClick={() => setShowPassword(!showPassword)}
 								>
 									{showPassword ? (
@@ -126,6 +151,7 @@ const LoginPage = () => {
 								</button>
 							</div>
 						</div>
+
 						<div className="flex items-center justify-between">
 							<div className="flex items-center">
 								<input
@@ -154,10 +180,21 @@ const LoginPage = () => {
 						</div>
 						<div>
 							<button
+								className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary hover:bg-primary/90 px-4 py-2 w-full h-11 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200 group"
 								type="submit"
-								className="cursor-pointer w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700"
+								disabled={isLoading}
 							>
-								Sign in
+								{isLoading ? (
+									<div className="flex items-center space-x-2">
+										<div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+										<span>Signing in...</span>
+									</div>
+								) : (
+									<div className="flex items-center space-x-2">
+										<span>Sign In</span>
+										<ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+									</div>
+								)}
 							</button>
 						</div>
 					</form>

@@ -3,6 +3,7 @@ import type { User } from '../types/user.type';
 import { apiFindUser } from '../apis/user.api';
 import { apiLogout } from '../apis/auth.api';
 import type { ApiResponse } from '../types/api.type';
+import { useNavigate } from 'react-router-dom';
 
 interface AuthContextType {
   contextUser: User | null;
@@ -27,8 +28,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const isAuthenticated = !!contextUser;
 
+  const navigate = useNavigate();
+
   const contextLogin = (userData: User) => {
     setContextUser(userData);
+    navigate('/home', { replace: true });
   };
 
   const contextLogout = () => {

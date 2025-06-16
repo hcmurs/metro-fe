@@ -11,9 +11,9 @@ export const apiLogout = async (): Promise<void | null> => {
   }
 };
 
-export const apiLocalLogin = async (username: string, password: string): Promise<ApiResponse<User> | null> => {
+export const apiLocalLogin = async (usernameOrEmail: string, password: string): Promise<ApiResponse<User> | null> => {
   try {
-    const res = await api.post(API_PATH.LOCAL_LOGIN, { username, password });
+    const res = await api.post(API_PATH.LOCAL_LOGIN, { usernameOrEmail, password });
     return res.data as ApiResponse<User>;
   } catch {
     return null;

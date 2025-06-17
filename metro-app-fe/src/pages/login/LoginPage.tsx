@@ -13,17 +13,18 @@ const LoginPage = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [formData, setFormData] = useState({
 		username: '',
-		password: '',
-		rememberMe: false,
+		password: ''
 	});
-	const [isLoading, setIsLoading] = useState(false);
-	const [isPopupOpen, setIsPopupOpen] = useState(false);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
+	const [incorrectUsernameOrPassword, setIncorrectUsernameOrPassword] = useState<null | boolean>(null);
 
 	const navigate = useNavigate();
 
 	const { contextLogin, contextUser } = useAuth();
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setIncorrectUsernameOrPassword(null);
 		const { name, value, type, checked } = e.target;
 		setFormData((prev) => ({
 			...prev,
@@ -36,10 +37,16 @@ const LoginPage = () => {
 		setIsLoading(true);
 		apiLocalLogin(formData.username, formData.password)
 			.then((response: ApiResponse<User> | null) => {
+				if (response === null) {
+					setIncorrectUsernameOrPassword(true);
+					return;
+				}
+
 				if (response && response.status === 200) {
 					contextLogin(response.data as User);
+					setIncorrectUsernameOrPassword(null);
 				} else if (response && response.status === 401) {
-					alert('Invalid username or password');
+					setIncorrectUsernameOrPassword(true);
 				}
 			})
 			.finally(() => {
@@ -141,7 +148,7 @@ const LoginPage = () => {
 								/>
 							</div>
 						</div>
-						<div className="space-y-2">
+						<div className="space-y-2 mb-1.5">
 							<label
 								className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-sm font-medium text-gray-700"
 								htmlFor="password"
@@ -174,26 +181,15 @@ const LoginPage = () => {
 									)}
 								</button>
 							</div>
+							<p
+								className='text-red-500 text-sm'
+								hidden={!incorrectUsernameOrPassword}
+								>
+								*Incorrect username or password
+							</p>
 						</div>
 
-						<div className="flex items-center justify-between">
-							<div className="flex items-center">
-								<input
-									id="remember-me"
-									name="rememberMe"
-									disabled={isPopupOpen}
-									type="checkbox"
-									checked={formData.rememberMe}
-									onChange={handleChange}
-									className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded cursor-pointer"
-								/>
-								<label
-									htmlFor="remember-me"
-									className="ml-2 block text-sm text-gray-700 cursor-pointer"
-								>
-									Remember me
-								</label>
-							</div>
+						<div className="flex items-center justify-end">
 							<div className="text-sm">
 								<a
 									href="#"

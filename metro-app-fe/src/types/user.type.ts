@@ -11,3 +11,11 @@ export interface User {
 	createdAt: string;
 	updatedAt: string;
 }
+
+export interface UserRegister {
+	name: string;
+	username: string;
+	email: string;
+	password: string;
+	authProvider: string;
+}

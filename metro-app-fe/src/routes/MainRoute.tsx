@@ -8,13 +8,13 @@ import UserManagement from "../pages/admin/components/User/UserManagement";
 import NewsPage from "../pages/Blogs/Blogs";
 import NewsDetail from "../pages/BlogsDetail";
 import Home from "../pages/Home";
-import SocialLoginPopup from "../pages/login/components/socialLoginPopup/SocialLoginPopup";
-import LoginPage from "../pages/login/LoginPage";
+import SocialLoginPopup from "../pages/Login/components/socialLoginPopup/SocialLoginPopup";
+import LoginPage from "../pages/Login/LoginPage";
 import PublicRoute from "./PublicRoute";
+import RegisterPage from "../pages/Register/RegisterPage";
 
 export default function MainRoute() {
   return (
-    <div className="max-w-screen">
       <Routes>
         {/* Routes with header and footer */}
         <Route element={<DefaultLayout />}>
@@ -48,7 +48,14 @@ export default function MainRoute() {
             </PublicRoute>
           }
         />
+        <Route
+          path={FE_PATH.REGISTER}
+          element={
+            <PublicRoute>
+              <RegisterPage />
+            </PublicRoute>
+          }
+        />
       </Routes>
-    </div>
   );
 }

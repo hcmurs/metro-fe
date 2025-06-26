@@ -7,6 +7,7 @@ import Station from "../pages/admin/components/Station/Station";
 import UserManagement from "../pages/admin/components/User/UserManagement";
 import NewsPage from "../pages/Blogs/Blogs";
 import NewsDetail from "../pages/BlogsDetail";
+import BuyTicket from "../pages/BuyTicket/BuyTicket";
 import Home from "../pages/Home";
 import SocialLoginPopup from "../pages/login/components/socialLoginPopup/SocialLoginPopup";
 import LoginPage from "../pages/login/LoginPage";
@@ -21,6 +22,7 @@ export default function MainRoute() {
           <Route path={FE_PATH.HOME} element={<Home />} />
           <Route path={FE_PATH.NEWS} element={<NewsPage />} />
           <Route path={FE_PATH.NEWS_DETAIL} element={<NewsDetail />} />
+          <Route path={FE_PATH.BUY_TICKET} element={<BuyTicket />} />
 
           <Route path={FE_PATH.ADMIN} element={<Admin />}>
             <Route index element={<Dashboard />} />

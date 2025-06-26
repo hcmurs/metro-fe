@@ -8,6 +8,7 @@ export const FE_PATH = {
   NEWS: "/blogs",
   NEWS_DETAIL: "/blogs/:id",
   USER: "/users",
+  BUY_TICKET: "/buy-ticket",
   SOCIAL_LOGIN_REDIRECT: "/oauth2/redirect",
 } as const;
 
@@ -18,4 +19,15 @@ export const API_PATH = {
   LOGOUT: '/auth/logout',
   LOCAL_LOGIN: '/auth/local-login',
   BLOG: "http://localhost:4007/api/v1/blogs",
+  STATIONS: "http://localhost:4003/api/stations",
+  SCHEDULES: "http://localhost:4003/api/schedules",
+  ROUTE: "http://localhost:4003/api/routes",
+  TICKET: "http://localhost:4003/api/ts/tickets",
+  TICKETTYPE: "http://localhost:4003/api/ts/ticket-types",
+  TICKETUSAGE: "http://localhost:4003/api/ts/ticket-usage-logs",
+  FARE: "http://localhost:4003/api/ts/fare-matrices",
+  ORDER: "http://localhost:4003/api/orders",
+  PAYMENT: "http://localhost:4003/api/orders/payment-methods",
+  VNPAY: "http://localhost:4003/api/payment",
+  PAYPAL: "http://localhost:4003/api/payment/paypal",
 } as const

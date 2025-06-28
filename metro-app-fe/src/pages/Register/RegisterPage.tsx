@@ -121,7 +121,6 @@ const RegisterPage = () => {
 					username: getRegisterFormValues('username'),
 					email: getRegisterFormValues('email'),
 					password: getRegisterFormValues('password'),
-					authProvider: 'LOCAL',
 				});
 				if (registerRes?.status === 200) {
 					toast.success('Registration successful!');

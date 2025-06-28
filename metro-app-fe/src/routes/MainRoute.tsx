@@ -12,6 +12,7 @@ import Order from "../pages/Order";
 import Home from "../pages/Home";
 import PaymentSuccess from "../pages/PaymentSuccess";
 import PaymentFailure from "../pages/PaymentFailure";
+import MyTickets from "../pages/MyTickets";
 import SocialLoginPopup from "../pages/Login/components/socialLoginPopup/SocialLoginPopup";
 import LoginPage from "../pages/Login/LoginPage";
 import PublicRoute from "./PublicRoute";
@@ -27,6 +28,7 @@ export default function MainRoute() {
           <Route path={FE_PATH.NEWS_DETAIL} element={<NewsDetail />} />
           <Route path={FE_PATH.BUY_TICKET} element={<BuyTicket />} />
           <Route path={FE_PATH.ORDER} element={<Order />} />
+          <Route path={FE_PATH.MY_TICKETS} element={<MyTickets />} />
           <Route path={FE_PATH.PAYMENT_SUCCESS} element={<PaymentSuccess />} />
           <Route path={FE_PATH.PAYMENT_FAILURE} element={<PaymentFailure />} />
 

@@ -25,7 +25,7 @@ export interface TicketCreateRequest {
     id: number
 }
 
-type TicketStatus = 
+export type TicketStatus = 
     | 'USED'
     | 'EXPIRED'
     | 'NOT_USED'

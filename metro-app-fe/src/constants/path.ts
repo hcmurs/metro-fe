@@ -9,6 +9,9 @@ export const FE_PATH = {
   NEWS_DETAIL: "/blogs/:id",
   USER: "/users",
   BUY_TICKET: "/buy-ticket",
+  ORDER: "/order",
+  PAYMENT_SUCCESS: "/payment/success",
+  PAYMENT_FAILURE: "/payment/failure",
   SOCIAL_LOGIN_REDIRECT: "/oauth2/redirect",
 } as const;
 

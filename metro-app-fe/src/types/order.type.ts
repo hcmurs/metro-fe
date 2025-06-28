@@ -1,13 +1,21 @@
 import type { TicketResponse } from "./ticket.type";
 
 export interface OrderTicketDaysRequest{
-    ticketId: number,
+    ticketId: TicketType,
     paymentMethodId: number
 }
 
 export interface OrderTicketSingleRequest{
-    fareMatrixId: number,
+    fareMatrixId: FareMatrix,
     paymentMethodId: number
+}
+
+export interface TicketType{
+    id: number
+}
+
+export interface FareMatrix{
+    id: number
 }
 
 export interface PaymentMethodRequest{
@@ -15,8 +23,9 @@ export interface PaymentMethodRequest{
 }
 
 export interface PaymentMethodResponse{
+    paymentMethodId: number,
     paymentMethodName: string,
-    isActive: boolean
+    active: boolean
 }
 
 export interface TransactionResponse{
@@ -46,5 +55,16 @@ export interface OrderDetailResponse{
     amount: number,
     ticket: TicketResponse
 }
+
+export interface CallBackResponse{
+    amount: number,
+    transactionStatus: string,
+    message: string,
+    transactionId: string,
+    status: string,
+    responseCode: string
+}
+
+
 
 export type TransactionStatus = 'PENDING' | 'FAILED' | 'SUCCESSFUL'

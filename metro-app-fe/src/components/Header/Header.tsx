@@ -16,12 +16,9 @@ export default function Header() {
   const navigationItems = [
     { label: "HOME", path: FE_PATH.HOME },
     { label: "BUY TICKETS", path: FE_PATH.BUY_TICKET },
-    { label: "ABOUT", path: "#" },
-    { label: "PRICING PLANS", path: "#" },
-    { label: "SHOP", path: "#" },
-    { label: "SERVICES", path: "#" },
+    { label: "METRO MAP", path: "#" },
     { label: "BLOG", path: "/blogs" },
-    { label: "CONTACT", path: "#" }
+    { label: "ABOUT", path: "#" }
   ];
 
   const userMenuRef = useRef<HTMLDivElement>(null);

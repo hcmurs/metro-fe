@@ -7,7 +7,12 @@ import Station from "../pages/admin/components/Station/Station";
 import UserManagement from "../pages/admin/components/User/UserManagement";
 import NewsPage from "../pages/Blogs/Blogs";
 import NewsDetail from "../pages/BlogsDetail";
+import BuyTicket from "../pages/BuyTicket/BuyTicket";
+import Order from "../pages/Order";
 import Home from "../pages/Home";
+import PaymentSuccess from "../pages/PaymentSuccess";
+import PaymentFailure from "../pages/PaymentFailure";
+import MyTickets from "../pages/MyTickets";
 import SocialLoginPopup from "../pages/Login/components/socialLoginPopup/SocialLoginPopup";
 import LoginPage from "../pages/Login/LoginPage";
 import PublicRoute from "./PublicRoute";
@@ -19,12 +24,17 @@ import HeaderLayout from "../layouts/HeaderLayout/HeaderLayout";
 
 export default function MainRoute() {
   return (
-    <Routes>
-      {/* Routes with header and footer */}
-      <Route element={<DefaultLayout />}>
-        <Route path={FE_PATH.HOME} element={<Home />} />
-        <Route path={FE_PATH.NEWS} element={<NewsPage />} />
-        <Route path={FE_PATH.NEWS_DETAIL} element={<NewsDetail />} />
+      <Routes>
+        {/* Routes with header and footer */}
+        <Route element={<DefaultLayout />}>
+          <Route path={FE_PATH.HOME} element={<Home />} />
+          <Route path={FE_PATH.NEWS} element={<NewsPage />} />
+          <Route path={FE_PATH.NEWS_DETAIL} element={<NewsDetail />} />
+          <Route path={FE_PATH.BUY_TICKET} element={<BuyTicket />} />
+          <Route path={FE_PATH.ORDER} element={<Order />} />
+          <Route path={FE_PATH.MY_TICKETS} element={<MyTickets />} />
+          <Route path={FE_PATH.PAYMENT_SUCCESS} element={<PaymentSuccess />} />
+          <Route path={FE_PATH.PAYMENT_FAILURE} element={<PaymentFailure />} />
 
         <Route path={FE_PATH.ADMIN} element={<Admin />}>
           <Route index element={<Dashboard />} />

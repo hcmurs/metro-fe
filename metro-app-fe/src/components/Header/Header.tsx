@@ -1,7 +1,8 @@
-import { LogOut, User } from "lucide-react";
+import { LogOut, User, Ticket } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { FE_PATH } from "../../constants/path";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -10,6 +11,15 @@ export default function Header() {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   const { isAuthenticated, contextUser: user, contextLogout: logout } = useAuth();
+
+  // Navigation items configuration
+  const navigationItems = [
+    { label: "HOME", path: FE_PATH.HOME },
+    { label: "BUY TICKETS", path: FE_PATH.BUY_TICKET },
+    { label: "METRO MAP", path: "#" },
+    { label: "BLOG", path: "/blogs" },
+    { label: "ABOUT", path: "#" }
+  ];
 
   const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -45,22 +55,21 @@ export default function Header() {
         </div>
 
         {/* Menu for large screen */}
-        <nav className="hidden lg:flex gap-6 text-sm font-medium text-slate-800">
-          <a href="/">HOME</a>
-          <a href="#">ABOUT</a>
-          <a href="#">PRICING PLANS</a>
-          <a href="#">SHOP</a>
-          <a href="#">SERVICES</a>
-          <a onClick={() => navigate("/blogs")} className="cursor-pointer">
-            BLOG
-          </a>
-          <a href="#">CONTACT</a>
+        <nav className="hidden lg:flex gap-6 text-sm font-medium text-slate-800 items-center">
+          {navigationItems.map((item) => (
+            <a 
+              key={item.label}
+              onClick={() => navigate(item.path)} 
+              className="cursor-pointer hover:text-green-600 transition-colors"
+            >
+              {item.label}
+            </a>
+          ))}
+        
         </nav>
 
         <div className="hidden lg:flex items-center gap-4">
-          <button className="bg-[#e6fffd] text-slate-800 px-4 py-1 rounded-md text-sm font-semibold">
-            BUY NOW
-          </button>
+        
           {isAuthenticated ? (
             <div className="relative" ref={userMenuRef}>
               <div
@@ -82,6 +91,13 @@ export default function Header() {
                     <User className="w-4 h-4 mr-2" />
                     Profile
                   </a>
+                     <a
+                      onClick={() => navigate(FE_PATH.MY_TICKETS)}
+                      className="px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 flex items-center cursor-pointer"
+                    >
+                      <Ticket className="w-4 h-4 mr-2" />
+                      My Tickets
+                    </a>
                   <button
                     onClick={handleLogout}
                     className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center cursor-pointer"
@@ -113,32 +129,23 @@ export default function Header() {
       {/* Dropdown Menu on small screens */}
       {isOpen && (
         <div className="flex flex-col items-start px-8 pb-4 gap-3 lg:hidden animate-fade-down">
-          <a href="/" className="text-sm font-medium text-slate-800">
-            HOME
-          </a>
-          <a href="#" className="text-sm font-medium text-slate-800">
-            ABOUT
-          </a>
-          <a href="#" className="text-sm font-medium text-slate-800">
-            PRICING PLANS
-          </a>
-          <a href="#" className="text-sm font-medium text-slate-800">
-            SHOP
-          </a>
-          <a href="#" className="text-sm font-medium text-slate-800">
-            SERVICES
-          </a>
-          <a href="news" className="text-sm font-medium text-slate-800">
-            BLOG
-          </a>
-          <a href="#" className="text-sm font-medium text-slate-800">
-            CONTACT
-          </a>
+          {navigationItems.map((item) => (
+            <a 
+              key={item.label}
+              onClick={() => navigate(item.path)} 
+              className="text-sm font-medium text-slate-800 cursor-pointer hover:text-green-600 transition-colors"
+            >
+              {item.label}
+            </a>
+          ))}
 
           <div className="flex gap-4 items-center pt-2">
-            <button className="bg-[#e6fffd] text-slate-800 px-4 py-1 rounded-md text-sm font-semibold">
-              BUY NOW
-            </button>
+            <a 
+              onClick={() => navigate(FE_PATH.BUY_TICKET)}
+              className="bg-green-100 hover:bg-green-200 text-green-700 px-4 py-2 rounded-md text-sm font-semibold transition-colors cursor-pointer"
+            >
+              BUY TICKETS
+            </a>
             {isAuthenticated ? (
               <div className="relative" ref={userMenuRef}>
                 <div
@@ -172,8 +179,8 @@ export default function Header() {
               </div>
             ) : (
               <a
-                href="/login"
-                className="text-sm text-slate-800 hover:underline"
+                onClick={() => navigate(FE_PATH.LOGIN)}
+                className="text-sm text-slate-800 hover:underline cursor-pointer"
               >
                 LOGIN
               </a>

@@ -1,5 +1,5 @@
 export interface User {
-	id: number;
+	userId: number;
 	name: string;
 	username: string;
 	email: string;
@@ -17,5 +17,39 @@ export interface UserRegister {
 	username: string;
 	email: string;
 	password: string;
-	authProvider: string;
+}
+
+export interface StudentRequest {
+	requestId: string;
+  title: string;
+  content: string;
+  endDate: string;
+  createdAt: string;
+  requestStatus: 'PENDING' | 'APPROVED' | 'REJECTED';
+  rejectionReason?: string;
+  citizenIdentityCardImage: string;
+  studentCardImage: string
+}
+
+export interface StudentRequestCreation {
+	content: string;
+	studentCardImage: string;
+	citizenIdentityCardImage: string;
+	endDate: string;
+}
+
+export interface Feedback {
+	feedbackId: number;
+  category: string;
+	content: string;
+	image?: string;
+	reply?: string;
+	userId?: string;
+	createdAt: string;
+}
+
+export interface FeedbackCreation {
+	category: string;
+	content: string;
+	image: string;
 }

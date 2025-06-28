@@ -1,5 +1,5 @@
 import type { ApiResponse } from "../types/api.type";
-import type { User, UserRegister } from "../types/user.type";
+import type { Feedback, FeedbackCreation, StudentRequest, StudentRequestCreation, User, UserRegister } from "../types/user.type";
 import api from "./api";
 
 export const apiFindUser = async (): Promise<ApiResponse<User> | null> => {
@@ -33,6 +33,42 @@ export const registerUser = async (userRegister: UserRegister): Promise<ApiRespo
 	try {
 		const res = await api.post(`/users/register`, userRegister);
 		return res.data as ApiResponse<User>;
+	} catch {
+		return null;
+	}
+}
+
+export const apiFindRequestByUserId = async (userId: number): Promise<ApiResponse<StudentRequest[]> | null> => {
+	try {
+		const res = await api.get(`/users/requests/${userId}`);
+		return res.data as ApiResponse<StudentRequest[]>;
+	} catch {
+		return null;
+	}
+}
+
+export const apiCreateRequest = async (request: StudentRequestCreation): Promise<ApiResponse<StudentRequest> | null> => {
+	try {
+		const res = await api.post(`/users/requests`, request);
+		return res.data as ApiResponse<StudentRequest>;
+	} catch {
+		return null;
+	}
+}
+
+export const apiFindFeedbackByUserId = async (userId: number): Promise<ApiResponse<Feedback[]> | null> => {
+	try {
+		const res = await api.get(`/users/feedbacks/${userId}`);
+		return res.data as ApiResponse<Feedback[]>;
+	} catch {
+		return null;
+	}
+}
+
+export const apiCreateFeedback = async (request: FeedbackCreation): Promise<ApiResponse<Feedback> | null> => {
+	try {
+		const res = await api.post(`/users/feedbacks`, request);
+		return res.data as ApiResponse<Feedback>;
 	} catch {
 		return null;
 	}

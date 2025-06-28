@@ -76,7 +76,7 @@ export default function Header() {
                     <p className="text-xs text-gray-500 break-words">{user?.email}</p>
                   </div>
                   <a
-                    href="#"
+                    href="/profile"
                     className="px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 flex items-center"
                   >
                     <User className="w-4 h-4 mr-2" />
@@ -154,7 +154,7 @@ export default function Header() {
                       <p className="text-xs text-gray-500 break-words">{user?.email}</p>
                     </div>
                     <a
-                      href="#"
+                      href="/profile"
                       className="px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 flex items-center"
                     >
                       <User className="w-4 h-4 mr-2" />

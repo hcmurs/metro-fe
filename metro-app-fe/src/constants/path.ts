@@ -9,6 +9,7 @@ export const FE_PATH = {
   NEWS_DETAIL: "/blogs/:id",
   USER: "/users",
   SOCIAL_LOGIN_REDIRECT: "/oauth2/redirect",
+  PROFILE: "/profile",
 } as const;
 
 export const API_PATH = {

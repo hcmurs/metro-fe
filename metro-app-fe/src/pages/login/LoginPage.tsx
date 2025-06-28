@@ -71,6 +71,12 @@ const LoginPage = () => {
     }
   };
 
+	useEffect(() => {
+  if (contextUser && !isLoading) {
+    navigate('/home', { replace: true });
+  }
+}, [contextUser, isLoading, navigate]);
+
   const handleSocialLogin = (provider: string) => {
     const width = 1000;
     const height = 700;

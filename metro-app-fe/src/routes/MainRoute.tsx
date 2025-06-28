@@ -12,50 +12,66 @@ import SocialLoginPopup from "../pages/Login/components/socialLoginPopup/SocialL
 import LoginPage from "../pages/Login/LoginPage";
 import PublicRoute from "./PublicRoute";
 import RegisterPage from "../pages/Register/RegisterPage";
+import ProfilePage from "../pages/Profile/ProfilePage";
+import PrivateRoute from "./PrivateRoute";
+import Header from "../components/Header";
+import HeaderLayout from "../layouts/HeaderLayout/HeaderLayout";
 
 export default function MainRoute() {
   return (
-      <Routes>
-        {/* Routes with header and footer */}
-        <Route element={<DefaultLayout />}>
-          <Route path={FE_PATH.HOME} element={<Home />} />
-          <Route path={FE_PATH.NEWS} element={<NewsPage />} />
-          <Route path={FE_PATH.NEWS_DETAIL} element={<NewsDetail />} />
+    <Routes>
+      {/* Routes with header and footer */}
+      <Route element={<DefaultLayout />}>
+        <Route path={FE_PATH.HOME} element={<Home />} />
+        <Route path={FE_PATH.NEWS} element={<NewsPage />} />
+        <Route path={FE_PATH.NEWS_DETAIL} element={<NewsDetail />} />
 
-          <Route path={FE_PATH.ADMIN} element={<Admin />}>
-            <Route index element={<Dashboard />} />
-            <Route path="users" element={<UserManagement />} />
-            <Route path="route" element={<Station />} />
-          </Route>
-
-          <Route path="/" element={<Navigate to={FE_PATH.HOME} replace />} />
+        <Route path={FE_PATH.ADMIN} element={<Admin />}>
+          <Route index element={<Dashboard />} />
+          <Route path="users" element={<UserManagement />} />
+          <Route path="route" element={<Station />} />
         </Route>
 
-        {/* Route without header and footer */}
+        <Route path="/" element={<Navigate to={FE_PATH.HOME} replace />} />
+      </Route>
+
+      {/* Route without header and footer */}
+      <Route
+        path={FE_PATH.LOGIN}
+        element={
+          <PublicRoute>
+            <LoginPage />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path={FE_PATH.SOCIAL_LOGIN_REDIRECT}
+        element={
+          <PublicRoute>
+            <SocialLoginPopup />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path={FE_PATH.REGISTER}
+        element={
+          <PublicRoute>
+            <RegisterPage />
+          </PublicRoute>
+        }
+      />
+
+      {/* Layout with only header */}
+      <Route element={<HeaderLayout />}>
         <Route
-          path={FE_PATH.LOGIN}
+          path={FE_PATH.PROFILE}
           element={
-            <PublicRoute>
-              <LoginPage />
-            </PublicRoute>
+            <PrivateRoute>
+              <ProfilePage />
+            </PrivateRoute>
           }
         />
-        <Route
-          path={FE_PATH.SOCIAL_LOGIN_REDIRECT}
-          element={
-            <PublicRoute>
-              <SocialLoginPopup />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path={FE_PATH.REGISTER}
-          element={
-            <PublicRoute>
-              <RegisterPage />
-            </PublicRoute>
-          }
-        />
-      </Routes>
+      </Route>
+    </Routes>
   );
 }

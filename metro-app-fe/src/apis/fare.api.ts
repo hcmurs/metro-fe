@@ -40,10 +40,10 @@ export const apiDeleteFareMatrix = async (fareMatrixId: number): Promise<ApiResp
     }
 }
 
-export const apiFindFareMatrix = async (fareMatrix: FindFareRequest): Promise<ApiResponse<FareMatrixResponse[]> | null> => {
+export const apiFindFareMatrix = async (fareMatrix: FindFareRequest): Promise<ApiResponse<FareMatrixResponse> | null> => {
     try {
         const res = await api.post(`${API_PATH.FARE}/get-fare`, fareMatrix);
-        return res.data as ApiResponse<FareMatrixResponse[]>;
+        return res.data as ApiResponse<FareMatrixResponse>;
     } catch {
         return null;
     }

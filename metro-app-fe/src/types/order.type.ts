@@ -1,5 +1,4 @@
 import type { TicketResponse } from "./ticket.type";
-
 export interface OrderTicketDaysRequest{
     ticketId: TicketType,
     paymentMethodId: number
@@ -62,7 +61,8 @@ export interface CallBackResponse{
     message: string,
     transactionId: string,
     status: string,
-    responseCode: string
+    responseCode: string,
+    paymentTime: string
 }
 
 

@@ -10,6 +10,7 @@ export const FE_PATH = {
   USER: "/users",
   BUY_TICKET: "/buy-ticket",
   ORDER: "/order",
+  MY_TICKETS: "/my-tickets",
   PAYMENT_SUCCESS: "/payment/success",
   PAYMENT_FAILURE: "/payment/failure",
   SOCIAL_LOGIN_REDIRECT: "/oauth2/redirect",

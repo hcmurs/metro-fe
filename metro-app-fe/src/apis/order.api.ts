@@ -3,6 +3,7 @@ import type { ApiResponse } from "../types/api.type";
 import api from "./api";
 import type { OrderTicketDaysRequest, OrderTicketSingleRequest,
   OrderResponse ,OrderDetailResponse,TransactionResponse} from "../types/order.type";
+import type { TicketStatus } from "../types/ticket.type";
 
 export const apiGetOrder = async (
     orderId: number
@@ -32,6 +33,19 @@ export const apiGetOrderDetailOfUser = async(): Promise<ApiResponse<OrderDetailR
         return null;
     }
 }
+
+export const apiGetOrderDetailOfUserByStatus = async(
+    status: TicketStatus
+): Promise<ApiResponse<OrderDetailResponse[]> | null> => {
+    try {
+        const res = await api.get(`${API_PATH.ORDER}/user/details/status`, { params: { status } });
+        return res.data as ApiResponse<OrderDetailResponse[]>;
+    } catch {
+        return null;
+    }
+}
+
+
 
 export const apiGetOrders = async(): Promise<ApiResponse<OrderResponse[]> | null> => {
     try {

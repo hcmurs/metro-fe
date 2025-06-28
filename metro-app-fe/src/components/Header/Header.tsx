@@ -1,4 +1,4 @@
-import { LogOut, User } from "lucide-react";
+import { LogOut, User, Ticket } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
@@ -91,6 +91,13 @@ export default function Header() {
                     <User className="w-4 h-4 mr-2" />
                     Profile
                   </a>
+                     <a
+                      onClick={() => navigate(FE_PATH.MY_TICKETS)}
+                      className="px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 flex items-center cursor-pointer"
+                    >
+                      <Ticket className="w-4 h-4 mr-2" />
+                      My Tickets
+                    </a>
                   <button
                     onClick={handleLogout}
                     className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center cursor-pointer"

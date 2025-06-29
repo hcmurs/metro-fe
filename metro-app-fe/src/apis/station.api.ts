@@ -1,7 +1,8 @@
 import { API_PATH } from "../constants/path";
 import type { ApiResponse } from "../types/api.type";
 import api from "./api";
-import type { StationResponse,StationRequest } from "../types/station.type";
+import type { StationResponse,StationRequest,BusStation,BusStationDetail } from "../types/station.type";
+
 
 export const apiGetStations = async (): Promise<ApiResponse<StationResponse[]> | null> => {
   try {
@@ -11,6 +12,35 @@ export const apiGetStations = async (): Promise<ApiResponse<StationResponse[]> |
     return null;
   }
 };
+
+export const apiGetStationsByRouteId = async (routeId: number): Promise<ApiResponse<StationResponse[]> | null> => {
+  try {
+    const res = await api.get(`${API_PATH.STATIONS}/route/${routeId}`);
+    return res.data as ApiResponse<StationResponse[]>;
+  } catch {
+    return null;
+  }
+};
+
+export const apiGetBusStation = async(): Promise<ApiResponse<BusStation[]> | null> => {
+  try {
+    const res = await api.get(`${API_PATH.BUS}`);
+    // Since this API returns raw JSON array instead of wrapped response,
+    // we need to wrap it in the expected ApiResponse format
+    return res.data as ApiResponse<BusStation[]>;
+  } catch {
+    return null;
+  }
+}
+
+export const apiGetBusStationDetail = async(stationId: string): Promise<ApiResponse<BusStationDetail> | null> => {
+  try {
+    const res = await api.get(`${API_PATH.BUS}/routes/${stationId}`);
+    return res.data as ApiResponse<BusStationDetail>;
+  } catch {
+    return null;
+  }
+}
 
 export const apiCreateStation = async (station: StationRequest): Promise<ApiResponse<StationResponse> | null> => {
   try {

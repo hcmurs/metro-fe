@@ -11,6 +11,7 @@ export const FE_PATH = {
   BUY_TICKET: "/buy-ticket",
   ORDER: "/order",
   MY_TICKETS: "/my-tickets",
+  METRO_MAP: "/metro-map",
   PAYMENT_SUCCESS: "/payment/success",
   PAYMENT_FAILURE: "/payment/failure",
   SOCIAL_LOGIN_REDIRECT: "/oauth2/redirect",
@@ -36,4 +37,5 @@ export const API_PATH = {
   PAYMENT: "http://localhost:4003/api/orders/payment-methods",
   VNPAY: "http://localhost:4003/api/payment",
   PAYPAL: "http://localhost:4003/api/payment/paypal",
+  BUS: "http://localhost:4003/api/bus",
 } as const

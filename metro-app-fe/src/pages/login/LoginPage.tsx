@@ -56,7 +56,6 @@ const LoginPage = () => {
 
       if (response.status === 200) {
         contextLogin(response.data as User);
-        message.success('Login successful!');
       } else if (response.status === 401) {
         setError('password', { type: 'manual', message: 'Incorrect username or password' });
         message.error('Incorrect username or password. Please try again.'); 
@@ -70,6 +69,12 @@ const LoginPage = () => {
       setIsLoading(false);
     }
   };
+
+	useEffect(() => {
+  if (contextUser && !isLoading) {
+    navigate('/home', { replace: true });
+  }
+}, [contextUser, isLoading, navigate]);
 
   const handleSocialLogin = (provider: string) => {
     const width = 1000;

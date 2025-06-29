@@ -3,11 +3,12 @@ import type { User } from '../types/user.type';
 import { apiFindUser } from '../apis/user.api';
 import { apiLogout } from '../apis/auth.api';
 import type { ApiResponse } from '../types/api.type';
-import { useNavigate } from 'react-router-dom';
 
 interface AuthContextType {
   contextUser: User | null;
   isAuthenticated: boolean;
+  isLoading: boolean;
+  isAdmin: boolean;
   contextLogin: (user: User) => void;
   contextLogout: () => void;
   setContextUser: (user: User | null) => void;
@@ -28,24 +29,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const isAuthenticated = !!contextUser;
 
-  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const isAdmin = contextUser?.role === 'ROLE_ADMIN';
 
   const contextLogin = (userData: User) => {
     setContextUser(userData);
-    navigate('/home', { replace: true });
   };
 
   const contextLogout = () => {
+    setIsLoading(true);
     apiLogout()
       .then(() => {
         setContextUser(null);
       })
       .catch(() => {
         setContextUser(null);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
   useEffect(() => {
+    setIsLoading(true);
     apiFindUser()
       .then((response: ApiResponse<User> | null) => {
         if (response?.status === 200) {
@@ -56,11 +63,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       })
       .catch(() => {
         setContextUser(null);
-      });
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });;
   }, []);
 
   return (
-    <AuthContext.Provider value={{ contextUser: contextUser, isAuthenticated, contextLogin: contextLogin, contextLogout: contextLogout, setContextUser: setContextUser }}>
+    <AuthContext.Provider value={{
+      contextUser: contextUser,
+      isAuthenticated,
+      isLoading,
+      isAdmin,
+      contextLogin: contextLogin,
+      contextLogout: contextLogout,
+      setContextUser: setContextUser
+    }}>
       {children}
     </AuthContext.Provider>
   );

@@ -7,7 +7,15 @@ interface PublicRouteProps {
 }
 
 export default function PublicRoute({ children }: PublicRouteProps) {
-  const { isAuthenticated } = useAuth();
+ const { isAuthenticated, isLoading } = useAuth();
 
-  return isAuthenticated ? <Navigate to="/" /> : children;
+ if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600"></div>
+      </div>
+    );
+  }
+
+  return isAuthenticated ? <Navigate to="/home" replace /> : children;
 }

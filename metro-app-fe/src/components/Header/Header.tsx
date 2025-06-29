@@ -10,7 +10,7 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
-  const { isAuthenticated, contextUser: user, contextLogout: logout } = useAuth();
+  const { isAuthenticated, contextUser: user, contextLogout: logout, isAdmin } = useAuth();
 
   // Navigation items configuration
   const navigationItems = [
@@ -18,7 +18,6 @@ export default function Header() {
     { label: "BUY TICKETS", path: FE_PATH.BUY_TICKET },
     { label: "METRO MAP", path: FE_PATH.METRO_MAP },
     { label: "BLOG", path: "/blogs" },
-    { label: "ABOUT", path: "#" }
   ];
 
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -57,19 +56,33 @@ export default function Header() {
         {/* Menu for large screen */}
         <nav className="hidden lg:flex gap-6 text-sm font-medium text-slate-800 items-center">
           {navigationItems.map((item) => (
-            <a 
+            <a
               key={item.label}
-              onClick={() => navigate(item.path)} 
+              onClick={() => navigate(item.path)}
               className="cursor-pointer hover:text-green-600 transition-colors"
             >
               {item.label}
             </a>
           ))}
-        
+
+          {isAuthenticated && isAdmin && (
+            <div className="relative group">
+              <span className="cursor-pointer hover:text-green-600 transition-colors">
+                MANAGE
+              </span>
+              <div className="absolute left-0 top-2.5 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden group-hover:block animate-fade-down">
+                <a
+                  onClick={() => navigate('/requests')}
+                  className="block px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 cursor-pointer"
+                >
+                  Verify Requests
+                </a>
+              </div>
+            </div>
+          )}
         </nav>
 
         <div className="hidden lg:flex items-center gap-4">
-        
           {isAuthenticated ? (
             <div className="relative" ref={userMenuRef}>
               <div
@@ -85,19 +98,19 @@ export default function Header() {
                     <p className="text-xs text-gray-500 break-words">{user?.email}</p>
                   </div>
                   <a
-                    href="#"
+                    href="/profile"
                     className="px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 flex items-center"
                   >
                     <User className="w-4 h-4 mr-2" />
                     Profile
                   </a>
-                     <a
-                      onClick={() => navigate(FE_PATH.MY_TICKETS)}
-                      className="px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 flex items-center cursor-pointer"
-                    >
-                      <Ticket className="w-4 h-4 mr-2" />
-                      My Tickets
-                    </a>
+                  <a
+                    onClick={() => navigate(FE_PATH.MY_TICKETS)}
+                    className="px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 flex items-center cursor-pointer"
+                  >
+                    <Ticket className="w-4 h-4 mr-2" />
+                    My Tickets
+                  </a>
                   <button
                     onClick={handleLogout}
                     className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center cursor-pointer"
@@ -130,9 +143,9 @@ export default function Header() {
       {isOpen && (
         <div className="flex flex-col items-start px-8 pb-4 gap-3 lg:hidden animate-fade-down">
           {navigationItems.map((item) => (
-            <a 
+            <a
               key={item.label}
-              onClick={() => navigate(item.path)} 
+              onClick={() => navigate(item.path)}
               className="text-sm font-medium text-slate-800 cursor-pointer hover:text-green-600 transition-colors"
             >
               {item.label}
@@ -140,7 +153,7 @@ export default function Header() {
           ))}
 
           <div className="flex gap-4 items-center pt-2">
-            <a 
+            <a
               onClick={() => navigate(FE_PATH.BUY_TICKET)}
               className="bg-green-100 hover:bg-green-200 text-green-700 px-4 py-2 rounded-md text-sm font-semibold transition-colors cursor-pointer"
             >
@@ -161,8 +174,8 @@ export default function Header() {
                       <p className="text-xs text-gray-500 break-words">{user?.email}</p>
                     </div>
                     <a
-                      onClick={() => navigate("#")}
-                      className="px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 flex items-center cursor-pointer"
+                      href="/profile"
+                      className="px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 flex items-center"
                     >
                       <User className="w-4 h-4 mr-2" />
                       Profile

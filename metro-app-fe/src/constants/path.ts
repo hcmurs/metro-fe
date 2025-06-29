@@ -15,6 +15,8 @@ export const FE_PATH = {
   PAYMENT_SUCCESS: "/payment/success",
   PAYMENT_FAILURE: "/payment/failure",
   SOCIAL_LOGIN_REDIRECT: "/oauth2/redirect",
+  PROFILE: "/profile",
+  VERIFY_REQUEST: "/requests",
 } as const;
 
 export const API_PATH = {

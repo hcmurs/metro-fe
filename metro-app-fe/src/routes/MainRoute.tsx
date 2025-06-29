@@ -19,8 +19,9 @@ import PublicRoute from "./PublicRoute";
 import RegisterPage from "../pages/Register/RegisterPage";
 import ProfilePage from "../pages/Profile/ProfilePage";
 import PrivateRoute from "./PrivateRoute";
-import Header from "../components/Header";
 import HeaderLayout from "../layouts/HeaderLayout/HeaderLayout";
+import VerifyRequestPage from "../pages/VerifyRequestPage/VerifyRequestPage";
+import AdminRoute from "./AdminRoute";
 
 export default function MainRoute() {
   return (
@@ -79,6 +80,15 @@ export default function MainRoute() {
             <PrivateRoute>
               <ProfilePage />
             </PrivateRoute>
+          }
+        />
+
+        <Route
+          path={FE_PATH.VERIFY_REQUEST}
+          element={
+            <AdminRoute>
+              <VerifyRequestPage />
+            </AdminRoute>
           }
         />
       </Route>

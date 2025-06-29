@@ -1,8 +1,7 @@
-import React from 'react';
 import { Typography } from 'antd';
-import dayjs from 'dayjs';
-import type { User } from '../../../types/user.type';
+import React from 'react';
 import { useAuth } from '../../../contexts/AuthContext';
+import type { User } from '../../../types/user.type';
 
 const { Text, Title } = Typography;
 
@@ -40,7 +39,7 @@ export default function UserInfoTab() {
             {studentExpiredDate && (
               <FieldDisplay
                 label="Student Verification Expiry"
-                value={dayjs(studentExpiredDate).format('DD/MM/YYYY')}
+                value={studentExpiredDate}
               />
             )}
           </>

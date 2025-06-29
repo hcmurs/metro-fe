@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Tabs, Typography, Row, Col, Spin, Empty, Tag, Button, Modal } from 'antd';
-import { QrcodeOutlined, CalendarOutlined, EnvironmentOutlined, ClockCircleOutlined, ReloadOutlined, CloseOutlined } from '@ant-design/icons';
+import { QrcodeOutlined, CalendarOutlined, ClockCircleOutlined, ReloadOutlined, CloseOutlined } from '@ant-design/icons';
 import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { apiGetOrderDetailOfUserByStatus } from '../../apis/order.api';

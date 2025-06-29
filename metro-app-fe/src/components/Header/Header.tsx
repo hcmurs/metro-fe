@@ -16,7 +16,7 @@ export default function Header() {
   const navigationItems = [
     { label: "HOME", path: FE_PATH.HOME },
     { label: "BUY TICKETS", path: FE_PATH.BUY_TICKET },
-    { label: "METRO MAP", path: "#" },
+    { label: "METRO MAP", path: FE_PATH.METRO_MAP },
     { label: "BLOG", path: "/blogs" },
     { label: "ABOUT", path: "#" }
   ];

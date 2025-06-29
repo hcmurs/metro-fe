@@ -8,6 +8,7 @@ interface AuthContextType {
   contextUser: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isAdmin: boolean;
   contextLogin: (user: User) => void;
   contextLogout: () => void;
   setContextUser: (user: User | null) => void;
@@ -27,7 +28,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [contextUser, setContextUser] = useState<User | null>(null);
 
   const isAuthenticated = !!contextUser;
+
   const [isLoading, setIsLoading] = useState(true);
+
+  const isAdmin = contextUser?.role === 'ROLE_ADMIN';
 
   const contextLogin = (userData: User) => {
     setContextUser(userData);
@@ -70,6 +74,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       contextUser: contextUser,
       isAuthenticated,
       isLoading,
+      isAdmin,
       contextLogin: contextLogin,
       contextLogout: contextLogout,
       setContextUser: setContextUser

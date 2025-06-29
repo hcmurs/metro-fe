@@ -20,7 +20,8 @@ export interface UserRegister {
 }
 
 export interface StudentRequest {
-	requestId: string;
+	requestId: number;
+	userId: number;
   title: string;
   content: string;
   endDate: string;
@@ -28,7 +29,7 @@ export interface StudentRequest {
   requestStatus: 'PENDING' | 'APPROVED' | 'REJECTED';
   rejectionReason?: string;
   citizenIdentityCardImage: string;
-  studentCardImage: string
+  studentCardImage: string;
 }
 
 export interface StudentRequestCreation {

@@ -4,6 +4,7 @@ import DefaultLayout from "../layouts/DefaultLayout/DefaultLayout";
 import Admin from "../pages/admin/Admin";
 import Dashboard from "../pages/admin/components/Dashboard/Dashboard";
 import Station from "../pages/admin/components/Station/Station";
+import StationManagement from "../pages/admin/components/Station/StationManagement";
 import UserManagement from "../pages/admin/components/User/UserManagement";
 import NewsPage from "../pages/Blogs/Blogs";
 import NewsDetail from "../pages/BlogsDetail";
@@ -43,6 +44,7 @@ export default function MainRoute() {
           <Route index element={<Dashboard />} />
           <Route path="users" element={<UserManagement />} />
           <Route path="route" element={<Station />} />
+          <Route path="stations" element={<StationManagement />} />
         </Route>
 
         <Route path="/" element={<Navigate to={FE_PATH.HOME} replace />} />

@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, DatePicker, Form, Input, message, Modal, Typography, Upload } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
-import { Controller, set, useForm, type SubmitHandler } from 'react-hook-form';
+import { Controller, useForm, type SubmitHandler } from 'react-hook-form';
 import * as z from 'zod';
 import { apiCreateRequest, apiFindRequestByUserId } from '../../../apis/user.api';
 import { useAuth } from '../../../contexts/AuthContext';
@@ -53,7 +53,7 @@ export default function StudentRequestTab() {
   const { contextUser } = useAuth();
   const [requestList, setRequestList] = useState<StudentRequest[]>([]);
   const [submitting, setSubmitting] = useState(false);
-  const [canSubmit, setCanSubmit] = useState(false);
+  const [canSubmit, setCanSubmit] = useState(true);
 
   const handleBeforeUpload = (file: File, fieldName: keyof StudentRequestFormData) => {
     clearErrors(fieldName);

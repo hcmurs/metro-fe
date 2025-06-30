@@ -158,7 +158,7 @@ export default function FeedbackTab() {
                   onChange={value => field.onChange(value)}
                   value={field.value || undefined}
                 >
-                  <Option value="Service">Service Feedback</Option>
+                  <Option value="Compliment">Compliment</Option>
                   <Option value="App Issue">Application Issue</Option>
                   <Option value="Suggestion">Suggestion</Option>
                   <Option value="Other">Other</Option>

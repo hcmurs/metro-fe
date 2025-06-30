@@ -22,6 +22,7 @@ import PrivateRoute from "./PrivateRoute";
 import HeaderLayout from "../layouts/HeaderLayout/HeaderLayout";
 import VerifyRequestPage from "../pages/VerifyRequestPage/VerifyRequestPage";
 import AdminRoute from "./AdminRoute";
+import ManageFeedbackPage from "../pages/ManageFeedback/ManageFeedbackPage";
 
 export default function MainRoute() {
   return (
@@ -88,6 +89,15 @@ export default function MainRoute() {
           element={
             <AdminRoute>
               <VerifyRequestPage />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path={FE_PATH.MANAGE_FEEDBACK}
+          element={
+            <AdminRoute>
+              <ManageFeedbackPage />
             </AdminRoute>
           }
         />

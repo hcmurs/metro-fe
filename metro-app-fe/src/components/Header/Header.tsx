@@ -72,10 +72,16 @@ export default function Header() {
               </span>
               <div className="absolute left-0 top-2.5 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden group-hover:block animate-fade-down">
                 <a
-                  onClick={() => navigate('/requests')}
+                  onClick={() => navigate(FE_PATH.VERIFY_REQUEST)}
                   className="block px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 cursor-pointer"
                 >
                   Verify Requests
+                </a>
+                <a
+                  onClick={() => navigate(FE_PATH.MANAGE_FEEDBACK)}
+                  className="block px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 cursor-pointer"
+                >
+                  Manage feedbacks
                 </a>
               </div>
             </div>

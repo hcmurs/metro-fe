@@ -10,7 +10,7 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
-  const { isAuthenticated, contextUser: user, contextLogout: logout, isAdmin } = useAuth();
+  const { isAuthenticated, contextUser: user, contextLogout: logout } = useAuth();
 
   // Navigation items configuration
   const navigationItems = [
@@ -64,28 +64,6 @@ export default function Header() {
               {item.label}
             </a>
           ))}
-
-          {isAuthenticated && isAdmin && (
-            <div className="relative group">
-              <span className="cursor-pointer hover:text-green-600 transition-colors">
-                MANAGE
-              </span>
-              <div className="absolute left-0 top-2.5 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden group-hover:block animate-fade-down">
-                <a
-                  onClick={() => navigate(FE_PATH.VERIFY_REQUEST)}
-                  className="block px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 cursor-pointer"
-                >
-                  Verify Requests
-                </a>
-                <a
-                  onClick={() => navigate(FE_PATH.MANAGE_FEEDBACK)}
-                  className="block px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 cursor-pointer"
-                >
-                  Manage feedbacks
-                </a>
-              </div>
-            </div>
-          )}
         </nav>
 
         <div className="hidden lg:flex items-center gap-4">

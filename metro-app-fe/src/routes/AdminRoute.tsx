@@ -22,7 +22,6 @@ export default function AdminRoute({ children }: AdminRouteProps) {
     return <Navigate to="/login" replace />;
   }
 
-  console.log(location.pathname)
   if (!location.pathname.startsWith("/admin")) {
     
     return <Navigate to="/admin" replace />;

@@ -7,7 +7,7 @@ interface PublicRouteProps {
 }
 
 export default function PublicRoute({ children }: PublicRouteProps) {
- const { isAuthenticated, isLoading } = useAuth();
+ const { isAuthenticated, isLoading, isAdmin } = useAuth();
 
  if (isLoading) {
     return (
@@ -17,5 +17,13 @@ export default function PublicRoute({ children }: PublicRouteProps) {
     );
   }
 
-  return isAuthenticated ? <Navigate to="/home" replace /> : children;
+  if (isAuthenticated) {
+    if (isAdmin) {
+       return <Navigate to="/admin" replace />;
+    } else {
+      return <Navigate to="/home" replace />;
+    }
+  } else {
+    return children;
+  }
 }

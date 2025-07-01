@@ -1,5 +1,5 @@
 import type { ApiResponse } from "../types/api.type";
-import type { Feedback, FeedbackCreation, StudentRequest, StudentRequestCreation, User, UserRegister } from "../types/user.type";
+import type { Feedback, FeedbackCreation, FeedbackReply, StudentRequest, StudentRequestCreation, User, UserRegister } from "../types/user.type";
 import api from "./api";
 
 //User
@@ -98,6 +98,24 @@ export const apiFindFeedbackByUserId = async (userId: number): Promise<ApiRespon
 export const apiCreateFeedback = async (request: FeedbackCreation): Promise<ApiResponse<Feedback> | null> => {
 	try {
 		const res = await api.post(`/users/feedbacks`, request);
+		return res.data as ApiResponse<Feedback>;
+	} catch {
+		return null;
+	}
+}
+
+export const apiFindAllFeedbacks = async (): Promise<ApiResponse<Feedback[]> | null> => {
+	try {
+		const res = await api.get(`/users/feedbacks`);
+		return res.data as ApiResponse<Feedback[]>;
+	} catch {
+		return null;
+	}
+}
+
+export const apiReplyFeedback = async (request: FeedbackReply): Promise<ApiResponse<Feedback> | null> => {
+	try {
+		const res = await api.post('/users/feedbacks/reply', request);
 		return res.data as ApiResponse<Feedback>;
 	} catch {
 		return null;

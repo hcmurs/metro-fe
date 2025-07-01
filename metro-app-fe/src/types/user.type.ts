@@ -45,7 +45,7 @@ export interface Feedback {
 	content: string;
 	image?: string;
 	reply?: string;
-	userId?: string;
+	userId: number;
 	createdAt: string;
 }
 
@@ -53,4 +53,9 @@ export interface FeedbackCreation {
 	category: string;
 	content: string;
 	image: string;
+}
+
+export interface FeedbackReply {
+	feedbackId: number;
+	content: string;
 }

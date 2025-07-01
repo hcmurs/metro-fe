@@ -33,7 +33,7 @@ export default function ManageFeedbackPage() {
   const { contextUser } = useAuth();
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  const { control, handleSubmit, reset, formState: { errors }, clearErrors } = useForm<ResponseFormInputs>({
+  const { control, handleSubmit, formState: { errors }, clearErrors } = useForm<ResponseFormInputs>({
     resolver: zodResolver(responseSchema),
     defaultValues: {
       replyContent: ''

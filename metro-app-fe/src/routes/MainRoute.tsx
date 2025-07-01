@@ -27,25 +27,18 @@ import ManageFeedbackPage from "../pages/ManageFeedback/ManageFeedbackPage";
 
 export default function MainRoute() {
   return (
-      <Routes>
-        {/* Routes with header and footer */}
-        <Route element={<DefaultLayout />}>
-          <Route path={FE_PATH.HOME} element={<Home />} />
-          <Route path={FE_PATH.NEWS} element={<NewsPage />} />
-          <Route path={FE_PATH.NEWS_DETAIL} element={<NewsDetail />} />
-          <Route path={FE_PATH.BUY_TICKET} element={<BuyTicket />} />
-          <Route path={FE_PATH.ORDER} element={<Order />} />
-          <Route path={FE_PATH.MY_TICKETS} element={<MyTickets />} />
-          <Route path={FE_PATH.METRO_MAP} element={<MetroMap />} />
-          <Route path={FE_PATH.PAYMENT_SUCCESS} element={<PaymentSuccess />} />
-          <Route path={FE_PATH.PAYMENT_FAILURE} element={<PaymentFailure />} />
-
-        <Route path={FE_PATH.ADMIN} element={<Admin />}>
-          <Route index element={<Dashboard />} />
-          <Route path="users" element={<UserManagement />} />
-          <Route path="route" element={<Station />} />
-        </Route>
-
+    <Routes>
+      {/* Routes with header and footer */}
+      <Route element={<DefaultLayout />}>
+        <Route path={FE_PATH.HOME} element={<Home />} />
+        <Route path={FE_PATH.NEWS} element={<NewsPage />} />
+        <Route path={FE_PATH.NEWS_DETAIL} element={<NewsDetail />} />
+        <Route path={FE_PATH.BUY_TICKET} element={<BuyTicket />} />
+        <Route path={FE_PATH.ORDER} element={<Order />} />
+        <Route path={FE_PATH.MY_TICKETS} element={<MyTickets />} />
+        <Route path={FE_PATH.METRO_MAP} element={<MetroMap />} />
+        <Route path={FE_PATH.PAYMENT_SUCCESS} element={<PaymentSuccess />} />
+        <Route path={FE_PATH.PAYMENT_FAILURE} element={<PaymentFailure />} />
         <Route path="/" element={<Navigate to={FE_PATH.HOME} replace />} />
       </Route>
 
@@ -86,23 +79,17 @@ export default function MainRoute() {
           }
         />
 
-        <Route
-          path={FE_PATH.VERIFY_REQUEST}
-          element={
-            <AdminRoute>
-              <VerifyRequestPage />
-            </AdminRoute>
-          }
-        />
-
-        <Route
-          path={FE_PATH.MANAGE_FEEDBACK}
-          element={
-            <AdminRoute>
-              <ManageFeedbackPage />
-            </AdminRoute>
-          }
-        />
+        <Route path={FE_PATH.ADMIN} element={
+          <AdminRoute>
+            <Admin />
+          </AdminRoute>
+        }>
+          <Route index element={<Dashboard />} />
+          <Route path="users" element={<UserManagement />} />
+          <Route path="route" element={<Station />} />
+          <Route path="requests" element={<VerifyRequestPage />} />
+          <Route path="feedbacks" element={<ManageFeedbackPage />} />
+        </Route>
       </Route>
     </Routes>
   );

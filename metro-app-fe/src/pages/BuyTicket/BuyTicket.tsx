@@ -74,6 +74,7 @@ export default function BuyTicket() {
             endStationId: endStation,
           }
           const response = await apiFindFareMatrix(request);
+          console.log("test", response?.data)
           if(response){
             setFareMatrix(response.data);
           }

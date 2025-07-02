@@ -74,6 +74,7 @@ export default function BuyTicket() {
             endStationId: endStation,
           }
           const response = await apiFindFareMatrix(request);
+          console.log("test", response?.data)
           if(response){
             setFareMatrix(response.data);
           }
@@ -95,37 +96,24 @@ export default function BuyTicket() {
     setLoading(true);
      if(!isAuthenticated) {
         navigate(FE_PATH.LOGIN);
+         return;
        }
-    try {
       // Create order for pass ticket
       const orderRequest: OrderTicketDaysRequest = {
         ticketId: { id: ticketType.id },
         paymentMethodId: selectedPaymentMethod
       };
-      
-      const response = await apiCreateOrderDays(orderRequest);
-      
-      if (response?.data) {
         // Navigate to order page with created order data
         navigate(FE_PATH.ORDER, {
           state: {
             orderType: 'pass',
-            orderId: response.data.orderId,
+            orderRequest: orderRequest,
             ticketType: ticketType,
             amount: ticketType.price,
             quantity: 1,
             selectedPaymentMethod: paymentMethods.find(p => p.paymentMethodId === selectedPaymentMethod)
           }
         });
-      } else {
-       toast.error(response?.message || 'Failed to create order. Please try again.');
-      
-      }
-    } catch (error: any) {
-      toast.error(error?.response?.message || 'Failed to create order. Please try again.');
-    } finally {
-      setLoading(false);
-    }
   };
 
   const handleSingleTicketPurchase = async () => {
@@ -151,21 +139,16 @@ export default function BuyTicket() {
     }
 
     setLoading(true);
-    try {
       // Create order for single ticket
       const orderRequest: OrderTicketSingleRequest = {
         fareMatrixId: { id: fareMatrix.fareMatrixId },
         paymentMethodId: selectedPaymentMethod
       };
-      
-      const response = await apiCreateOrderSingle(orderRequest);
-      
-      if (response?.data) {
         // Navigate to order page with created order data
-        navigate(FE_PATH.ORDER, {
+      navigate(FE_PATH.ORDER, {
           state: {
             orderType: 'single',
-            orderId: response.data.orderId,
+            orderRequest: orderRequest,
             fareMatrix: fareMatrix,
             startStation: stations.find(s => s.stationId === startStation),
             endStation: stations.find(s => s.stationId === endStation),
@@ -173,16 +156,8 @@ export default function BuyTicket() {
             quantity: 1,
             selectedPaymentMethod: paymentMethods.find(p => p.paymentMethodId === selectedPaymentMethod)
           }
-        });
-      } else {
-        toast.error('Failed to create order');
-      }
-    } catch (error: any) {
-      toast.error(error?.response?.message || 'Failed to create order. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+    })
+  };  
 
 
   const PassTicketsTab = () => (

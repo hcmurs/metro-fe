@@ -4,6 +4,7 @@ import DefaultLayout from "../layouts/DefaultLayout/DefaultLayout";
 import Admin from "../pages/admin/Admin";
 import Dashboard from "../pages/admin/components/Dashboard/Dashboard";
 import Station from "../pages/admin/components/Station/Station";
+import StationManagement from "../pages/admin/components/Station/StationManagement";
 import UserManagement from "../pages/admin/components/User/UserManagement";
 import NewsPage from "../pages/Blogs/Blogs";
 import NewsDetail from "../pages/BlogsDetail";

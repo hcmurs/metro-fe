@@ -45,7 +45,7 @@ export default function MyTickets() {
         setTickets([]);
       }
     } catch (error) {
-      toast.error('Error loading tickets');
+      toast.error('Error loading tickets: ' + (error instanceof Error ? error.message : 'Unknown error'));
     } finally {
       setLoading(false);
     }

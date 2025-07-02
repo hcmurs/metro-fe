@@ -1,10 +1,10 @@
 import { EyeInvisibleOutlined, EyeTwoTone, LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Spin, message } from 'antd';
-import { ArrowRight, UserIcon as LucideUserIcon } from 'lucide-react'; 
+import { ArrowRight, UserIcon as LucideUserIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import * as z from 'zod'; 
+import * as z from 'zod';
 import { apiLocalLogin } from '../../apis/auth.api';
 import { apiFindUser } from '../../apis/user.api';
 import { API_PATH, FE_PATH } from '../../constants/path';
@@ -29,7 +29,7 @@ const LoginPage = () => {
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
 
   const {
-    control, 
+    control,
     handleSubmit,
     formState: { errors },
     setError,
@@ -43,7 +43,7 @@ const LoginPage = () => {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    clearErrors(); 
+    clearErrors();
     setIsLoading(true);
 
     try {
@@ -58,7 +58,7 @@ const LoginPage = () => {
         contextLogin(response.data as User);
       } else if (response.status === 401) {
         setError('password', { type: 'manual', message: 'Incorrect username or password' });
-        message.error('Incorrect username or password. Please try again.'); 
+        message.error('Incorrect username or password. Please try again.');
       } else {
         message.error(response.message || 'Login failed. Please try again later.');
       }
@@ -69,12 +69,6 @@ const LoginPage = () => {
       setIsLoading(false);
     }
   };
-
-	useEffect(() => {
-  if (contextUser && !isLoading) {
-    navigate('/home', { replace: true });
-  }
-}, [contextUser, isLoading, navigate]);
 
   const handleSocialLogin = (provider: string) => {
     const width = 1000;
@@ -112,7 +106,7 @@ const LoginPage = () => {
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.origin !== window.location.origin) {
-         if (event.origin !== 'http://localhost:3000') return;
+        if (event.origin !== 'http://localhost:3000') return;
       }
 
       if (contextUser !== null) return;
@@ -134,8 +128,8 @@ const LoginPage = () => {
           });
         setIsPopupOpen(false);
       } else if (event.data.error) {
-          message.error(event.data.error || 'Social login failed. Please try again.');
-          setIsPopupOpen(false);
+        message.error(event.data.error || 'Social login failed. Please try again.');
+        setIsPopupOpen(false);
       }
     };
 
@@ -163,8 +157,8 @@ const LoginPage = () => {
         <div className="p-8 pt-3 pb-6">
           <Spin spinning={isLoading} delay={100} size="large">
             <Form
-              layout="vertical" 
-              onFinish={handleSubmit(onSubmit)} 
+              layout="vertical"
+              onFinish={handleSubmit(onSubmit)}
               className="space-y-6"
             >
               <Form.Item
@@ -172,18 +166,18 @@ const LoginPage = () => {
                 name="username"
                 validateStatus={errors.username ? 'error' : ''}
                 help={errors.username?.message}
-                required 
+                required
               >
                 <Controller
                   name="username"
-                  control={control} 
+                  control={control}
                   render={({ field }) => (
                     <Input
-                      {...field} 
+                      {...field}
                       prefix={<UserOutlined className="site-form-item-icon" />}
                       placeholder="Enter your username or email"
                       disabled={isPopupOpen}
-                      className="rounded-md h-11" 
+                      className="rounded-md h-11"
                     />
                   )}
                 />
@@ -202,7 +196,7 @@ const LoginPage = () => {
                   render={({ field }) => (
                     <Input.Password
                       {...field}
-                      prefix={<LockOutlined className="site-form-item-icon" />} 
+                      prefix={<LockOutlined className="site-form-item-icon" />}
                       placeholder="Enter your password"
                       disabled={isPopupOpen}
                       iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
@@ -212,7 +206,7 @@ const LoginPage = () => {
                 />
               </Form.Item>
 
-              <div className="flex items-center justify-end" style={{ marginTop: '-12px' }}> 
+              <div className="flex items-center justify-end" style={{ marginTop: '-12px' }}>
                 <div className="text-sm">
                   <a
                     href="#"
@@ -223,13 +217,13 @@ const LoginPage = () => {
                   </a>
                 </div>
               </div>
-          
-              <Form.Item style={{ marginBottom: 0 }}> 
+
+              <Form.Item style={{ marginBottom: 0 }}>
                 <Button
-                  htmlType="submit" 
+                  htmlType="submit"
                   className="w-full h-11 rounded-md bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200 group"
                   disabled={isPopupOpen}
-									style={{ backgroundColor: '#009873', borderColor: '#009873', color: 'white' }}
+                  style={{ backgroundColor: '#009873', borderColor: '#009873', color: 'white' }}
                 >
                   {isLoading ? (
                     <div className="flex items-center space-x-2">

@@ -1,4 +1,4 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import type { ReactNode } from "react";
 
@@ -8,6 +8,7 @@ interface AdminRouteProps {
 
 export default function AdminRoute({ children }: AdminRouteProps) {
   const { isAuthenticated, isLoading, isAdmin } = useAuth();
+  const location = useLocation();
 
   if (isLoading) {
     return (
@@ -17,5 +18,15 @@ export default function AdminRoute({ children }: AdminRouteProps) {
     );
   }
 
-  return (isAuthenticated && isAdmin) ? children : <Navigate to="/home" replace />;
+  if (!isAuthenticated || !isAdmin) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!location.pathname.startsWith("/admin")) {
+    
+    return <Navigate to="/admin" replace />;
+  }
+
+
+  return <>{children}</>;
 }

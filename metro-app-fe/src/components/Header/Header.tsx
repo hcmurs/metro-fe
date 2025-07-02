@@ -12,7 +12,6 @@ export default function Header() {
 
   const { isAuthenticated, contextUser: user, contextLogout: logout, isAdmin } = useAuth();
 
-  // Navigation items configuration
   const navigationItems = [
     { label: "HOME", path: FE_PATH.HOME },
     { label: "BUY TICKETS", path: FE_PATH.BUY_TICKET },
@@ -44,7 +43,6 @@ export default function Header() {
 
   return (
     <div className="sticky top-0 bg-white shadow-sm z-50">
-      {/* Top Header */}
       <div className="flex items-center justify-between px-8 py-4">
         <div
           className="text-2xl font-bold text-slate-800 hover:cursor-pointer"
@@ -53,42 +51,21 @@ export default function Header() {
           METRO
         </div>
 
-        {/* Menu for large screen */}
-        <nav className="hidden lg:flex gap-6 text-sm font-medium text-slate-800 items-center">
-          {navigationItems.map((item) => (
-            <a
-              key={item.label}
-              onClick={() => navigate(item.path)}
-              className="cursor-pointer hover:text-green-600 transition-colors"
-            >
-              {item.label}
-            </a>
-          ))}
+        {!isAdmin && (
+          <nav className="hidden lg:flex gap-6 text-sm font-medium text-slate-800 items-center">
+            {navigationItems.map((item) => (
+              <a
+                key={item.label}
+                onClick={() => navigate(item.path)}
+                className="cursor-pointer hover:text-green-600 transition-colors"
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+        )}
 
-          {isAuthenticated && isAdmin && (
-            <div className="relative group">
-              <span className="cursor-pointer hover:text-green-600 transition-colors">
-                MANAGE
-              </span>
-              <div className="absolute left-0 top-2.5 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden group-hover:block animate-fade-down">
-                <a
-                  onClick={() => navigate(FE_PATH.VERIFY_REQUEST)}
-                  className="block px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 cursor-pointer"
-                >
-                  Verify Requests
-                </a>
-                <a
-                  onClick={() => navigate(FE_PATH.MANAGE_FEEDBACK)}
-                  className="block px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 cursor-pointer"
-                >
-                  Manage feedbacks
-                </a>
-              </div>
-            </div>
-          )}
-        </nav>
-
-        <div className="hidden lg:flex items-center gap-4">
+        <div className={`${isAdmin ? "flex" : "hidden lg:flex"} items-center gap-4`}>
           {isAuthenticated ? (
             <div className="relative" ref={userMenuRef}>
               <div
@@ -103,27 +80,39 @@ export default function Header() {
                     <p className="font-medium">{user?.name}</p>
                     <p className="text-xs text-gray-500 break-words">{user?.email}</p>
                   </div>
-                  <a
-                    href="/profile"
-                    className="px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 flex items-center"
-                  >
-                    <User className="w-4 h-4 mr-2" />
-                    Profile
-                  </a>
-                  <a
-                    onClick={() => navigate(FE_PATH.MY_TICKETS)}
-                    className="px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 flex items-center cursor-pointer"
-                  >
-                    <Ticket className="w-4 h-4 mr-2" />
-                    My Tickets
-                  </a>
-                  <button
-                    onClick={handleLogout}
-                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center cursor-pointer"
-                  >
-                    <LogOut className="w-4 h-4 mr-2" />
-                    Logout
-                  </button>
+                  {isAdmin ? (
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center cursor-pointer"
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Logout
+                    </button>
+                  ) : (
+                    <>
+                      <a
+                        href="/profile"
+                        className="px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 flex items-center"
+                      >
+                        <User className="w-4 h-4 mr-2" />
+                        Profile
+                      </a>
+                      <a
+                        onClick={() => navigate(FE_PATH.MY_TICKETS)}
+                        className="px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 flex items-center cursor-pointer"
+                      >
+                        <Ticket className="w-4 h-4 mr-2" />
+                        My Tickets
+                      </a>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center cursor-pointer"
+                      >
+                        <LogOut className="w-4 h-4 mr-2" />
+                        Logout
+                      </button>
+                    </>
+                  )}
                 </div>
               )}
             </div>
@@ -134,19 +123,19 @@ export default function Header() {
           )}
         </div>
 
-        {/* Hamburger menu for mobile */}
-        <div className="lg:hidden">
-          <button
-            className="text-slate-800 text-2xl"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            ☰
-          </button>
-        </div>
+        {!isAdmin && (
+          <div className="lg:hidden">
+            <button
+              className="text-slate-800 text-2xl"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              ☰
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Dropdown Menu on small screens */}
-      {isOpen && (
+      {isOpen && !isAdmin && (
         <div className="flex flex-col items-start px-8 pb-4 gap-3 lg:hidden animate-fade-down">
           {navigationItems.map((item) => (
             <a
@@ -179,20 +168,32 @@ export default function Header() {
                       <p className="font-medium">{user?.name}</p>
                       <p className="text-xs text-gray-500 break-words">{user?.email}</p>
                     </div>
-                    <a
-                      href="/profile"
-                      className="px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 flex items-center"
-                    >
-                      <User className="w-4 h-4 mr-2" />
-                      Profile
-                    </a>
-                    <button
-                      onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center cursor-pointer"
-                    >
-                      <LogOut className="w-4 h-4 mr-2" />
-                      Logout
-                    </button>
+                    {isAdmin ? (
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center cursor-pointer"
+                      >
+                        <LogOut className="w-4 h-4 mr-2" />
+                        Logout
+                      </button>
+                    ) : (
+                      <>
+                        <a
+                          href="/profile"
+                          className="px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 flex items-center"
+                        >
+                          <User className="w-4 h-4 mr-2" />
+                          Profile
+                        </a>
+                        <button
+                          onClick={handleLogout}
+                          className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center cursor-pointer"
+                        >
+                          <LogOut className="w-4 h-4 mr-2" />
+                          Logout
+                        </button>
+                      </>
+                    )}
                   </div>
                 )}
               </div>

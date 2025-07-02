@@ -49,6 +49,13 @@ export default function PaymentSuccess() {
     handlePaymentCallback();
   }, [searchParams]);
 
+  // Cleanup effect to dismiss all toasts when component unmounts
+  useEffect(() => {
+    return () => {
+      toast.dismiss();
+    };
+  }, []);
+
   if (loading) {
     return (
       <div 

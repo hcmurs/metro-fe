@@ -23,6 +23,7 @@ import {
   getCategoryDisplayName,
   type Blog,
 } from "../../../../types/blog.type";
+import toast from "react-hot-toast";
 
 const BlogManagement = () => {
   const [currentPage, setCurrentPage] = useState(0);
@@ -53,11 +54,11 @@ const BlogManagement = () => {
     createBlogMutation.mutate(blogData, {
       onSuccess: () => {
         setIsFormOpen(false);
-        // You can add toast notification here
+        toast.success("Blog created successfully!");
       },
       onError: (error) => {
         console.error("Error creating blog:", error);
-        // You can add error toast notification here
+        toast.error("Error creating blog");
       },
     });
   };
@@ -74,11 +75,11 @@ const BlogManagement = () => {
       onSuccess: () => {
         setIsFormOpen(false);
         setEditingBlog(null);
-        // You can add toast notification here
+        toast.success("Blog updated successfully!");
       },
       onError: (error) => {
         console.error("Error updating blog:", error);
-        // You can add error toast notification here
+        toast.error("Error updating blog");
       },
     });
   };
@@ -88,11 +89,11 @@ const BlogManagement = () => {
       deleteBlogMutation.mutate(id, {
         onSuccess: () => {
           setDeletingBlogId(null);
-          // You can add toast notification here
+          toast.success("Blog deleted successfully!");
         },
         onError: (error) => {
           console.error("Error deleting blog:", error);
-          // You can add error toast notification here
+          toast.error("Error deleting blog");
         },
       });
     }
@@ -278,7 +279,7 @@ const BlogManagement = () => {
       </div>
 
       {/* Pagination */}
-      {filteredBlogs.length > 0 && (
+      {filteredBlogs.length >= 0 && (
         <div className="flex items-center justify-between mt-6">
           <div className="text-sm text-gray-700">
             Showing {filteredBlogs.length} blogs

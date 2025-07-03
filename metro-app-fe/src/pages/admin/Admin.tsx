@@ -16,7 +16,7 @@ export default function Admin() {
 
   return (
     <div className="flex bg-gray-200">
-      <div className="w-1/5">
+      <div className="w-1/7">
         <div className="w-full h-screen bg-white text-black p-5 sticky top-0">
           <div className="flex flex-col mt-5 gap-4">
             <div>Overview</div>
@@ -81,7 +81,7 @@ export default function Admin() {
           </div>
         </div>
       </div>
-      <div className="w-4/5 p-5">
+      <div className="w-6/7 p-5">
         <Outlet />
       </div>
     </div>

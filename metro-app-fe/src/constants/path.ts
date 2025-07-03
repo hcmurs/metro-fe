@@ -17,16 +17,16 @@ export const FE_PATH = {
   SOCIAL_LOGIN_REDIRECT: "/oauth2/redirect",
   PROFILE: "/profile",
   VERIFY_REQUEST: "/admin/requests",
-  MANAGE_FEEDBACK: "/admin/feedbacks"
+  MANAGE_FEEDBACK: "/admin/feedbacks",
 } as const;
 
 export const API_PATH = {
   ORIGIN: "http://localhost:4003/api",
   GOOGLE_LOGIN: `http://localhost:4003/api/oauth2/authorization/google`,
   FACEBOOK_LOGIN: `http://localhost:4003/api/oauth2/authorization/facebook`,
-  LOGOUT: '/auth/logout',
-  LOCAL_LOGIN: '/auth/local-login',
-  BLOG: "http://localhost:4007/api/v1/blogs",
+  LOGOUT: "/auth/logout",
+  LOCAL_LOGIN: "/auth/local-login",
+  BLOG: "http://localhost:4003/api/users/blogs",
   STATIONS: "http://localhost:4003/api/stations",
   SCHEDULES: "http://localhost:4003/api/schedules",
   ROUTE: "http://localhost:4003/api/routes",
@@ -39,4 +39,4 @@ export const API_PATH = {
   VNPAY: "http://localhost:4003/api/payment",
   PAYPAL: "http://localhost:4003/api/payment/paypal",
   BUS: "http://localhost:4003/api/bus",
-} as const
+} as const;

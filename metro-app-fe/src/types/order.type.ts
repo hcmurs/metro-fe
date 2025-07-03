@@ -1,4 +1,7 @@
 import type { TicketResponse } from "./ticket.type";
+import type { FareMatrixResponse } from "./fare.type";
+import type { StationResponse } from "./station.type";
+import type { TicketTypeResponse } from "./tickettype.type";
 export interface OrderTicketDaysRequest{
     ticketId: TicketType,
     paymentMethodId: number
@@ -63,6 +66,18 @@ export interface CallBackResponse{
     status: string,
     responseCode: string,
     paymentTime: string
+}
+
+export interface OrderPageState {
+  orderType: 'single' | 'pass';
+  orderRequest: OrderTicketSingleRequest | OrderTicketDaysRequest;
+  ticketType?: TicketTypeResponse;
+  fareMatrix?: FareMatrixResponse;
+  startStation?: StationResponse;
+  endStation?: StationResponse;
+  quantity?: number;
+  amount: number;
+  selectedPaymentMethod?: PaymentMethodResponse;
 }
 
 

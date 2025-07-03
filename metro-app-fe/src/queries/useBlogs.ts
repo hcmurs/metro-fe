@@ -1,33 +1,22 @@
-import axios from "axios";
-import type { Blog } from "../types/blog.type";
 import { useQuery } from "@tanstack/react-query";
-import type { ApiResponse } from "../types/api.type";
+import api from "../apis/api";
 import { API_PATH } from "../constants/path";
-
-type BlogResponse = {
-  items: Blog[];
-  page: number;
-  perPage: number;
-  totalItems: number;
-  totalPages: number;
-};
+import type { PaginatedResponse } from "../types/api.type";
+import type { Blog } from "../types/blog.type";
 
 const fetchBlogsList = async (
   page: number,
   perPage: number
 ): Promise<Blog[]> => {
   try {
-    const res = await axios.get<ApiResponse<BlogResponse>>(
-      `${API_PATH.BLOG}?page=${page}&perPage=${perPage}`,
-      {
-        params: {
-          page,
-          perPage,
-        },
-      }
-    );
+    const res = await api.get<PaginatedResponse<Blog>>(`${API_PATH.BLOG}`, {
+      params: {
+        page,
+        size: perPage,
+      },
+    });
     if (res.status === 200) {
-      return res.data.data.items;
+      return res.data.data.content;
     } else {
       throw new Error(`Error fetching blogs: ${res.statusText}`);
     }

@@ -6,37 +6,23 @@ import toast, { Toaster } from 'react-hot-toast';
 import Button from '../../components/Minh/Button';
 import { apiCreateVnPayPayment } from '../../apis/vnpay.api';
 import { apiCreatePaypalPayment } from '../../apis/paypal.api';
-import type { PaymentMethodResponse } from '../../types/order.type';
-import type { TicketType } from '../../types/tickettype.type';
-// import type { Ticket as TicketResponse } from '../../types/ticket.type';
-import type { FareMatrix } from '../../types/fare.type';
-import type { Station } from '../../types/station.type';
 import { FE_PATH } from '../../constants/path';
-
+import { apiCreateOrderDays,apiCreateOrderSingle } from '../../apis/order.api';
+import type { OrderPageState } from '../../types/order.type';
+import type { OrderTicketDaysRequest, OrderTicketSingleRequest } from '../../types/order.type';
 const { Title, Text } = Typography;
-
-interface OrderPageState {
-  orderType: 'single' | 'pass';
-  orderId: number;
-  ticketType?: TicketType;
-  fareMatrix?: FareMatrix;
-  startStation?: Station;
-  endStation?: Station;
-  quantity?: number;
-  amount: number;
-  selectedPaymentMethod?: PaymentMethodResponse;
-}
 
 export default function Order() {
   const location = useLocation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [orderData, setOrderData] = useState<OrderPageState | null>(null);
+  const [orderId, setOrderId] = useState<number>(0);
 
   useEffect(() => {
     // Get order data from navigation state
     const state = location.state as OrderPageState;
-    if (!state || !state.orderId || !state.selectedPaymentMethod) {
+    if (!state || !state.selectedPaymentMethod) {
       toast.error('No order data found. Redirecting to buy ticket page.');
       navigate(FE_PATH.BUY_TICKET);
       return;
@@ -50,20 +36,53 @@ export default function Order() {
       return;
     }
 
-    const selectedMethod = orderData.selectedPaymentMethod;
     setLoading(true);
+    let createdOrderId: number;
+
+    try {
+      // Create order first and get the order ID
+      if (orderData.orderType === 'pass') {
+        const response = await apiCreateOrderDays(orderData.orderRequest as OrderTicketDaysRequest);
+        if (response?.data) {
+          createdOrderId = response.data.orderId;
+          setOrderId(createdOrderId);
+        } else {
+          toast.error('Failed to create order: ' + response?.message);
+          setLoading(false);
+          return;
+        }
+      } else {
+        const response = await apiCreateOrderSingle(orderData.orderRequest as OrderTicketSingleRequest);
+        if (response?.data) {
+          createdOrderId = response.data.orderId;
+          setOrderId(createdOrderId);
+        } else {
+          toast.error('Failed to create order: ' + response?.message);
+          setLoading(false);
+          return;
+        }
+      }
+    } catch (error: any) {
+      console.error("Error creating order:", error);
+      toast.error(error?.response?.message || 'An error occurred while creating the order');
+      setLoading(false);
+      return;
+    }
+
+    // Now proceed with payment using the created order ID
+    const selectedMethod = orderData.selectedPaymentMethod;
     try {
       let paymentResponse;
       
       if (selectedMethod.paymentMethodName.toLowerCase().includes('vnpay')) {
-        paymentResponse = await apiCreateVnPayPayment(orderData.orderId);
+        paymentResponse = await apiCreateVnPayPayment(createdOrderId);
         if (paymentResponse?.data) {
           // Redirect to VNPay payment URL
           window.location.href = paymentResponse.data.paymentUrl;
           return;
         }
       } else if (selectedMethod.paymentMethodName.toLowerCase().includes('paypal')) {
-        paymentResponse = await apiCreatePaypalPayment(orderData.orderId);
+        paymentResponse = await apiCreatePaypalPayment(createdOrderId);
         if (paymentResponse?.data) {
           // Redirect to PayPal approval URL
           window.location.href = paymentResponse.data.approvalLink;

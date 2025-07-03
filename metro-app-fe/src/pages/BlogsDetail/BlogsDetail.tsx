@@ -9,9 +9,9 @@ import {
   User,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getCategoryColor } from "../Blogs/Blogs";
 import useBlogDetail from "../../queries/useBlogsDetail";
 import BlogsDetailSkeletonLoading from "../../components/BlogsDetailSkeletonLoading";
+import { getCategoryColor, type BlogCategory } from "../../types/blog.type";
 
 // For related articles
 interface RelatedArticle {
@@ -128,7 +128,7 @@ const BlogsDetail = () => {
             <div className="-mt-20 relative z-10 bg-white p-8 rounded-lg shadow-lg mb-8">
               <span
                 className={`inline-block px-3 py-1 rounded-full text-sm font-medium text-white mb-4 ${getCategoryColor(
-                  blog.category
+                  blog.category as BlogCategory
                 )}`}
               >
                 {blog.category}
@@ -309,7 +309,7 @@ const BlogsDetail = () => {
                       <div>
                         <span
                           className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium text-white mb-1 ${getCategoryColor(
-                            related.category
+                            related.category as BlogCategory
                           )}`}
                         >
                           {related.category}

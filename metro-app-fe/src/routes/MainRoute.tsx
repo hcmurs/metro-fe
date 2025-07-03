@@ -25,6 +25,7 @@ import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 import LoginPage from "../pages/login/LoginPage";
 import SocialLoginPopup from "../pages/login/components/socialLoginPopup/SocialLoginPopup";
+import BlogManagement from "../pages/admin/components/BlogManagement/BlogManagement";
 
 export default function MainRoute() {
   return (
@@ -85,14 +86,15 @@ export default function MainRoute() {
           <Route
             path={FE_PATH.ADMIN}
             element={
-              <AdminRoute>
-                <Admin />
-              </AdminRoute>
+              // <AdminRoute>
+              <Admin />
+              // </AdminRoute>
             }
           >
             <Route index element={<Dashboard />} />
             <Route path="users" element={<UserManagement />} />
             <Route path="route" element={<Station />} />
+            <Route path="blogs" element={<BlogManagement />} />
             <Route path="requests" element={<VerifyRequestPage />} />
             <Route path="feedbacks" element={<ManageFeedbackPage />} />
           </Route>

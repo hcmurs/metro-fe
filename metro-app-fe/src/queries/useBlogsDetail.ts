@@ -1,12 +1,23 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import type { Blog } from "../types/blog.type";
+import api from "../apis/api";
 import { API_PATH } from "../constants/path";
 import type { ApiResponse } from "../types/api.type";
+import type { Blog } from "../types/blog.type";
 
 const fetchBlogDetail = async (id: string): Promise<Blog> => {
-  const res = await axios.get<ApiResponse<Blog>>(`${API_PATH.BLOG}/${id}`);
-  return res.data.data;
+  try {
+    const res = await api.get<ApiResponse<Blog>>(`${API_PATH.BLOG}/${id}`);
+    if (res.status === 200) {
+      return res.data.data;
+    } else {
+      throw new Error(`Error fetching blog: ${res.statusText}`);
+    }
+  } catch (error) {
+    console.error("Error fetching blog detail:", error);
+    throw error instanceof Error
+      ? error
+      : new Error("Unknown error fetching blog detail");
+  }
 };
 
 const useBlogDetail = (id: string | undefined) => {

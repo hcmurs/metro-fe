@@ -1,30 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
 import api from "../apis/api";
 import { API_PATH } from "../constants/path";
-import type { ApiResponse } from "../types/api.type";
+import type { PaginatedResponse } from "../types/api.type";
 import type { Blog } from "../types/blog.type";
-
-type BlogResponse = {
-  items: Blog[];
-  page: number;
-  perPage: number;
-  totalItems: number;
-  totalPages: number;
-};
 
 const fetchBlogsList = async (
   page: number,
   perPage: number
 ): Promise<Blog[]> => {
   try {
-    const res = await api.get<ApiResponse<BlogResponse>>(`${API_PATH.BLOG}`, {
+    const res = await api.get<PaginatedResponse<Blog>>(`${API_PATH.BLOG}`, {
       params: {
         page,
-        perPage,
+        size: perPage,
       },
     });
     if (res.status === 200) {
-      return res.data.data.items;
+      return res.data.data.content;
     } else {
       throw new Error(`Error fetching blogs: ${res.statusText}`);
     }

@@ -1,8 +1,8 @@
-import axios from "axios";
-import type { Blog } from "../types/blog.type";
 import { useQuery } from "@tanstack/react-query";
-import type { ApiResponse } from "../types/api.type";
+import api from "../apis/api";
 import { API_PATH } from "../constants/path";
+import type { ApiResponse } from "../types/api.type";
+import type { Blog } from "../types/blog.type";
 
 type BlogResponse = {
   items: Blog[];
@@ -17,15 +17,12 @@ const fetchBlogsList = async (
   perPage: number
 ): Promise<Blog[]> => {
   try {
-    const res = await axios.get<ApiResponse<BlogResponse>>(
-      `${API_PATH.BLOG}?page=${page}&perPage=${perPage}`,
-      {
-        params: {
-          page,
-          perPage,
-        },
-      }
-    );
+    const res = await api.get<ApiResponse<BlogResponse>>(`${API_PATH.BLOG}`, {
+      params: {
+        page,
+        perPage,
+      },
+    });
     if (res.status === 200) {
       return res.data.data.items;
     } else {

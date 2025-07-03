@@ -86,9 +86,9 @@ export default function MainRoute() {
           <Route
             path={FE_PATH.ADMIN}
             element={
-              // <AdminRoute>
-              <Admin />
-              // </AdminRoute>
+              <AdminRoute>
+                <Admin />
+              </AdminRoute>
             }
           >
             <Route index element={<Dashboard />} />

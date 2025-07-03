@@ -26,7 +26,7 @@ export const API_PATH = {
   FACEBOOK_LOGIN: `http://localhost:4003/api/oauth2/authorization/facebook`,
   LOGOUT: "/auth/logout",
   LOCAL_LOGIN: "/auth/local-login",
-  BLOG: "http://localhost:4003/api/users/blogs/pocketbase",
+  BLOG: "http://localhost:4003/api/users/blogs",
   STATIONS: "http://localhost:4003/api/stations",
   SCHEDULES: "http://localhost:4003/api/schedules",
   ROUTE: "http://localhost:4003/api/routes",

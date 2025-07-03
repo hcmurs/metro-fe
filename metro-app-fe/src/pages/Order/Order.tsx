@@ -12,7 +12,6 @@ import type { OrderPageState } from '../../types/order.type';
 import type { OrderTicketDaysRequest, OrderTicketSingleRequest } from '../../types/order.type';
 const { Title, Text } = Typography;
 
-
 export default function Order() {
   const location = useLocation();
   const navigate = useNavigate();

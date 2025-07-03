@@ -1,11 +1,12 @@
-export interface FareMatrixResponse {
+export interface FareMatrix {
     fareMatrixId: number;
     name: string;
     price: number;
     startStationId: number;
     endStationId: number;
-    createAt: string;
-    updateAt: string;
+    isActive?: boolean;
+    createdAt: string;
+    updatedAt: string;
   }
 
 export interface FareMatrixRequest {

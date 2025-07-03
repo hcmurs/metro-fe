@@ -32,6 +32,7 @@ export default function ManageFeedbackPage() {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { contextUser } = useAuth();
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { control, handleSubmit, formState: { errors }, clearErrors } = useForm<ResponseFormInputs>({
     resolver: zodResolver(responseSchema),
@@ -54,7 +55,17 @@ export default function ManageFeedbackPage() {
   }
 
   useEffect(() => {
-    fetchFeedbacks();
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        await Promise.all([
+          fetchFeedbacks()
+        ]);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -306,6 +317,7 @@ export default function ManageFeedbackPage() {
 
         <Card className="!shadow-[0_1px_2px_0_rgba(0,0,0,0.03),0_1px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_0_rgba(0,0,0,0.02)]">
           <Table
+            loading={isLoading}
             columns={columns}
             dataSource={filteredFeedbacks}
             rowKey="feedbackId"
@@ -346,7 +358,7 @@ export default function ManageFeedbackPage() {
                 </div>
               )}
 
-              <div className="py-6 px-0">
+              <div>
                 <Row gutter={[24, 24]} className='!mb-6'>
                   <Col xs={24} md={12}>
                     <h3 className='text-[1.2em] font-medium mb-4 text-center'>Feedback Information</h3>

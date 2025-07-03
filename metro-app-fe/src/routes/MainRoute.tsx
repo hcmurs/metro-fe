@@ -1,31 +1,30 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { FE_PATH } from "../constants/path";
+import GlobalRedirectGuard from "../guards/GlobalRedirectGuard";
 import DefaultLayout from "../layouts/DefaultLayout/DefaultLayout";
+import HeaderLayout from "../layouts/HeaderLayout/HeaderLayout";
 import Admin from "../pages/admin/Admin";
 import Dashboard from "../pages/admin/components/Dashboard/Dashboard";
 import Station from "../pages/admin/components/Station/Station";
-import StationManagement from "../pages/admin/components/Station/StationManagement";
 import UserManagement from "../pages/admin/components/User/UserManagement";
 import NewsPage from "../pages/Blogs/Blogs";
 import NewsDetail from "../pages/BlogsDetail";
 import BuyTicket from "../pages/BuyTicket/BuyTicket";
-import Order from "../pages/Order";
 import Home from "../pages/Home";
-import PaymentSuccess from "../pages/PaymentSuccess";
-import PaymentFailure from "../pages/PaymentFailure";
-import MyTickets from "../pages/MyTickets";
+import ManageFeedbackPage from "../pages/ManageFeedback/ManageFeedbackPage";
 import MetroMap from "../pages/MetroMap";
-import SocialLoginPopup from "../pages/Login/components/socialLoginPopup/SocialLoginPopup";
-import LoginPage from "../pages/Login/LoginPage";
-import PublicRoute from "./PublicRoute";
-import RegisterPage from "../pages/Register/RegisterPage";
+import MyTickets from "../pages/MyTickets";
+import Order from "../pages/Order";
+import PaymentFailure from "../pages/PaymentFailure";
+import PaymentSuccess from "../pages/PaymentSuccess";
 import ProfilePage from "../pages/Profile/ProfilePage";
-import PrivateRoute from "./PrivateRoute";
-import HeaderLayout from "../layouts/HeaderLayout/HeaderLayout";
+import RegisterPage from "../pages/Register/RegisterPage";
 import VerifyRequestPage from "../pages/VerifyRequestPage/VerifyRequestPage";
 import AdminRoute from "./AdminRoute";
-import ManageFeedbackPage from "../pages/ManageFeedback/ManageFeedbackPage";
-import GlobalRedirectGuard from "../guards/GlobalRedirectGuard";
+import PrivateRoute from "./PrivateRoute";
+import PublicRoute from "./PublicRoute";
+import LoginPage from "../pages/login/LoginPage";
+import SocialLoginPopup from "../pages/login/components/socialLoginPopup/SocialLoginPopup";
 
 export default function MainRoute() {
   return (
@@ -83,11 +82,14 @@ export default function MainRoute() {
             }
           />
 
-          <Route path={FE_PATH.ADMIN} element={
-            <AdminRoute>
-              <Admin />
-            </AdminRoute>
-          }>
+          <Route
+            path={FE_PATH.ADMIN}
+            element={
+              <AdminRoute>
+                <Admin />
+              </AdminRoute>
+            }
+          >
             <Route index element={<Dashboard />} />
             <Route path="users" element={<UserManagement />} />
             <Route path="route" element={<Station />} />

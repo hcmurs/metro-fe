@@ -29,6 +29,7 @@ export default function VerifyRequestPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { contextUser } = useAuth();
   const [showRejectModal, setShowRejectModal] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { control, handleSubmit, reset, formState: { errors }, clearErrors } = useForm<RejectFormInputs>({
     resolver: zodResolver(rejectSchema),
@@ -45,11 +46,23 @@ export default function VerifyRequestPage() {
     const res = await apiFindAllRequests();
     if (res && res.status === 200) {
       setRequests(res.data);
+    } else {
+      message.error('Failed to fetch student requests. Please try again later.');
     }
   }
 
   useEffect(() => {
-    fetchRequests();
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        await Promise.all([
+          fetchRequests()
+        ]);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -298,6 +311,7 @@ export default function VerifyRequestPage() {
 
         <Card className="!shadow-[0_1px_2px_0_rgba(0,0,0,0.03),0_1px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_0_rgba(0,0,0,0.02)]">
           <Table
+            loading={isLoading}
             columns={columns}
             dataSource={filteredRequests}
             rowKey="requestId"

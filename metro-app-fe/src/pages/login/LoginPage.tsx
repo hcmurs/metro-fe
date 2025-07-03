@@ -117,7 +117,6 @@ const LoginPage = () => {
             if (response && response.status === 200) {
               contextLogin(response.data as User);
               message.success('Social login successful!');
-              navigate('/home', { replace: true });
             } else {
               message.error('Failed to retrieve user data after social login.');
             }

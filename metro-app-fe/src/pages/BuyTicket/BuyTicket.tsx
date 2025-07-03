@@ -5,11 +5,11 @@ import toast, { Toaster } from 'react-hot-toast';
 import { CreditCardOutlined, EnvironmentOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { COLOR } from '../../constants/color';
 import Button from '../../components/Minh/Button';
-import type { TicketTypeResponse } from '../../types/tickettype.type';
+import type { TicketType } from '../../types/tickettype.type';
 import { apiGetTicketTypes } from '../../apis/tickettype.api';
 import { apiGetStations } from '../../apis/station.api';
-import type { StationResponse } from '../../types/station.type';
-import type { FareMatrixResponse,FindFareRequest } from '../../types/fare.type';
+import type { Station } from '../../types/station.type';
+import type { FareMatrix,FindFareRequest } from '../../types/fare.type';
 import { apiFindFareMatrix } from '../../apis/fare.api';
 import { apiCreateOrderSingle, apiCreateOrderDays } from '../../apis/order.api';
 import { apiGetPaymentMethods } from '../../apis/payment.api';
@@ -27,9 +27,9 @@ export default function BuyTicket() {
   const [startStation, setStartStation] = useState<number | null>(null);
   const [endStation, setEndStation] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
-  const [ticketTypes, setTicketTypes] = useState<TicketTypeResponse[]>([]);
-  const [stations, setStation] = useState<StationResponse[]>([]);
-  const [fareMatrix, setFareMatrix] = useState<FareMatrixResponse>();
+  const [ticketTypes, setTicketTypes] = useState<TicketType[]>([]);
+  const [stations, setStation] = useState<Station[]>([]);
+  const [fareMatrix, setFareMatrix] = useState<FareMatrix>();
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethodResponse[]>([]);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<number | null>(null);
 
@@ -82,7 +82,7 @@ export default function BuyTicket() {
       fetchFareMatrix();
     }, [startStation, endStation])
 
-  const handlePassPurchase = async (ticketType: TicketTypeResponse) => {
+  const handlePassPurchase = async (ticketType: TicketType) => {
     if (paymentMethods.length === 0) {
       toast.error('No payment methods available');
       return;

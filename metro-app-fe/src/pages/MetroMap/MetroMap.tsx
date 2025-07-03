@@ -7,7 +7,7 @@ import { apiGetStations, apiGetBusStation, apiGetBusStationDetail } from '../../
 import { formatTime } from '../../utils/format.datetime';
 import { apiGetRoutes } from '../../apis/route.api';
 import { apiGetSchedulesByStation } from '../../apis/schedule.api';
-import type { StationResponse, BusStation, BusStationDetail } from '../../types/station.type';
+import type { Station, BusStation, BusStationDetail } from '../../types/station.type';
 import type { RoutesResponse } from '../../types/route.type';
 import type { SchedulesResponse } from '../../types/schedule.type';
 import 'leaflet/dist/leaflet.css';
@@ -88,11 +88,11 @@ const createBusStationIcon = (isActive: number) => {
 
 
 const MetroMap: React.FC = () => {
-  const [stations, setStations] = useState<StationResponse[]>([]);
+  const [stations, setStations] = useState<Station[]>([]);
   const [busStations, setBusStations] = useState<BusStation[]>([]);
   const [routes, setRoutes] = useState<RoutesResponse[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedStation, setSelectedStation] = useState<StationResponse | null>(null);
+  const [selectedStation, setSelectedStation] = useState<Station | null>(null);
   const [selectedBusStation, setSelectedBusStation] = useState<BusStation | null>(null);
   const [busStationDetail, setBusStationDetail] = useState<BusStationDetail | null>(null);
   const [busStationDetailLoading, setBusStationDetailLoading] = useState(false);
@@ -139,7 +139,7 @@ const MetroMap: React.FC = () => {
   };
 
   // Handle station selection with schedule fetching
-  const handleStationSelect = (station: StationResponse) => {
+  const handleStationSelect = (station: Station) => {
     setSelectedStation(station);
     setSelectedBusStation(null);
     fetchSchedules(station.stationId);
@@ -189,7 +189,7 @@ const MetroMap: React.FC = () => {
       if (!acc[station.routeId]) acc[station.routeId] = [];
       acc[station.routeId].push(station);
       return acc;
-    }, {} as Record<number, StationResponse[]>);
+    }, {} as Record<number, Station[]>);
 
     return Object.entries(stationsByRoute).map(([routeId, routeStations]) => {
       const sortedStations = routeStations

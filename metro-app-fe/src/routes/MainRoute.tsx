@@ -1,100 +1,110 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { FE_PATH } from "../constants/path";
+import { useAuth } from "../contexts/AuthContext";
 import DefaultLayout from "../layouts/DefaultLayout/DefaultLayout";
+import HeaderLayout from "../layouts/HeaderLayout/HeaderLayout";
 import Admin from "../pages/admin/Admin";
+import NewsPage from "../pages/Blogs/Blogs";
+import NewsDetail from "../pages/BlogsDetail";
+import Home from "../pages/Home";
+import SocialLoginPopup from "../pages/Login/components/socialLoginPopup/SocialLoginPopup";
+import LoginPage from "../pages/Login/LoginPage";
+import RegisterPage from "../pages/Register/RegisterPage";
+import BuyTicket from "../pages/BuyTicket/BuyTicket";
+import MetroMap from "../pages/MetroMap";
+import MyTickets from "../pages/MyTickets";
+import Order from "../pages/Order";
+import PaymentFailure from "../pages/PaymentFailure";
+import PaymentSuccess from "../pages/PaymentSuccess";
+import ProfilePage from "../pages/Profile/ProfilePage";
 import Dashboard from "../pages/admin/components/Dashboard/Dashboard";
 import Station from "../pages/admin/components/Station/Station";
 import UserManagement from "../pages/admin/components/User/UserManagement";
-import NewsPage from "../pages/Blogs/Blogs";
-import NewsDetail from "../pages/BlogsDetail";
-import BuyTicket from "../pages/BuyTicket/BuyTicket";
-import Order from "../pages/Order";
-import Home from "../pages/Home";
-import PaymentSuccess from "../pages/PaymentSuccess";
-import PaymentFailure from "../pages/PaymentFailure";
-import MyTickets from "../pages/MyTickets";
-import MetroMap from "../pages/MetroMap";
-import SocialLoginPopup from "../pages/Login/components/socialLoginPopup/SocialLoginPopup";
-import LoginPage from "../pages/Login/LoginPage";
-import PublicRoute from "./PublicRoute";
-import RegisterPage from "../pages/Register/RegisterPage";
-import ProfilePage from "../pages/Profile/ProfilePage";
-import PrivateRoute from "./PrivateRoute";
-import HeaderLayout from "../layouts/HeaderLayout/HeaderLayout";
-import VerifyRequestPage from "../pages/VerifyRequestPage/VerifyRequestPage";
-import AdminRoute from "./AdminRoute";
 import ManageFeedbackPage from "../pages/ManageFeedback/ManageFeedbackPage";
-import GlobalRedirectGuard from "../guards/GlobalRedirectGuard";
+import ManageTicketPage from "../pages/ManageTicket/ManageTicketPage";
+import VerifyRequestPage from "../pages/VerifyRequestPage/VerifyRequestPage";
+import RoleRoute from "./RoleRoute";
+import { Spin } from "antd";
 
 export default function MainRoute() {
+  const { isLoading } = useAuth();
+
+  if (isLoading) return <Spin size="large" fullscreen />
+
   return (
-    <>
-      <GlobalRedirectGuard />
-      <Routes>
-        {/* Routes with header and footer */}
-        <Route element={<DefaultLayout />}>
-          <Route path={FE_PATH.HOME} element={<Home />} />
-          <Route path={FE_PATH.NEWS} element={<NewsPage />} />
-          <Route path={FE_PATH.NEWS_DETAIL} element={<NewsDetail />} />
-          <Route path={FE_PATH.BUY_TICKET} element={<BuyTicket />} />
-          <Route path={FE_PATH.ORDER} element={<Order />} />
-          <Route path={FE_PATH.MY_TICKETS} element={<MyTickets />} />
-          <Route path={FE_PATH.METRO_MAP} element={<MetroMap />} />
-          <Route path={FE_PATH.PAYMENT_SUCCESS} element={<PaymentSuccess />} />
-          <Route path={FE_PATH.PAYMENT_FAILURE} element={<PaymentFailure />} />
-          <Route path="/" element={<Navigate to={FE_PATH.HOME} replace />} />
-        </Route>
+    <Routes>
+      {/* Public Layout (Header + Footer) */}
+      <Route
+        element={
+          <RoleRoute allowedRoles={["user", "guest"]}>
+            <DefaultLayout />
+          </RoleRoute>
+        }
+      >
+        <Route path="/" element={<Navigate to={FE_PATH.HOME} replace />} />
+        <Route path={FE_PATH.HOME} element={<Home />} />
+        <Route path={FE_PATH.NEWS} element={<NewsPage />} />
+        <Route path={FE_PATH.NEWS_DETAIL} element={<NewsDetail />} />
+        <Route path={FE_PATH.BUY_TICKET} element={<BuyTicket />} />
+        <Route path={FE_PATH.ORDER} element={<Order />} />
+        <Route path={FE_PATH.MY_TICKETS} element={<MyTickets />} />
+        <Route path={FE_PATH.METRO_MAP} element={<MetroMap />} />
+        <Route path={FE_PATH.PAYMENT_SUCCESS} element={<PaymentSuccess />} />
+        <Route path={FE_PATH.PAYMENT_FAILURE} element={<PaymentFailure />} />
+      </Route>
 
-        {/* Route without header and footer */}
+      <Route
+        path={FE_PATH.LOGIN}
+        element={
+          <RoleRoute allowedRoles={["guest"]}>
+            <LoginPage />
+          </RoleRoute>
+        }
+      />
+      <Route
+        path={FE_PATH.REGISTER}
+        element={
+          <RoleRoute allowedRoles={["guest"]}>
+            <RegisterPage />
+          </RoleRoute>
+        }
+      />
+      <Route
+        path={FE_PATH.SOCIAL_LOGIN_REDIRECT}
+        element={
+          <RoleRoute allowedRoles={["guest"]}>
+            <SocialLoginPopup />
+          </RoleRoute>
+        }
+      />
+
+      <Route element={<HeaderLayout />}>
         <Route
-          path={FE_PATH.LOGIN}
+          path={FE_PATH.PROFILE}
           element={
-            <PublicRoute>
-              <LoginPage />
-            </PublicRoute>
+            <RoleRoute allowedRoles={["user"]}>
+              <ProfilePage />
+            </RoleRoute>
           }
         />
-        <Route
-          path={FE_PATH.SOCIAL_LOGIN_REDIRECT}
-          element={
-            <PublicRoute>
-              <SocialLoginPopup />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path={FE_PATH.REGISTER}
-          element={
-            <PublicRoute>
-              <RegisterPage />
-            </PublicRoute>
-          }
-        />
 
-        {/* Layout with only header */}
-        <Route element={<HeaderLayout />}>
-          <Route
-            path={FE_PATH.PROFILE}
-            element={
-              <PrivateRoute>
-                <ProfilePage />
-              </PrivateRoute>
-            }
-          />
-
-          <Route path={FE_PATH.ADMIN} element={
-            <AdminRoute>
+        <Route
+          path={FE_PATH.ADMIN}
+          element={
+            <RoleRoute allowedRoles={["admin"]}>
               <Admin />
-            </AdminRoute>
-          }>
-            <Route index element={<Dashboard />} />
-            <Route path="users" element={<UserManagement />} />
-            <Route path="route" element={<Station />} />
-            <Route path="requests" element={<VerifyRequestPage />} />
-            <Route path="feedbacks" element={<ManageFeedbackPage />} />
-          </Route>
+            </RoleRoute>
+          }
+        >
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="users" element={<UserManagement />} />
+          <Route path="route" element={<Station />} />
+          <Route path="requests" element={<VerifyRequestPage />} />
+          <Route path="feedbacks" element={<ManageFeedbackPage />} />
+          <Route path="tickets" element={<ManageTicketPage />} />
         </Route>
-      </Routes>
-    </>
+      </Route>
+    </Routes>
   );
 }

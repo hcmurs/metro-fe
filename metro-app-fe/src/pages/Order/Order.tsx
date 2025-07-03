@@ -7,10 +7,10 @@ import Button from '../../components/Minh/Button';
 import { apiCreateVnPayPayment } from '../../apis/vnpay.api';
 import { apiCreatePaypalPayment } from '../../apis/paypal.api';
 import type { PaymentMethodResponse } from '../../types/order.type';
-import type { TicketTypeResponse } from '../../types/tickettype.type';
+import type { TicketType } from '../../types/tickettype.type';
 // import type { Ticket as TicketResponse } from '../../types/ticket.type';
-import type { FareMatrixResponse } from '../../types/fare.type';
-import type { StationResponse } from '../../types/station.type';
+import type { FareMatrix } from '../../types/fare.type';
+import type { Station } from '../../types/station.type';
 import { FE_PATH } from '../../constants/path';
 
 const { Title, Text } = Typography;
@@ -18,10 +18,10 @@ const { Title, Text } = Typography;
 interface OrderPageState {
   orderType: 'single' | 'pass';
   orderId: number;
-  ticketType?: TicketTypeResponse;
-  fareMatrix?: FareMatrixResponse;
-  startStation?: StationResponse;
-  endStation?: StationResponse;
+  ticketType?: TicketType;
+  fareMatrix?: FareMatrix;
+  startStation?: Station;
+  endStation?: Station;
   quantity?: number;
   amount: number;
   selectedPaymentMethod?: PaymentMethodResponse;

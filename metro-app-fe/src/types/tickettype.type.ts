@@ -4,23 +4,16 @@ export interface TicketTypeRequest {
     description: string,
     price: number,
     isActive: boolean,
-    validityDuration: Duration 
+    validityDuration: number 
 }
 
-export interface TicketTypeResponse {
+export interface TicketType {
     id: number,
     name: string,
     description: string,
     price: number,
-    validityDuration: Duration ,
+    validityDuration: number,
     isActive: boolean,
     createAt: string,
     updateAt: string,
 }
-
-type Duration =
-    | 'ONE_DAY'
-    | 'THREE_DAYS'
-    | 'ONE_WEEK'
-    | 'SINGLE'
-    | 'ONE_MONTH'

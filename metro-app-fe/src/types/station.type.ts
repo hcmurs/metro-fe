@@ -8,7 +8,7 @@ export interface StationRequest {
     sequenceOrder: number
 }
 
-export interface StationResponse {
+export interface Station {
     stationId: number,
     stationCode: string,
     name: string,

@@ -26,6 +26,7 @@ const users: UserType[] = [
     full_name: "Admin User",
     role: "admin",
     is_student: false,
+    student_expired_date: "2024-12-31",
     status: "banned",
     created_at: "2023-12-15T10:00:00",
     updated_at: "2025-05-25T12:00:00",

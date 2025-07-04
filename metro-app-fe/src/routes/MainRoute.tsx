@@ -26,6 +26,8 @@ import VerifyRequestPage from "../pages/VerifyRequestPage/VerifyRequestPage";
 import AdminRoute from "./AdminRoute";
 import ManageFeedbackPage from "../pages/ManageFeedback/ManageFeedbackPage";
 import GlobalRedirectGuard from "../guards/GlobalRedirectGuard";
+import { Ticket } from "lucide-react";
+import TicketUsageLog from "../pages/admin/components/TickerUsageLog/TicketUsageLog";
 
 export default function MainRoute() {
   return (
@@ -93,6 +95,7 @@ export default function MainRoute() {
             <Route path="route" element={<Station />} />
             <Route path="requests" element={<VerifyRequestPage />} />
             <Route path="feedbacks" element={<ManageFeedbackPage />} />
+            <Route path="logs" element={<TicketUsageLog />} />
           </Route>
         </Route>
       </Routes>

@@ -31,6 +31,13 @@ export default function Admin() {
 							<User /> Users
 						</Link>
 						<Link
+							to={'logs'}
+							onClick={() => setChosen('logs')}
+							className={`${baseClass} ${choosen === 'logs' ? activeClass : ''} `}
+						>
+							<User /> Ticket Logs
+						</Link>
+						<Link
 							to={'requests'}
 							onClick={() => setChosen('requests')}
 							className={`${baseClass} ${choosen === 'requests' ? activeClass : ''} `}

@@ -75,6 +75,7 @@ export default function FeedbackTab() {
 
   const { control, handleSubmit, formState: { errors }, reset, clearErrors, setError } = useForm<FeedbackFormData>({
     resolver: zodResolver(feedbackFormSchema),
+    mode: 'onChange',
     defaultValues: {
       content: '',
       category: '',

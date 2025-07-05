@@ -95,6 +95,7 @@ export default function StudentRequestTab() {
 
   const { control, handleSubmit, formState: { errors }, reset, setError, clearErrors } = useForm<StudentRequestFormData>({
     resolver: zodResolver(studentRequestFormSchema),
+    mode: 'onChange',
     defaultValues: {
       content: '',
       endDate: '',

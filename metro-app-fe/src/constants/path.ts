@@ -14,7 +14,6 @@ export const FE_PATH = {
   METRO_MAP: "/metro-map",
   PAYMENT_SUCCESS: "/payment/success",
   PAYMENT_FAILURE: "/payment/failure",
-  SOCIAL_LOGIN_REDIRECT: "/oauth2/redirect",
   PROFILE: "/profile",
   VERIFY_REQUEST: "/admin/requests",
   MANAGE_FEEDBACK: "/admin/feedbacks",

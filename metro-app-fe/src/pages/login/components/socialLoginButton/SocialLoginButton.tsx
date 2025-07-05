@@ -3,7 +3,7 @@ import React from 'react'
 type SocialLoginButtonProps = {
 	provider: 'google' | 'facebook'
 	onSocialLogin: (provider: string) => void,
-	disabled: boolean
+	disabled?: boolean
 }
 
 const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({

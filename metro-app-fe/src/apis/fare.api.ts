@@ -22,7 +22,7 @@ export const apiCreateFareMatrix = async (fareMatrix: FareMatrixRequest): Promis
     }
 }
 
-export const apiUpdateFareMatrix = async (fareMatrix: FareMatrixRequest,fareMatrixId: number): Promise<ApiResponse<FareMatrix> | null> => {
+export const apiUpdateFareMatrix = async (fareMatrix: FareMatrixRequest, fareMatrixId: number): Promise<ApiResponse<FareMatrix> | null> => {
     try {
         const res = await api.put(`${API_PATH.FARE}/update/${fareMatrixId}`, fareMatrix);
         return res.data as ApiResponse<FareMatrix>;

@@ -33,6 +33,7 @@ export default function VerifyRequestPage() {
 
   const { control, handleSubmit, reset, formState: { errors }, clearErrors } = useForm<RejectFormInputs>({
     resolver: zodResolver(rejectSchema),
+    mode: 'onChange',
     defaultValues: {
       rejectionReason: ''
     }

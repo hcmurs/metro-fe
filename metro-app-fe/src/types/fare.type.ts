@@ -4,7 +4,7 @@ export interface FareMatrix {
     price: number;
     startStationId: number;
     endStationId: number;
-    isActive?: boolean;
+    isActive: boolean;
     createdAt: string;
     updatedAt: string;
   }
@@ -13,19 +13,13 @@ export interface FareMatrixRequest {
     price: number;
     startStationId: number;
     endStationId: number;
-    name: string
-}
-
-export interface FareMatrixUpdateRequest {
-    fareMatrixId: number;
-    price: number;
-    name: string;
     isActive: boolean;
+    name: string;
 }
 
 export interface FindFareRequest {
-    startStationId: number,
-    endStationId: number
+    startStationId: number;
+    endStationId: number;
 }
 
 

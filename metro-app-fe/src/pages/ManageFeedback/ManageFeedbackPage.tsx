@@ -36,6 +36,7 @@ export default function ManageFeedbackPage() {
 
   const { control, handleSubmit, formState: { errors }, clearErrors } = useForm<ResponseFormInputs>({
     resolver: zodResolver(responseSchema),
+    mode: 'onChange',
     defaultValues: {
       replyContent: ''
     }

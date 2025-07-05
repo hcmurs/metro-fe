@@ -1,5 +1,4 @@
 export interface TicketTypeRequest {
-    ticketTypeId: number,
     name: string,
     description: string,
     price: number,
@@ -14,6 +13,7 @@ export interface TicketType {
     price: number,
     validityDuration: number,
     isActive: boolean,
+    forStudent: boolean,
     createAt: string,
     updateAt: string,
 }

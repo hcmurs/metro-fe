@@ -1,10 +1,7 @@
 import {
   CheckOutlined,
   CloseOutlined,
-  CreditCardOutlined,
-  DeleteOutlined,
   EditOutlined,
-  ExclamationCircleOutlined,
   FilterOutlined,
   PlusOutlined,
   SearchOutlined
@@ -29,16 +26,16 @@ import {
   Tabs,
 } from 'antd';
 import { CircleDollarSign, ClockPlus, Route, Ticket } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { apiCreateFareMatrix, apiGetFareMatrices, apiUpdateFareMatrix } from '../../apis/fare.api';
 import { apiGetStations } from '../../apis/station.api';
-import { apiGetTicketTypes } from '../../apis/tickettype.api';
+import { apiCreateTicketType, apiGetTicketTypes, apiUpdateTicketType } from '../../apis/tickettype.api';
 import { useAuth } from '../../contexts/AuthContext';
+import type { FareMatrix, FareMatrixRequest } from '../../types/fare.type';
 import type { Station } from '../../types/station.type';
-import type { TicketType } from '../../types/tickettype.type';
-import type { FareMatrix } from '../../types/fare.type';
-import { apiGetFareMatrices } from '../../apis/fare.api';
+import type { TicketType, TicketTypeRequest } from '../../types/tickettype.type';
 
 const { Content } = Layout;
 const { Search } = Input;
@@ -48,7 +45,13 @@ const ticketTypeSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100, 'Name must be less than 100 characters'),
   price: z.number().min(1000, 'Price must be greater than 1000'),
   description: z.string().max(500, 'Description must be less than 500 characters').optional(),
-  validityDuration: z.number().min(1, 'Validity duration must be equal or greater than 1 day'),
+  validityDuration:
+    z.number({
+      required_error: "Validity duration is required",
+      invalid_type_error: "Validity duration is required"
+    })
+      .min(1, 'Validity duration must be equal or greater than 1 day')
+      .max(365, 'Validity duration cannot exceed 365'),
   isActive: z.boolean()
 });
 
@@ -88,6 +91,7 @@ export default function ManageTicketPage() {
 
   const ticketForm = useForm<TicketTypeFormInputs>({
     resolver: zodResolver(ticketTypeSchema),
+    mode: 'onChange',
     defaultValues: {
       name: '',
       price: 0,
@@ -99,6 +103,7 @@ export default function ManageTicketPage() {
 
   const fareForm = useForm<FareMatrixFormInputs>({
     resolver: zodResolver(fareMatrixSchema),
+    mode: 'onChange',
     defaultValues: {
       name: '',
       price: 0,
@@ -154,7 +159,10 @@ export default function ManageTicketPage() {
         setIsLoading(false);
       }
     };
-    fetchData();
+
+    if (contextUser) {
+      fetchData();
+    }
   }, []);
 
   useEffect(() => {
@@ -222,7 +230,13 @@ export default function ManageTicketPage() {
 
   const handleAddFare = () => {
     setEditingFare(null);
-    fareForm.reset();
+    fareForm.reset({
+      name: '',
+      price: 0,
+      startStationId: 1,
+      endStationId: 1,
+      isActive: true
+    });
     setShowFareModal(true);
   };
 
@@ -238,24 +252,47 @@ export default function ManageTicketPage() {
     setShowFareModal(true);
   };
 
-  const handleTicketSubmit = async (data: TicketTypeFormInputs) => {
+  const handleTicketTypeSubmit = async (data: TicketTypeFormInputs) => {
+    let isError = false;
     setIsSubmitting(true);
-    console.log(data)
+    const ticketTypeRequest: TicketTypeRequest = {
+      description: data.description || '',
+      isActive: data.isActive,
+      name: data.name,
+      price: data.price,
+      validityDuration: data.validityDuration
+    };
+
     try {
       if (editingTicket) {
-        // TODO: Implement update API call
-
-        notification.success({ message: 'Ticket type updated successfully' });
+        const res = await apiUpdateTicketType(ticketTypeRequest, editingTicket.id);
+        if (res && res.status === 200) {
+          const updatedTicketType: TicketType = res.data;
+          setTicketTypes(prev =>
+            prev.map(ticket =>
+              ticket.id === updatedTicketType.id ? updatedTicketType : ticket
+            )
+          );
+          notification.success({ message: 'Update successfully' });
+        } else {
+          isError = true;
+          notification.error({ message: 'Fail to update, try again later' });
+        }
       } else {
-        // TODO: Implement create API call
-
-        notification.success({ message: 'Ticket type created successfully' });
+        const res = await apiCreateTicketType(ticketTypeRequest);
+        if (res && res.status === 200) {
+          const newTicketType: TicketType = res.data;
+          setTicketTypes([...ticketTypes, newTicketType]);
+          notification.success({ message: 'Create successfully' });
+        } else {
+          isError = true;
+          notification.error({ message: 'Fail to create, try again later' });
+        }
       }
-      setShowTicketModal(false);
-      await fetchTicketTypes();
-    } catch (error) {
-      message.error('Something went wrong');
     } finally {
+      if (!isError) {
+        setShowTicketModal(false);
+      }
       setIsSubmitting(false);
     }
   };
@@ -266,80 +303,75 @@ export default function ManageTicketPage() {
       return;
     }
 
+    let isError = false;
     setIsSubmitting(true);
+    const fareMatrixRequest: FareMatrixRequest = {
+      name: data.name,
+      endStationId: data.endStationId,
+      startStationId: data.startStationId,
+      isActive: data.isActive,
+      price: data.price
+    };
+
     try {
       if (editingFare) {
-        // TODO: Implement update API call
-        // const res = await apiUpdateFareMatrix(editingFare.fareMatrixId, data);
-        notification.success({ message: 'Fare matrix updated successfully' });
+        const res = await apiUpdateFareMatrix(fareMatrixRequest, editingFare.fareMatrixId);
+        if (res && res.status === 200) {
+          const updatedFareMatrix: FareMatrix = res.data;
+          setFareMatrices(prev =>
+            prev.map(fareMatrix =>
+              fareMatrix.fareMatrixId === updatedFareMatrix.fareMatrixId ? updatedFareMatrix : fareMatrix
+            )
+          );
+          notification.success({ message: 'Update successfully' });
+        } else {
+          isError = true;
+          notification.error({ message: 'Fail to create, try again later' });
+        }
       } else {
-        // TODO: Implement create API call
-        // const res = await apiCreateFareMatrix(data);
-        notification.success({ message: 'Fare matrix created successfully' });
+        const res = await apiCreateFareMatrix(fareMatrixRequest);
+        if (res && res.status === 200) {
+          const newFareMatrix: FareMatrix = res.data;
+          setFareMatrices([...fareMatrices, newFareMatrix]);
+          notification.success({ message: 'Create successfully' });
+        } else {
+          isError = true;
+          notification.error({ message: 'Fail to create, try again later' });
+        }
       }
-      setShowFareModal(false);
-      await fetchFareMatrix();
-    } catch (error) {
-      message.error('Something went wrong');
     } finally {
+      if (!isError) {
+        setShowFareModal(false);
+      }
       setIsSubmitting(false);
     }
   };
 
-  // Delete handlers
-  const handleDeleteTicket = (ticket: TicketType) => {
-    Modal.confirm({
-      title: 'Delete ticket type?',
-      icon: <ExclamationCircleOutlined />,
-      content: `Are you sure you want to delete "${ticket.name}"?`,
-      okText: 'Delete',
-      okType: 'danger',
-      cancelText: 'Cancel',
-      centered: true,
-      onOk: async () => {
-        try {
-          // TODO: Implement delete API call
-          // await apiDeleteTicketType(ticket.ticketTypeId);
-          notification.success({ message: 'Ticket type deleted successfully' });
-          await fetchTicketTypes();
-        } catch (error) {
-          message.error('Failed to delete ticket type');
-        }
-      },
-    });
-  };
+  const handleToggleTicketTypeStatus = async (data: TicketType) => {
+    setIsSubmitting(true);
+    const ticketTypeRequest: TicketTypeRequest = {
+      description: data.description || '',
+      isActive: !data.isActive,
+      name: data.name,
+      price: data.price,
+      validityDuration: data.validityDuration
+    };
 
-  const handleDeleteFare = (fare: FareMatrix) => {
-    Modal.confirm({
-      title: 'Delete fare matrix?',
-      icon: <ExclamationCircleOutlined />,
-      content: `Are you sure you want to delete "${fare.name}"?`,
-      okText: 'Delete',
-      okType: 'danger',
-      cancelText: 'Cancel',
-      centered: true,
-      onOk: async () => {
-        try {
-          // TODO: Implement delete API call
-          // await apiDeleteFareMatrix(fare.fareMatrixId);
-          notification.success({ message: 'Fare matrix deleted successfully' });
-          await fetchFareMatrix();
-        } catch (error) {
-          message.error('Failed to delete fare matrix');
-        }
-      },
-    });
-  };
-
-  // Toggle status handlers
-  const handleToggleTicketStatus = async (ticket: TicketType) => {
     try {
-      // TODO: Implement toggle status API call
-      // await apiToggleTicketTypeStatus(ticket.ticketTypeId, !ticket.isActive);
-      notification.success({ message: `Ticket type ${!ticket.isActive ? 'activated' : 'deactivated'}` });
-      await fetchTicketTypes();
-    } catch (error) {
-      message.error('Failed to update status');
+      const res = await apiUpdateTicketType(ticketTypeRequest, data.id);
+      if (res && res.status === 200) {
+        const updatedTicket: TicketType = res.data;
+        setTicketTypes(prev =>
+          prev.map(ticket =>
+            ticket.id === updatedTicket.id ? updatedTicket : ticket
+          )
+        );
+        notification.success({ message: `Ticket type ${!data.isActive ? 'activated' : 'deactivated'}` });
+      } else {
+        notification.error({ message: 'Failed to update status, try again later' });
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -408,7 +440,7 @@ export default function ManageTicketPage() {
       render: (isActive: boolean, record: TicketType) => (
         <Switch
           checked={isActive}
-          onChange={() => handleToggleTicketStatus(record)}
+          onChange={() => handleToggleTicketTypeStatus(record)}
           checkedChildren={<CheckOutlined />}
           unCheckedChildren={<CloseOutlined />}
         />
@@ -430,13 +462,6 @@ export default function ManageTicketPage() {
             icon={<EditOutlined />}
             onClick={() => handleEditTicket(record)}
             title="Edit"
-          />
-          <Button
-            type="text"
-            danger
-            icon={<DeleteOutlined />}
-            onClick={() => handleDeleteTicket(record)}
-            title="Delete"
           />
         </Space>
       ),
@@ -502,13 +527,6 @@ export default function ManageTicketPage() {
             icon={<EditOutlined />}
             onClick={() => handleEditFare(record)}
             title="Edit"
-          />
-          <Button
-            type="text"
-            danger
-            icon={<DeleteOutlined />}
-            onClick={() => handleDeleteFare(record)}
-            title="Delete"
           />
         </Space>
       ),
@@ -739,7 +757,6 @@ export default function ManageTicketPage() {
 
         <Tabs defaultActiveKey="tickets" size="large" items={items} />
 
-        {/* Ticket Type Modal */}
         <Modal
           open={showTicketModal}
           onCancel={() => setShowTicketModal(false)}
@@ -750,7 +767,7 @@ export default function ManageTicketPage() {
         >
           <Form
             layout="vertical"
-            onFinish={ticketForm.handleSubmit(handleTicketSubmit)}
+            onFinish={ticketForm.handleSubmit(handleTicketTypeSubmit)}
           >
             <Row gutter={16}>
               <Col span={12}>
@@ -810,9 +827,11 @@ export default function ManageTicketPage() {
                 name="validityDuration"
                 control={ticketForm.control}
                 render={({ field }) => (
-                  <Input
+                  <InputNumber
                     {...field}
-                    placeholder="Enter route name"
+                    placeholder="Enter validity duration"
+                    step={1}
+                    className="!w-full"
                     prefix={<ClockPlus size={20} />}
                   />
                 )}
@@ -839,32 +858,28 @@ export default function ManageTicketPage() {
               />
             </Form.Item>
 
-            <Form.Item label="Status">
-              <Controller
-                name="isActive"
-                control={ticketForm.control}
-                render={({ field }) => (
-                  <Switch
-                    {...field}
-                    checked={field.value}
-                    checkedChildren={<CheckOutlined />}
-                    unCheckedChildren={<CloseOutlined />}
-                  />
-                )}
-              />
-              <span className="ml-2">
-                {ticketForm.watch('isActive') ? 'Active' : 'Inactive'}
-              </span>
-            </Form.Item>
+            {!editingTicket && (
+              <Form.Item label="Status">
+                <Controller
+                  name="isActive"
+                  control={ticketForm.control}
+                  render={({ field }) => (
+                    <Switch
+                      {...field}
+                      checked={field.value}
+                      checkedChildren={<CheckOutlined />}
+                      unCheckedChildren={<CloseOutlined />}
+                    />
+                  )}
+                />
+                <span className="ml-2">
+                  {ticketForm.watch('isActive') ? 'Active' : 'Inactive'}
+                </span>
+              </Form.Item>
+            )}
 
             <Form.Item className="!mb-0 !mt-6">
               <Space className="!w-full !justify-end">
-                <Button
-                  onClick={() => setShowTicketModal(false)}
-                  disabled={isSubmitting}
-                >
-                  Cancel
-                </Button>
                 <Button
                   type="primary"
                   htmlType="submit"
@@ -878,7 +893,6 @@ export default function ManageTicketPage() {
           </Form>
         </Modal>
 
-        {/* Fare Matrix Modal */}
         <Modal
           open={showFareModal}
           onCancel={() => setShowFareModal(false)}
@@ -925,12 +939,13 @@ export default function ManageTicketPage() {
                     render={({ field }) => (
                       <InputNumber
                         {...field}
-                        placeholder="0.00"
+                        placeholder="Enter price"
                         min={0}
-                        step={0.01}
-                        precision={2}
+                        step={1}
                         className="!w-full"
                         prefix={<CircleDollarSign size={20} />}
+                        formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
+                        parser={(value) => Number(value!.replace(/\./g, ''))}
                       />
                     )}
                   />
@@ -1003,32 +1018,28 @@ export default function ManageTicketPage() {
               </Col>
             </Row>
 
-            <Form.Item label="Status">
-              <Controller
-                name="isActive"
-                control={fareForm.control}
-                render={({ field }) => (
-                  <Switch
-                    {...field}
-                    checked={field.value}
-                    checkedChildren={<CheckOutlined />}
-                    unCheckedChildren={<CloseOutlined />}
-                  />
-                )}
-              />
-              <span className="ml-2">
-                {fareForm.watch('isActive') ? 'Active' : 'Inactive'}
-              </span>
-            </Form.Item>
+            {!editingFare && (
+              <Form.Item label="Status">
+                <Controller
+                  name="isActive"
+                  control={fareForm.control}
+                  render={({ field }) => (
+                    <Switch
+                      {...field}
+                      checked={field.value}
+                      checkedChildren={<CheckOutlined />}
+                      unCheckedChildren={<CloseOutlined />}
+                    />
+                  )}
+                />
+                <span className="ml-2">
+                  {fareForm.watch('isActive') ? 'Active' : 'Inactive'}
+                </span>
+              </Form.Item>
+            )}
 
             <Form.Item className="!mb-0 !mt-6">
               <Space className="!w-full !justify-end">
-                <Button
-                  onClick={() => setShowFareModal(false)}
-                  disabled={isSubmitting}
-                >
-                  Cancel
-                </Button>
                 <Button
                   type="primary"
                   htmlType="submit"

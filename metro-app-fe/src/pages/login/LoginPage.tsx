@@ -114,6 +114,7 @@ const LoginPage = () => {
       if (event.data.success) {
         apiFindUser()
           .then((response: ApiResponse<User> | null) => {
+            console.log(response?.data)
             if (response && response.status === 200) {
               contextLogin(response.data as User);
               message.success('Social login successful!');

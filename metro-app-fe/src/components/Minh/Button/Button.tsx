@@ -3,7 +3,7 @@ import { Button as AntButton } from 'antd';
 import type { ButtonProps } from 'antd';
 import { COLOR } from '../../../constants/color';
 
-interface CustomButtonProps extends Omit<ButtonProps, 'style'> {
+interface CustomButtonProps extends Omit<ButtonProps, 'style' | 'variant'> {
   variant?: 'primary' | 'secondary' | 'outline';
   hoverEffect?: 'scale' | 'shadow' | 'none';
   customStyle?: React.CSSProperties;

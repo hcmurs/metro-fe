@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { Card, Tabs, Typography, Row, Col, Spin, Empty, Tag, Button, Modal } from 'antd';
 import { QrcodeOutlined, CalendarOutlined, ClockCircleOutlined, ReloadOutlined, CloseOutlined } from '@ant-design/icons';
 import toast, { Toaster } from 'react-hot-toast';

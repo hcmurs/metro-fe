@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Search, MapPin, Clock, CheckCircle, XCircle } from 'lucide-react';
 import { apiGetStations, apiCreateStation, apiUpdateStation, apiDeleteStation, apiGetStationByName } from '../../../../apis/station.api';
-import type { StationResponse, StationRequest } from '../../../../types/station.type';
+import type { Station, StationRequest } from '../../../../types/station.type';
 
 interface StationFormData {
   stationCode: string;
@@ -14,11 +14,11 @@ interface StationFormData {
 }
 
 export default function StationManagement() {
-  const [stations, setStations] = useState<StationResponse[]>([]);
+  const [stations, setStations] = useState<Station[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
-  const [editingStation, setEditingStation] = useState<StationResponse | null>(null);
+  const [editingStation, setEditingStation] = useState<Station | null>(null);
   const [formData, setFormData] = useState<StationFormData>({
     stationCode: '',
     name: '',
@@ -72,7 +72,7 @@ export default function StationManagement() {
     try {
       if (editingStation) {
         // Update existing station
-        const updatedStation: StationResponse = {
+        const updatedStation: Station = {
           ...editingStation,
           ...formData
         };
@@ -96,7 +96,7 @@ export default function StationManagement() {
     }
   };
 
-  const handleEdit = (station: StationResponse) => {
+  const handleEdit = (station: Station) => {
     setEditingStation(station);
     setFormData({
       stationCode: station.stationCode,

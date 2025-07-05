@@ -1,7 +1,7 @@
 import type { TicketResponse } from "./ticket.type";
-import type { FareMatrixResponse } from "./fare.type";
-import type { StationResponse } from "./station.type";
-import type { TicketTypeResponse } from "./tickettype.type";
+import type { FareMatrix as FareMatrixResponse } from "./fare.type";
+import type { Station as StationResponse } from "./station.type";
+import type { TicketType as TicketTypeResponse } from "./tickettype.type";
 export interface OrderTicketDaysRequest{
     ticketId: TicketType,
     paymentMethodId: number

@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, Tabs, Select, InputNumber, Row, Col, Typography, Divider } from 'antd';
+import { Card, Tabs, Select, Row, Col, Typography, Divider } from 'antd';
 import toast, { Toaster } from 'react-hot-toast';
 import { CreditCardOutlined, EnvironmentOutlined, ClockCircleOutlined } from '@ant-design/icons';
-import { COLOR } from '../../constants/color';
 import Button from '../../components/Minh/Button';
 import type { TicketType } from '../../types/tickettype.type';
 import { apiGetTicketTypes } from '../../apis/tickettype.api';
@@ -11,7 +10,6 @@ import { apiGetStations } from '../../apis/station.api';
 import type { Station } from '../../types/station.type';
 import type { FareMatrix,FindFareRequest } from '../../types/fare.type';
 import { apiFindFareMatrix } from '../../apis/fare.api';
-import { apiCreateOrderSingle, apiCreateOrderDays } from '../../apis/order.api';
 import { apiGetPaymentMethods } from '../../apis/payment.api';
 import type { PaymentMethodResponse, OrderTicketSingleRequest, OrderTicketDaysRequest } from '../../types/order.type';
 import { FE_PATH } from '../../constants/path';
@@ -39,7 +37,8 @@ export default function BuyTicket() {
       try {
         // Fetch ticket types
         const ticketResponse = await apiGetTicketTypes();
-        const filtered = ticketResponse?.data.filter((type) => type.name !== 'Single');
+        console.log(ticketResponse?.data)
+        const filtered = ticketResponse?.data.filter((type) => type.name !== 'Vé đơn');
         if (filtered) {
           setTicketTypes(filtered);
         }
@@ -56,8 +55,8 @@ export default function BuyTicket() {
           const activeMethods = paymentResponse.data.filter(method => method.active);
           setPaymentMethods(activeMethods);
         }
-      } catch (error: any) {
-        toast.error(error?.response?.message || 'Failed to load data');
+      } catch (error) {
+        toast.error((error as Error)?.message || 'Failed to load data');
       } finally {
         setLoading(false);
       }
@@ -325,7 +324,7 @@ export default function BuyTicket() {
                 icon={<CreditCardOutlined />}
                 variant="primary"
                 hoverEffect="scale"
-                style={{
+                customStyle={{
                   width: '100%',
                   height: '3rem',
                   fontSize: '1.125rem',
@@ -595,7 +594,7 @@ export default function BuyTicket() {
                     icon={<CreditCardOutlined />}
                     variant="primary"
                     hoverEffect="scale"
-                    style={{
+                    customStyle={{
                       width: '100%',
                       height: '3rem',
                       fontSize: '1.125rem',

@@ -17,7 +17,6 @@ export default function Order() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [orderData, setOrderData] = useState<OrderPageState | null>(null);
-  const [orderId, setOrderId] = useState<number>(0);
 
   useEffect(() => {
     // Get order data from navigation state
@@ -45,7 +44,6 @@ export default function Order() {
         const response = await apiCreateOrderDays(orderData.orderRequest as OrderTicketDaysRequest);
         if (response?.data) {
           createdOrderId = response.data.orderId;
-          setOrderId(createdOrderId);
         } else {
           toast.error('Failed to create order: ' + response?.message);
           setLoading(false);
@@ -55,7 +53,6 @@ export default function Order() {
         const response = await apiCreateOrderSingle(orderData.orderRequest as OrderTicketSingleRequest);
         if (response?.data) {
           createdOrderId = response.data.orderId;
-          setOrderId(createdOrderId);
         } else {
           toast.error('Failed to create order: ' + response?.message);
           setLoading(false);
@@ -530,7 +527,7 @@ export default function Order() {
                   icon={<CreditCardOutlined />}
                   variant="primary"
                   hoverEffect="scale"
-                  style={{
+                  customStyle={{
                     width: '100%',
                     marginBottom: '1rem',
                     height: '3rem',
@@ -546,7 +543,7 @@ export default function Order() {
                   size="large"
                   onClick={() => navigate(FE_PATH.BUY_TICKET)}
                   variant="secondary"
-                  style={{
+                  customStyle={{
                     width: '100%',
                     height: '3rem',
                     fontSize: '1.125rem',

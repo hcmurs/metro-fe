@@ -14,7 +14,6 @@ import BuyTicket from "../pages/BuyTicket/BuyTicket";
 import MetroMap from "../pages/MetroMap";
 import MyTickets from "../pages/MyTickets";
 import Order from "../pages/Order";
-import PaymentFailure from "../pages/PaymentFailure";
 import PaymentSuccess from "../pages/PaymentSuccess";
 import ProfilePage from "../pages/Profile/ProfilePage";
 import Dashboard from "../pages/admin/components/Dashboard/Dashboard";
@@ -50,7 +49,7 @@ export default function MainRoute() {
         <Route path={FE_PATH.MY_TICKETS} element={<MyTickets />} />
         <Route path={FE_PATH.METRO_MAP} element={<MetroMap />} />
         <Route path={FE_PATH.PAYMENT_SUCCESS} element={<PaymentSuccess />} />
-        <Route path={FE_PATH.PAYMENT_FAILURE} element={<PaymentFailure />} />
+
       </Route>
 
       <Route

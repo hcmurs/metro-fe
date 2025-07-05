@@ -326,7 +326,7 @@ export default function ManageTicketPage() {
           notification.success({ message: 'Update successfully' });
         } else {
           isError = true;
-          notification.error({ message: 'Fail to create, try again later' });
+          notification.error({ message: 'Fail to update, try again later' });
         }
       } else {
         const res = await apiCreateFareMatrix(fareMatrixRequest);

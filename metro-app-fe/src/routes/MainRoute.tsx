@@ -7,7 +7,6 @@ import Admin from "../pages/admin/Admin";
 import NewsPage from "../pages/Blogs/Blogs";
 import NewsDetail from "../pages/BlogsDetail";
 import Home from "../pages/Home";
-import SocialLoginPopup from "../pages/Login/components/socialLoginPopup/SocialLoginPopup";
 import LoginPage from "../pages/Login/LoginPage";
 import RegisterPage from "../pages/Register/RegisterPage";
 import BuyTicket from "../pages/BuyTicket/BuyTicket";
@@ -32,7 +31,6 @@ export default function MainRoute() {
 
   return (
     <Routes>
-      {/* Public Layout (Header + Footer) */}
       <Route
         element={
           <RoleRoute allowedRoles={["user", "guest"]}>
@@ -60,19 +58,12 @@ export default function MainRoute() {
           </RoleRoute>
         }
       />
+      
       <Route
         path={FE_PATH.REGISTER}
         element={
           <RoleRoute allowedRoles={["guest"]}>
             <RegisterPage />
-          </RoleRoute>
-        }
-      />
-      <Route
-        path={FE_PATH.SOCIAL_LOGIN_REDIRECT}
-        element={
-          <RoleRoute allowedRoles={["guest"]}>
-            <SocialLoginPopup />
           </RoleRoute>
         }
       />

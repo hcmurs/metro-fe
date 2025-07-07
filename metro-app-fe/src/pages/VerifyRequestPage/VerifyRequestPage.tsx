@@ -1,12 +1,12 @@
 import { CalendarOutlined, CheckOutlined, CloseOutlined, CreditCardOutlined, ExclamationCircleOutlined, EyeOutlined, FileTextOutlined, FilterOutlined, ReadOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Card, Col, Form, Image, Input, Layout, message, Modal, notification, Row, Select, Space, Spin, Table, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { apiFindAllRequests, apiFindUserById, apiVerifyRequest } from '../../apis/user.api';
-import { useAuth } from '../../contexts/AuthContext';
-import type { StudentRequest, User } from '../../types/user.type';
 import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { apiFindUserById, apiVerifyRequest } from '../../apis/user.api';
+import { useAdminStore } from '../../stores/admin.store';
+import type { StudentRequest, User } from '../../types/user.type';
 
 const { Content } = Layout;
 const { Search } = Input;
@@ -19,7 +19,6 @@ const rejectSchema = z.object({
 type RejectFormInputs = z.infer<typeof rejectSchema>;
 
 export default function VerifyRequestPage() {
-  const [requests, setRequests] = useState<StudentRequest[]>([]);
   const [filteredRequests, setFilteredRequests] = useState<StudentRequest[]>([]);
   const [selectedRequest, setSelectedRequest] = useState<StudentRequest | null>(null);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -27,9 +26,9 @@ export default function VerifyRequestPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { contextUser } = useAuth();
   const [showRejectModal, setShowRejectModal] = useState(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const { isFetched, requests, updateRequest } = useAdminStore();
 
   const { control, handleSubmit, reset, formState: { errors }, clearErrors } = useForm<RejectFormInputs>({
     resolver: zodResolver(rejectSchema),
@@ -38,33 +37,6 @@ export default function VerifyRequestPage() {
       rejectionReason: ''
     }
   });
-
-  const fetchRequests = async () => {
-    if (!contextUser || !contextUser.userId) {
-      return;
-    }
-
-    const res = await apiFindAllRequests();
-    if (res && res.status === 200) {
-      setRequests(res.data);
-    } else {
-      message.error('Failed to fetch student requests. Please try again later.');
-    }
-  }
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        await Promise.all([
-          fetchRequests()
-        ]);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchData();
-  }, []);
 
   useEffect(() => {
     let filtered = requests;
@@ -133,7 +105,7 @@ export default function VerifyRequestPage() {
     if (res && res.status === 200) {
       notification.success({ message: 'Approved successfully' });
       setShowModal(false);
-      await fetchRequests();
+      updateRequest(res.data);
     } else {
       message.error("Something wen't wrong");
     }
@@ -150,7 +122,7 @@ export default function VerifyRequestPage() {
       notification.success({ message: 'Rejected successfully' });
       setShowRejectModal(false);
       setShowModal(false);
-      await fetchRequests();
+      updateRequest(res.data);
       reset();
     } else {
       message.error("Something went wrong");
@@ -312,7 +284,7 @@ export default function VerifyRequestPage() {
 
         <Card className="!shadow-[0_1px_2px_0_rgba(0,0,0,0.03),0_1px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_0_rgba(0,0,0,0.02)]">
           <Table
-            loading={isLoading}
+            loading={!isFetched}
             columns={columns}
             dataSource={filteredRequests}
             rowKey="requestId"

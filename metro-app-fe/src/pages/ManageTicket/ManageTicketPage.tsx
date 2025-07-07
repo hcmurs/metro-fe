@@ -29,12 +29,10 @@ import { CircleDollarSign, ClockPlus, Route, Ticket } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { apiCreateFareMatrix, apiGetFareMatrices, apiUpdateFareMatrix } from '../../apis/fare.api';
-import { apiGetStations } from '../../apis/station.api';
-import { apiCreateTicketType, apiGetTicketTypes, apiUpdateTicketType } from '../../apis/tickettype.api';
-import { useAuth } from '../../contexts/AuthContext';
+import { apiCreateFareMatrix, apiUpdateFareMatrix } from '../../apis/fare.api';
+import { apiCreateTicketType, apiUpdateTicketType } from '../../apis/tickettype.api';
+import { useAdminStore } from '../../stores/admin.store';
 import type { FareMatrix, FareMatrixRequest } from '../../types/fare.type';
-import type { Station } from '../../types/station.type';
 import type { TicketType, TicketTypeRequest } from '../../types/tickettype.type';
 
 const { Content } = Layout;
@@ -67,19 +65,13 @@ type TicketTypeFormInputs = z.infer<typeof ticketTypeSchema>;
 type FareMatrixFormInputs = z.infer<typeof fareMatrixSchema>;
 
 export default function ManageTicketPage() {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const [ticketTypes, setTicketTypes] = useState<TicketType[]>([]);
   const [filteredTickets, setFilteredTickets] = useState<TicketType[]>([]);
   const [ticketSearchTerm, setTicketSearchTerm] = useState('');
   const [ticketStatusFilter, setTicketStatusFilter] = useState<string>('ALL');
 
-  const [fareMatrices, setFareMatrices] = useState<FareMatrix[]>([]);
   const [filteredFareMatrix, setFilteredFareMatrix] = useState<FareMatrix[]>([]);
   const [fareSearchTerm, setFareSearchTerm] = useState('');
   const [fareStatusFilter, setFareStatusFilter] = useState<string>('ALL');
-
-  const [stations, setStations] = useState<Station[]>([]);
 
   const [showTicketModal, setShowTicketModal] = useState(false);
   const [showFareModal, setShowFareModal] = useState(false);
@@ -87,7 +79,7 @@ export default function ManageTicketPage() {
   const [editingFare, setEditingFare] = useState<FareMatrix | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { contextUser } = useAuth();
+  const { ticketTypes, fareMatrices, stations, setTicketTypes, setFareMatrices, updateTicketType, updateFareMatrix, isFetched } = useAdminStore();
 
   const ticketForm = useForm<TicketTypeFormInputs>({
     resolver: zodResolver(ticketTypeSchema),
@@ -112,58 +104,6 @@ export default function ManageTicketPage() {
       isActive: true
     }
   });
-
-  const fetchTicketTypes = async () => {
-    const res = await apiGetTicketTypes();
-    if (res && res.status === 200) {
-      setTicketTypes(res.data);
-    } else {
-      notification.error({
-        message: "Cannot fetch data of ticket types"
-      });
-    }
-  };
-
-  const fetchFareMatrix = async () => {
-    const res = await apiGetFareMatrices();
-    if (res && res.status === 200) {
-      setFareMatrices(res.data);
-    } else {
-      notification.error({
-        message: "Cannot fetch data of fare matrices"
-      });
-    }
-  };
-
-  const fetchStations = async () => {
-    const res = await apiGetStations();
-    if (res && res.status === 200) {
-      setStations(res.data);
-    } else {
-      notification.error({
-        message: "Cannot fetch data of ticket types"
-      });
-    }
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        await Promise.all([
-          fetchTicketTypes(),
-          fetchFareMatrix(),
-          fetchStations()
-        ]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (contextUser) {
-      fetchData();
-    }
-  }, []);
 
   useEffect(() => {
     let filtered = ticketTypes;
@@ -268,11 +208,7 @@ export default function ManageTicketPage() {
         const res = await apiUpdateTicketType(ticketTypeRequest, editingTicket.id);
         if (res && res.status === 200) {
           const updatedTicketType: TicketType = res.data;
-          setTicketTypes(prev =>
-            prev.map(ticket =>
-              ticket.id === updatedTicketType.id ? updatedTicketType : ticket
-            )
-          );
+          updateTicketType(updatedTicketType);
           notification.success({ message: 'Update successfully' });
         } else {
           isError = true;
@@ -318,11 +254,7 @@ export default function ManageTicketPage() {
         const res = await apiUpdateFareMatrix(fareMatrixRequest, editingFare.fareMatrixId);
         if (res && res.status === 200) {
           const updatedFareMatrix: FareMatrix = res.data;
-          setFareMatrices(prev =>
-            prev.map(fareMatrix =>
-              fareMatrix.fareMatrixId === updatedFareMatrix.fareMatrixId ? updatedFareMatrix : fareMatrix
-            )
-          );
+          updateFareMatrix(updatedFareMatrix);
           notification.success({ message: 'Update successfully' });
         } else {
           isError = true;
@@ -360,12 +292,8 @@ export default function ManageTicketPage() {
     try {
       const res = await apiUpdateTicketType(ticketTypeRequest, data.id);
       if (res && res.status === 200) {
-        const updatedTicket: TicketType = res.data;
-        setTicketTypes(prev =>
-          prev.map(ticket =>
-            ticket.id === updatedTicket.id ? updatedTicket : ticket
-          )
-        );
+        const updatedTicketType: TicketType = res.data;
+        updateTicketType(updatedTicketType);
         notification.success({ message: `Ticket type ${!data.isActive ? 'activated' : 'deactivated'}` });
       } else {
         notification.error({ message: 'Failed to update status, try again later' });
@@ -380,19 +308,16 @@ export default function ManageTicketPage() {
       // TODO: Implement toggle status API call
       // await apiToggleFareMatrixStatus(fare.fareMatrixId, !fare.isActive);
       notification.success({ message: `Fare matrix ${!fare.isActive ? 'activated' : 'deactivated'}` });
-      await fetchFareMatrix();
     } catch (error) {
       message.error('Failed to update status');
     }
   };
 
-  // Get station name helper
   const getStationName = (stationId: number) => {
     const station = stations.find(s => s.stationId === stationId);
     return station ? station.name : `Station #${stationId}`;
   };
 
-  // Table columns
   const ticketTypeColumns = [
     {
       title: 'Name',
@@ -632,7 +557,7 @@ export default function ManageTicketPage() {
 
           <Card className="!shadow-[0_1px_2px_0_rgba(0,0,0,0.03),0_1px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_0_rgba(0,0,0,0.02)]">
             <Table
-              loading={isLoading}
+              loading={!isFetched}
               columns={ticketTypeColumns}
               dataSource={filteredTickets}
               rowKey="id"
@@ -730,7 +655,7 @@ export default function ManageTicketPage() {
 
           <Card className="!shadow-[0_1px_2px_0_rgba(0,0,0,0.03),0_1px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_0_rgba(0,0,0,0.02)]">
             <Table
-              loading={isLoading}
+              loading={!isFetched}
               columns={fareColumns}
               dataSource={filteredFareMatrix}
               rowKey="fareMatrixId"

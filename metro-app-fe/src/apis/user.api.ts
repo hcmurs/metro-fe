@@ -76,10 +76,10 @@ export const apiFindAllRequests = async (): Promise<ApiResponse<StudentRequest[]
 	}
 }
 
-export const apiVerifyRequest = async (requestId: number, isApproved: boolean, rejectionReason?: string): Promise<ApiResponse<void> | null> => {
+export const apiVerifyRequest = async (requestId: number, isApproved: boolean, rejectionReason?: string): Promise<ApiResponse<StudentRequest> | null> => {
 	try {
 		const res = await api.post(`/users/requests/verify?requestId=${requestId}&isApproved=${isApproved}&rejectionReason=${rejectionReason}`);
-		return res.data as ApiResponse<void>;
+		return res.data as ApiResponse<StudentRequest>;
 	} catch {
 		return null;
 	}

@@ -4,8 +4,8 @@ import { Button, Card, Col, Form, Image, Input, Layout, message, Modal, notifica
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { apiFindAllFeedbacks, apiFindUserById, apiReplyFeedback } from '../../apis/user.api';
-import { useAuth } from '../../contexts/AuthContext';
+import { apiFindUserById, apiReplyFeedback } from '../../apis/user.api';
+import { useAdminStore } from '../../stores/admin.store';
 import type { Feedback, User } from '../../types/user.type';
 
 const { Content } = Layout;
@@ -20,8 +20,6 @@ const responseSchema = z.object({
 type ResponseFormInputs = z.infer<typeof responseSchema>;
 
 export default function ManageFeedbackPage() {
-  const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
-
   const [filteredFeedbacks, setFilteredFeedbacks] = useState<Feedback[]>([]);
   const [selectedFeedback, setSelectedFeedback] = useState<Feedback | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -30,9 +28,9 @@ export default function ManageFeedbackPage() {
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [categoryFilter, setCategoryFilter] = useState<string>('ALL');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const { contextUser } = useAuth();
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const { isFetched, feedbacks, updateFeedback } = useAdminStore();
 
   const { control, handleSubmit, formState: { errors }, clearErrors } = useForm<ResponseFormInputs>({
     resolver: zodResolver(responseSchema),
@@ -41,33 +39,6 @@ export default function ManageFeedbackPage() {
       replyContent: ''
     }
   });
-
-  const fetchFeedbacks = async () => {
-    if (!contextUser || !contextUser.userId) {
-      return;
-    }
-
-    const res = await apiFindAllFeedbacks();
-    if (res && res.status === 200) {
-      setFeedbacks(res.data);
-    } else {
-      message.error('Failed to fetch feedbacks. Please try again later.');
-    }
-  }
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        await Promise.all([
-          fetchFeedbacks()
-        ]);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchData();
-  }, []);
 
   useEffect(() => {
     let filtered = feedbacks;
@@ -143,10 +114,10 @@ export default function ManageFeedbackPage() {
       content: data.replyContent,
     })
     if (res && res.status === 200) {
-      notification.success({ message: 'Reply successfully' });
+      updateFeedback(res.data);
       setShowModal(false);
       setShowResponseModal(false);
-      await fetchFeedbacks();
+      notification.success({ message: 'Reply successfully' });
     } else {
       message.error("Something wen't wrong");
     }
@@ -318,7 +289,7 @@ export default function ManageFeedbackPage() {
 
         <Card className="!shadow-[0_1px_2px_0_rgba(0,0,0,0.03),0_1px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_0_rgba(0,0,0,0.02)]">
           <Table
-            loading={isLoading}
+            loading={!isFetched}
             columns={columns}
             dataSource={filteredFeedbacks}
             rowKey="feedbackId"

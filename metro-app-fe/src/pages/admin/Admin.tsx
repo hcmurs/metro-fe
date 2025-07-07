@@ -1,12 +1,20 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { LayoutDashboard, User, Train, Ticket } from 'lucide-react';
 import { DiffOutlined, SnippetsOutlined } from '@ant-design/icons';
+import { useAdminStore } from '../../stores/admin.store';
+import { useEffect } from 'react';
 
 export default function Admin() {
 	const location = useLocation();
 	const choosen = location.pathname.split('/')[2] || '';
 	const activeClass = 'text-blue-500 border-l-4 border-blue-500 bg-blue-100';
 	const baseClass = 'p-2 hover:bg-blue-100 text-black flex gap-2 rounded';
+
+	const fetchAll = useAdminStore(state => state.fetchAll);
+
+	useEffect(() => {
+		fetchAll();
+	}, []);
 
 	return (
 		<div className='flex bg-gray-200'>

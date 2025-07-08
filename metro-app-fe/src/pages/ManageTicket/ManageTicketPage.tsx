@@ -79,6 +79,9 @@ export default function ManageTicketPage() {
   const [editingFare, setEditingFare] = useState<FareMatrix | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [ticketSortBy, setTicketSortBy] = useState<string>('id');
+  const [fareSortBy, setFareSortBy] = useState<string>('id');
+
   const { ticketTypes, fareMatrices, stations, setTicketTypes, setFareMatrices, updateTicketType, updateFareMatrix, isFetched } = useAdminStore();
 
   const ticketForm = useForm<TicketTypeFormInputs>({
@@ -105,6 +108,36 @@ export default function ManageTicketPage() {
     }
   });
 
+  const sortTickets = (tickets: TicketType[], sortBy: string) => {
+    return [...tickets].sort((a, b) => {
+      switch (sortBy) {
+        case 'id':
+          return a.id - b.id;
+        case 'price':
+          return a.price - b.price;
+        case 'created':
+          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        default:
+          return 0;
+      }
+    });
+  };
+
+  const sortFares = (fares: FareMatrix[], sortBy: string) => {
+    return [...fares].sort((a, b) => {
+      switch (sortBy) {
+        case 'id':
+          return a.fareMatrixId - b.fareMatrixId;
+        case 'price':
+          return a.price - b.price;
+        case 'created':
+          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        default:
+          return 0;
+      }
+    });
+  };
+
   useEffect(() => {
     let filtered = ticketTypes;
 
@@ -121,8 +154,10 @@ export default function ManageTicketPage() {
       filtered = filtered.filter(ticket => ticket.isActive === isActive);
     }
 
-    setFilteredTickets(filtered);
-  }, [ticketSearchTerm, ticketStatusFilter, ticketTypes]);
+    const sorted = sortTickets(filtered, ticketSortBy);
+
+    setFilteredTickets(sorted);
+  }, [ticketSearchTerm, ticketStatusFilter, ticketTypes, ticketSortBy]);
 
   useEffect(() => {
     let filtered = fareMatrices;
@@ -141,8 +176,10 @@ export default function ManageTicketPage() {
       filtered = filtered.filter(fare => fare.isActive === isActive);
     }
 
-    setFilteredFareMatrix(filtered);
-  }, [fareSearchTerm, fareStatusFilter, fareMatrices]);
+    const sorted = sortFares(filtered, fareSortBy);
+
+    setFilteredFareMatrix(sorted);
+  }, [fareSearchTerm, fareStatusFilter, fareMatrices, fareSortBy]);
 
   const handleAddTicket = () => {
     setEditingTicket(null);
@@ -294,7 +331,7 @@ export default function ManageTicketPage() {
       if (res && res.status === 200) {
         const updatedTicketType: TicketType = res.data;
         updateTicketType(updatedTicketType);
-        notification.success({ message: `Ticket type ${!data.isActive ? 'activated' : 'deactivated'}` });
+        notification.success({ message: `${!data.isActive ? 'Activated' : 'Deactivated'} successfully` });
       } else {
         notification.error({ message: 'Failed to update status, try again later' });
       }
@@ -303,13 +340,27 @@ export default function ManageTicketPage() {
     }
   };
 
-  const handleToggleFareStatus = async (fare: FareMatrix) => {
+  const handleToggleFareStatus = async (data: FareMatrix) => {
+    setIsSubmitting(true);
+    const fareMatrixRequest: FareMatrixRequest = {
+      name: data.name,
+      endStationId: data.endStationId,
+      startStationId: data.startStationId,
+      isActive: !data.isActive,
+      price: data.price
+    };
+
     try {
-      // TODO: Implement toggle status API call
-      // await apiToggleFareMatrixStatus(fare.fareMatrixId, !fare.isActive);
-      notification.success({ message: `Fare matrix ${!fare.isActive ? 'activated' : 'deactivated'}` });
-    } catch (error) {
-      message.error('Failed to update status');
+      const res = await apiUpdateFareMatrix(fareMatrixRequest, data.fareMatrixId);
+      if (res && res.status === 200) {
+        const updatedFareMatrix: FareMatrix = res.data;
+        updateFareMatrix(updatedFareMatrix);
+        notification.success({ message: `${!data.isActive ? 'Activated' : 'Deactivated'} successfully` });
+      } else {
+        notification.error({ message: 'Failed to update status, try again later' });
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -535,12 +586,23 @@ export default function ManageTicketPage() {
                 <Space className='!w-full !justify-end' wrap>
                   <FilterOutlined className='!text-[rgba(0, 0, 0, 0.45)]' />
                   <Select
+                    className='!w-25'
                     defaultValue="ALL"
                     onChange={(value) => setTicketStatusFilter(value)}
                   >
                     <Option value="ALL">All Status</Option>
                     <Option value="ACTIVE">Active</Option>
                     <Option value="INACTIVE">Inactive</Option>
+                  </Select>
+                  <Select
+                    className='!w-32'
+                    defaultValue="id"
+                    onChange={(value) => setTicketSortBy(value)}
+                    placeholder="Sort by"
+                  >
+                    <Option value="id">Sort by ID</Option>
+                    <Option value="price">Sort by Price</Option>
+                    <Option value="created">Sort by Created Date</Option>
                   </Select>
                   <Button
                     type="primary"
@@ -633,12 +695,23 @@ export default function ManageTicketPage() {
                 <Space className='!w-full !justify-end' wrap>
                   <FilterOutlined className='!text-[rgba(0, 0, 0, 0.45)]' />
                   <Select
+                    className='!w-25'
                     defaultValue="ALL"
                     onChange={(value) => setFareStatusFilter(value)}
                   >
                     <Option value="ALL">All Status</Option>
                     <Option value="ACTIVE">Active</Option>
                     <Option value="INACTIVE">Inactive</Option>
+                  </Select>
+                  <Select
+                    className='!w-32'
+                    defaultValue="id"
+                    onChange={(value) => setFareSortBy(value)}
+                    placeholder="Sort by"
+                  >
+                    <Option value="id">Sort by ID</Option>
+                    <Option value="price">Sort by Price</Option>
+                    <Option value="created">Sort by Created Date</Option>
                   </Select>
                   <Button
                     type="primary"
@@ -676,7 +749,7 @@ export default function ManageTicketPage() {
     <Layout className='!min-h-screen !bg-[#f0f2f5] !p-6'>
       <Content className="!w-full !max-w-[1400px] !mx-auto">
         <div className='mb-6'>
-          <h1 className="text-[2em] font-bold text-[#333] mb-2">Ticket & Fare Management</h1>
+          <h1 className="text-[2em] font-bold text-[#333] mb-2">Ticket Management</h1>
           <p className='text-[#666]'>Manage ticket types and fare matrix for the system</p>
         </div>
 

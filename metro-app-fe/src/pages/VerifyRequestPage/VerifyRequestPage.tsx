@@ -201,7 +201,7 @@ export default function VerifyRequestPage() {
     <Layout className='!min-h-screen !bg-[#f0f2f5] !p-6'>
       <Content className="!w-full !max-w-[1200px] !mx-auto">
         <div className='mb-6'>
-          <h1 className="text-[2em] font-bold text-[#333] mb-2">Student Request Verification</h1>
+          <h1 className="text-[2em] font-bold text-[#333] mb-2">Student Request Management</h1>
           <p className='text-[#666]'>Review and manage student discount requests</p>
         </div>
 

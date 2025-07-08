@@ -14,6 +14,6 @@ export interface TicketType {
     validityDuration: number,
     isActive: boolean,
     forStudent: boolean,
-    createAt: string,
-    updateAt: string,
+    createdAt: string,
+    updatedAt: string,
 }

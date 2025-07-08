@@ -265,6 +265,7 @@ export default function ManageFeedbackPage() {
               <Space className='!w-full !justify-end' wrap>
                 <FilterOutlined className='!text-[rgba(0, 0, 0, 0.45)]' />
                 <Select
+                  className='!w-28'
                   defaultValue="ALL"
                   onChange={(value) => setStatusFilter(value)}
                 >

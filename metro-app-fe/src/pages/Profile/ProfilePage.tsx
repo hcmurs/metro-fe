@@ -1,11 +1,20 @@
-import { useState } from 'react';
-// import FeedbackTab from './components/FeedbackTab'
+import { useEffect, useState } from 'react';
 import StudentRequestTab from './components/StudentRequestTab';
 import UserInfoTab from './components/UserInfoTab';
 import FeedbackTab from './components/FeedbackTab';
+import { useUserStore } from '../../stores/user.store';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState('info');
+  const { contextUser } = useAuth();
+  const fetchAll = useUserStore(state => state.fetchAll);
+
+  useEffect(() => {
+    if (!contextUser) return;
+    
+    fetchAll(contextUser.userId);
+  }, [contextUser]);
 
   return (
     <div className="bg-[#e6fffd]/30 py-8 px-4 min-h-full min-w-full">

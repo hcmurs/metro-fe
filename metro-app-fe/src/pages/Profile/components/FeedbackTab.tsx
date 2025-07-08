@@ -2,12 +2,11 @@ import { UploadOutlined } from '@ant-design/icons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Form, Input, message, Modal, Select, Typography, Upload } from 'antd';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Controller, useForm, type SubmitHandler } from 'react-hook-form';
 import * as z from 'zod';
-import { apiCreateFeedback, apiFindFeedbackByUserId } from '../../../apis/user.api';
-import { useAuth } from '../../../contexts/AuthContext';
-import type { Feedback } from '../../../types/user.type';
+import { apiCreateFeedback } from '../../../apis/user.api';
+import { useUserStore } from '../../../stores/user.store';
 import { compressImage, convertFileToBase64 } from '../../../utils/common';
 
 const { Title, Text } = Typography;
@@ -38,9 +37,9 @@ export default function FeedbackTab() {
   const [showForm, setShowForm] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const { contextUser } = useAuth();
-  const [feedbackList, setFeedbackList] = useState<Feedback[]>([]);
   const [submitting, setSubmitting] = useState(false);
+
+  const { feedbacks, addFeedback } = useUserStore();
 
   const handleBeforeUpload = (file: File) => {
     clearErrors('image');
@@ -55,23 +54,6 @@ export default function FeedbackTab() {
     }
     return false;
   };
-
-  const fetchFeedbacks = async () => {
-    if (!contextUser || !contextUser.userId) {
-      return;
-    }
-
-    const res = await apiFindFeedbackByUserId(contextUser.userId);
-    if (res && res.status === 200) {
-      setFeedbackList(res.data as Feedback[]);
-    } else {
-      message.error('Failed to fetch requests. Please try again later.');
-    }
-  }
-
-  useEffect(() => {
-    fetchFeedbacks();
-  }, [contextUser]);
 
   const { control, handleSubmit, formState: { errors }, reset, clearErrors, setError } = useForm<FeedbackFormData>({
     resolver: zodResolver(feedbackFormSchema),
@@ -93,27 +75,27 @@ export default function FeedbackTab() {
     const res = await apiCreateFeedback({
       category: data.category,
       content: data.content,
-      image: data.image ? data.image: null
+      image: data.image ? data.image : null
     });
-    
+
     if (res && res.status === 200) {
       reset();
       setShowForm(false);
-      fetchFeedbacks();
       setSubmitting(false);
+      addFeedback(res.data);
     } else {
       setSubmitting(false);
       message.error('Failed to submit request. Please try again later.');
     }
   };
 
-  const totalPages = Math.ceil(feedbackList.length / itemsPerPage);
+  const totalPages = Math.ceil(feedbacks.length / itemsPerPage);
   const paginatedFeedbacks = useMemo(() => {
-    return feedbackList.slice(
+    return feedbacks.slice(
       (currentPage - 1) * itemsPerPage,
       currentPage * itemsPerPage,
     );
-  }, [feedbackList, currentPage, itemsPerPage]);
+  }, [feedbacks, currentPage, itemsPerPage]);
 
   return (
     <div className="space-y-8">
@@ -275,7 +257,7 @@ export default function FeedbackTab() {
           )}
         </div>
 
-        {feedbackList.length > itemsPerPage && (
+        {feedbacks.length > itemsPerPage && (
           <div className="flex items-center justify-between border-t border-[#e6fffd] pt-4 mt-8">
             <div className="flex items-center gap-2">
               <Button

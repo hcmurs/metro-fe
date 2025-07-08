@@ -5,8 +5,8 @@ import dayjs from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
 import { Controller, useForm, type SubmitHandler } from 'react-hook-form';
 import * as z from 'zod';
-import { apiCreateRequest, apiFindRequestByUserId } from '../../../apis/user.api';
-import { useAuth } from '../../../contexts/AuthContext';
+import { apiCreateRequest } from '../../../apis/user.api';
+import { useUserStore } from '../../../stores/user.store';
 import type { StudentRequest } from '../../../types/user.type';
 import { compressImage, convertFileToBase64 } from '../../../utils/common';
 
@@ -49,11 +49,11 @@ type StudentRequestFormData = z.infer<typeof studentRequestFormSchema>;
 export default function StudentRequestTab() {
   const [showForm, setShowForm] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-  const { contextUser } = useAuth();
-  const [requestList, setRequestList] = useState<StudentRequest[]>([]);
+  const itemsPerPage = 10;
   const [submitting, setSubmitting] = useState(false);
   const [canSubmit, setCanSubmit] = useState(true);
+
+  const { requests, addRequest } = useUserStore();
 
   const handleBeforeUpload = (file: File, fieldName: keyof StudentRequestFormData) => {
     clearErrors(fieldName);
@@ -69,29 +69,14 @@ export default function StudentRequestTab() {
     return false;
   };
 
-  const fetchRequests = async () => {
-    if (!contextUser || !contextUser.userId) {
-      return;
-    }
-
-    const res = await apiFindRequestByUserId(contextUser.userId);
-    if (res && res.status === 200) {
-      setRequestList(res.data as StudentRequest[]);
-
-      const hasPendingOrApproved = res.data.some(
-        (item: StudentRequest) => item.requestStatus === 'PENDING' || item.requestStatus === 'APPROVED'
-      );
-      if (hasPendingOrApproved) {
-        setCanSubmit(false);
-      }
-    } else {
-      message.error('Failed to fetch requests. Please try again later.');
-    }
-  };
-
   useEffect(() => {
-    fetchRequests();
-  }, [contextUser]);
+    const hasPendingOrApproved = requests.some(
+      (item: StudentRequest) => item.requestStatus === 'PENDING' || item.requestStatus === 'APPROVED'
+    );
+    if (hasPendingOrApproved) {
+      setCanSubmit(false);
+    }
+  }, []);
 
   const { control, handleSubmit, formState: { errors }, reset, setError, clearErrors } = useForm<StudentRequestFormData>({
     resolver: zodResolver(studentRequestFormSchema),
@@ -124,8 +109,8 @@ export default function StudentRequestTab() {
     if (res && res.status === 200) {
       reset();
       setShowForm(false);
-      fetchRequests();
       setSubmitting(false);
+      addRequest(res.data);
     } else {
       setSubmitting(false);
       message.error('Failed to submit request. Please try again later.');
@@ -144,13 +129,13 @@ export default function StudentRequestTab() {
   };
 
   const paginatedRequests = useMemo(() => {
-    return requestList.slice(
+    return requests.slice(
       (currentPage - 1) * itemsPerPage,
       currentPage * itemsPerPage,
     );
-  }, [requestList, currentPage, itemsPerPage]);
+  }, [requests, currentPage, itemsPerPage]);
 
-  const totalPages = Math.ceil(requestList.length / itemsPerPage);
+  const totalPages = Math.ceil(requests.length / itemsPerPage);
 
   return (
     <div className="space-y-8">
@@ -327,7 +312,7 @@ export default function StudentRequestTab() {
           )}
         </div>
 
-        {requestList.length > itemsPerPage && (
+        {requests.length > itemsPerPage && (
           <div className="flex items-center justify-between border-t border-[#e6fffd] pt-4 mt-8">
             <div className="flex items-center gap-2">
               <Button

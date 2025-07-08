@@ -68,6 +68,13 @@ export interface CallBackResponse{
     paymentTime: string
 }
 
+export interface StripeResponse{
+    status: string,
+    message: string,
+    sessionId: string,
+    sessionUrl: string
+}
+
 export interface OrderPageState {
   orderType: 'single' | 'pass';
   orderRequest: OrderTicketSingleRequest | OrderTicketDaysRequest;

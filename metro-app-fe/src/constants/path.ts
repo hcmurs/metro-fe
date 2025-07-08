@@ -36,6 +36,7 @@ export const API_PATH = {
   ORDER: "http://localhost:4003/api/orders",
   PAYMENT: "http://localhost:4003/api/orders/payment-methods",
   VNPAY: "http://localhost:4003/api/payment",
+  STRIPE: "http://localhost:4003/api/payment/stripe",
   PAYPAL: "http://localhost:4003/api/payment/paypal",
   BUS: "http://localhost:4003/api/bus",
 } as const;

@@ -5,7 +5,7 @@ import { CreditCardOutlined, CheckCircleOutlined, ClockCircleOutlined, Environme
 import toast, { Toaster } from 'react-hot-toast';
 import Button from '../../components/Minh/Button';
 import { apiCreateVnPayPayment } from '../../apis/vnpay.api';
-import { apiCreatePaypalPayment } from '../../apis/paypal.api';
+import { apiCheckoutStripe } from '../../apis/stripe.api';
 import { FE_PATH } from '../../constants/path';
 import { apiCreateOrderDays,apiCreateOrderSingle } from '../../apis/order.api';
 import type { OrderPageState } from '../../types/order.type';
@@ -78,11 +78,11 @@ export default function Order() {
           window.location.href = paymentResponse.data.paymentUrl;
           return;
         }
-      } else if (selectedMethod.paymentMethodName.toLowerCase().includes('paypal')) {
-        paymentResponse = await apiCreatePaypalPayment(createdOrderId);
+      } else if (selectedMethod.paymentMethodName.toLowerCase().includes('stripe')) {
+        paymentResponse = await apiCheckoutStripe(createdOrderId);
         if (paymentResponse?.data) {
-          // Redirect to PayPal approval URL
-          window.location.href = paymentResponse.data.approvalLink;
+          // Redirect to Stripe approval URL
+          window.location.href = paymentResponse.data.sessionUrl;
           return;
         }
       }

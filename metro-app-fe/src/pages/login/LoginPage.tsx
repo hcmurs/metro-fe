@@ -200,7 +200,6 @@ const LoginPage = () => {
               Don't have an account?{' '}
               <a
                 href={FE_PATH.REGISTER}
-                onClick={e => e.preventDefault()}
                 className="font-medium text-teal-600 hover:text-teal-500"
               >
                 Sign up

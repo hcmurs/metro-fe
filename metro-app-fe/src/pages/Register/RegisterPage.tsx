@@ -1,14 +1,13 @@
 import { EyeInvisibleOutlined, EyeTwoTone, LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Form, Input, Spin } from 'antd';
+import { Button, Form, Input, message, Spin } from 'antd';
 import { ArrowRight, UserIcon } from 'lucide-react';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import * as z from 'zod';
 import { apiSendOtp, apiVerifyOtp } from '../../apis/notification.api';
-import { apiCheckEmailExist, apiCheckUsernameExist, registerUser } from '../../apis/user.api';
+import { apiCheckEmailExist, apiCheckUsernameExist, apiRegisterUser } from '../../apis/user.api';
 import { FE_PATH } from '../../constants/path';
 
 const registerSchema = z.object({
@@ -100,7 +99,7 @@ const RegisterPage = () => {
 					setCurrentStep('otp');
 					setOtpSentMessage('OTP sent to your email');
 				} else {
-					toast.error('Registration failed. Please try again later.');
+					message.error('Registration failed. Please try again later.');
 				}
 			}
 		} catch (error) {
@@ -116,17 +115,17 @@ const RegisterPage = () => {
 		try {
 			const res = await apiVerifyOtp(emailForOtp, data.otp, 'register');
 			if (res?.status === 200) {
-				const registerRes = await registerUser({
+				const registerRes = await apiRegisterUser({
 					name: getRegisterFormValues('name'),
 					username: getRegisterFormValues('username'),
 					email: getRegisterFormValues('email'),
 					password: getRegisterFormValues('password'),
 				});
 				if (registerRes?.status === 200) {
-					toast.success('Registration successful!');
+					message.success('Registration successful!');
 					navigate(FE_PATH.LOGIN);
 				} else {
-					toast.error('Registration failed. Please try again later.');
+					message.error('Registration failed. Please try again later.');
 				}
 			} else {
 				setOtpError('otp', {
@@ -135,7 +134,7 @@ const RegisterPage = () => {
 				});
 			}
 		} catch (error) {
-			toast.error('Something went wrong. Please try again later.');
+			message.error('Something went wrong. Please try again later.');
 		} finally {
 			setIsLoading(false);
 		}
@@ -147,13 +146,12 @@ const RegisterPage = () => {
 		try {
 			const res = await apiSendOtp(email, 'register');
 			if (res) {
-				toast.success('OTP resent successfully!');
+				message.success('OTP resent successfully!');
 			} else {
-				toast.error('Resend OTP failed. Please try again later.');
+				message.error('Resend OTP failed. Please try again later.');
 			}
 		} catch (error) {
-			console.error('Error resending OTP:', error);
-			toast.error('Something went wrong while resending OTP.');
+			message.error('Something went wrong while resending OTP.');
 		} finally {
 			setIsLoading(false);
 		}
@@ -161,7 +159,6 @@ const RegisterPage = () => {
 
 	return (
 		<div className='w-full h-fit min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 via-white to-emerald-50'>
-			<Toaster />
 			<div className="max-w-md w-full bg-white rounded-lg shadow-lg overflow-hidden m-auto">
 				<div className="flex flex-col p-3 pb-0 space-y-0 text-center">
 					<div className="flex justify-center mb-2">

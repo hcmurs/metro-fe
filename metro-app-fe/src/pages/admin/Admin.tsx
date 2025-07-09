@@ -37,6 +37,12 @@ export default function Admin() {
 							<User /> Users
 						</Link>
 						<Link
+							to={'logs'}
+							className={`${baseClass} ${choosen === 'logs' ? activeClass : ''} `}
+						>
+							<User /> User Log
+						</Link>
+						<Link
 							to={'requests'}
 							className={`${baseClass} ${choosen === 'requests' ? activeClass : ''} `}
 						>

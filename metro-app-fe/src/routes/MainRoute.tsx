@@ -22,6 +22,7 @@ import ManageFeedbackPage from "../pages/ManageFeedback/ManageFeedbackPage";
 import ManageTicketPage from "../pages/ManageTicket/ManageTicketPage";
 import VerifyRequestPage from "../pages/VerifyRequestPage/VerifyRequestPage";
 import RoleRoute from "./RoleRoute";
+import TicketUsageLog from "../pages/admin/components/TickerUsageLog/TicketUsageLog";
 import { Spin } from "antd";
 
 export default function MainRoute() {
@@ -93,6 +94,7 @@ export default function MainRoute() {
           <Route path="requests" element={<VerifyRequestPage />} />
           <Route path="feedbacks" element={<ManageFeedbackPage />} />
           <Route path="tickets" element={<ManageTicketPage />} />
+          <Route path="logs" element={<TicketUsageLog/>} />
         </Route>
       </Route>
     </Routes>

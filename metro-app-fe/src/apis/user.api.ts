@@ -39,10 +39,19 @@ export const apiCheckEmailExist = async (email: string): Promise<ApiResponse<boo
 	}
 }
 
-export const registerUser = async (userRegister: UserRegister): Promise<ApiResponse<User> | null> => {
+export const apiRegisterUser = async (userRegister: UserRegister): Promise<ApiResponse<User> | null> => {
 	try {
 		const res = await api.post(`/users/register`, userRegister);
 		return res.data as ApiResponse<User>;
+	} catch {
+		return null;
+	}
+}
+
+export const apiResetPassword = async (email: string, newPassword: string): Promise<ApiResponse<void> | null> => {
+	try {
+		const res = await api.post(`/users/reset-password`, { email, newPassword });
+		return res.data as ApiResponse<void>;
 	} catch {
 		return null;
 	}

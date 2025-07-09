@@ -7,7 +7,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import * as z from 'zod';
 import { apiSendOtp, apiVerifyOtp } from '../../apis/notification.api';
-import { apiCheckEmailExist, apiCheckUsernameExist, registerUser } from '../../apis/user.api';
+import { apiCheckEmailExist, apiCheckUsernameExist, apiRegisterUser } from '../../apis/user.api';
 import { FE_PATH } from '../../constants/path';
 
 const registerSchema = z.object({
@@ -115,7 +115,7 @@ const RegisterPage = () => {
 		try {
 			const res = await apiVerifyOtp(emailForOtp, data.otp, 'register');
 			if (res?.status === 200) {
-				const registerRes = await registerUser({
+				const registerRes = await apiRegisterUser({
 					name: getRegisterFormValues('name'),
 					username: getRegisterFormValues('username'),
 					email: getRegisterFormValues('email'),

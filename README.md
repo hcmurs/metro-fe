@@ -107,107 +107,30 @@ npm run build
 yarn build
 ```
 
-## 📁 Project Structure
-
-```
-metro-fe/
-├── metro-app-fe/
-│   ├── public/
-│   │   └── hurc.png                    # App favicon
-│   ├── src/
-│   │   ├── App.tsx                     # Main app component with routing and auth setup
-│   │   ├── App.css                     # Global styles including Swiper customizations
-│   │   ├── main.tsx                    # Entry point with React Query setup
-│   │   ├── index.css                   # Tailwind CSS imports
-│   │   │
-│   │   ├── apis/                       # API configuration and services
-│   │   │   ├── api.ts                  # Axios config with interceptors
-│   │   │   ├── user.api.ts             # User-related API calls
-│   │   │   ├── order.api.ts            # Order/ticket API calls
-│   │   │   └── blog.api.ts             # Blog and news API calls
-│   │   │
-│   │   ├── contexts/                   # React contexts
-│   │   │   └── AuthContext.tsx         # Authentication context provider
-│   │   │
-│   │   ├── routes/                     # Application routing
-│   │   │   └── MainRoute.tsx           # Main routing component with protected routes
-│   │   │
-│   │   ├── layouts/                    # Layout components
-│   │   │   ├── DefaultLayout/          # Default page layout
-│   │   │   └── HeaderLayout/           # Layout with header navigation
-│   │   │
-│   │   ├── pages/                      # Page components
-│   │   │   ├── Home/                   # Landing page
-│   │   │   ├── Login/                  # Authentication pages
-│   │   │   ├── Register/
-│   │   │   ├── Profile/                # User profile management
-│   │   │   ├── BuyTicket/              # Ticket purchasing flow
-│   │   │   ├── MyTickets/              # User ticket management
-│   │   │   ├── Order/                  # Order processing
-│   │   │   ├── PaymentSuccess/         # Payment confirmation
-│   │   │   ├── MetroMap/               # Interactive metro map
-│   │   │   │   ├── MetroMap.tsx
-│   │   │   │   └── MetroMap.css        # Leaflet map styles
-│   │   │   ├── Blogs/                  # News and blog listing
-│   │   │   ├── BlogsDetail/            # Individual blog post view
-│   │   │   ├── ManageFeedback/         # User feedback management
-│   │   │   └── admin/                  # Admin panel
-│   │   │       ├── Admin.tsx           # Admin layout and navigation
-│   │   │       └── components/
-│   │   │           ├── Dashboard/      # Admin dashboard with analytics
-│   │   │           ├── User/           # User management
-│   │   │           ├── Station/        # Station management
-│   │   │           │   └── README.md   # Station component documentation
-│   │   │           ├── Feedback/       # Feedback management
-│   │   │           ├── Request/        # User request management
-│   │   │           └── Ticket/         # Ticket management
-│   │   │
-│   │   ├── components/                 # Reusable UI components
-│   │   │   ├── ui/                     # Basic UI components
-│   │   │   ├── forms/                  # Form components
-│   │   │   ├── navigation/             # Navigation components
-│   │   │   └── charts/                 # Chart components for admin
-│   │   │
-│   │   ├── hooks/                      # Custom React hooks
-│   │   │   ├── useAuth.tsx             # Authentication hooks
-│   │   │   └── useApi.tsx              # API interaction hooks
-│   │   │
-│   │   ├── queries/                    # React Query hooks
-│   │   │   ├── useAuth.tsx             # Auth-related queries
-│   │   │   ├── useTickets.tsx          # Ticket-related queries
-│   │   │   └── useBlogs.tsx            # Blog-related queries
-│   │   │
-│   │   ├── types/                      # TypeScript type definitions
-│   │   │   ├── api.type.ts             # API response types
-│   │   │   ├── user.type.ts            # User, feedback, request types
-│   │   │   ├── order.type.ts           # Order/transaction types
-│   │   │   ├── ticket.type.ts          # Ticket status types
-│   │   │   ├── blog.type.ts            # Blog categories/tags
-│   │   │   └── station.type.ts         # Metro station and route types
-│   │   │
-│   │   ├── constants/                  # Application constants
-│   │   │   ├── path.ts                 # API path constants
-│   │   │   ├── routes.ts               # Frontend route constants
-│   │   │   └── config.ts               # App configuration
-│   │   │
-│   │   └── utils/                      # Utility functions
-│   │       ├── helpers.ts              # General helper functions
-│   │       ├── formatters.ts           # Data formatting utilities
-│   │       └── validators.ts           # Form validation utilities
-│   │
-│   ├── index.html                      # HTML entry point
-│   ├── vite.config.ts                  # Vite configuration
-│   ├── tailwind.config.js              # Tailwind CSS configuration
-│   ├── tsconfig.json                   # TypeScript configuration
-│   ├── tsconfig.app.json               # App-specific TypeScript config
-│   ├── tsconfig.node.json              # Node-specific TypeScript config
-│   ├── eslint.config.js                # ESLint configuration
-│   ├── package.json                    # Dependencies and scripts
-│   ├── .env.sample                     # Environment variables template
-│   └── README.md                       # Vite template documentation
-│
-└── README.md                           # Main project documentation
-```
+metro-app-fe/
+├── public/
+├── src/
+│   ├── apis/
+│   ├── components/
+│   ├── constants/
+│   ├── contexts/
+│   ├── hooks/
+│   ├── layouts/
+│   ├── pages/
+│   ├── queries/
+│   ├── routes/
+│   ├── types/
+│   ├── utils/
+│   ├── App.tsx
+│   ├── App.css
+│   ├── main.tsx
+│   └── index.css
+├── index.html
+├── vite.config.ts
+├── tailwind.config.js
+├── eslint.config.js
+├── package.json
+└── .env.sample
 
 ## 🏗️ Key Technologies & Features
 

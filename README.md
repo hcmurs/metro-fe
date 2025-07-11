@@ -105,64 +105,49 @@ yarn build
 
 ## 📁 Project Structure
 
-```
-metro-fe/
-├── metro-app-fe/
-│   ├── src/
-│   │   ├── apis/          # API configuration and calls
-│   │   ├── contexts/      # React contexts (Auth, etc.)
-│   │   ├── routes/        # Application routing
-│   │   ├── constants/     # Application constants
-│   │   ├── App.tsx        # Main App component
-│   │   ├── main.tsx       # Application entry point
-│   │   └── App.css        # Global styles
-│   ├── public/            # Static assets
-│   ├── index.html         # HTML template
-│   ├── vite.config.ts     # Vite configuration
-│   ├── tailwind.config.js # Tailwind CSS configuration
-│   ├── eslint.config.js   # ESLint configuration
-│   └── .env.sample        # Environment variables template
-└── README.md
-```
+metro-app-fe/src/
+├── App.tsx                    # Main app component with routing and auth setup
+├── App.css                    # Global styles including Swiper customizations
+├── main.tsx                   # Entry point with React Query setup
+├── index.css                  # (referenced but not shown)
+├── vite-env.d.ts             # Vite type definitions
+├── apis/
+│   ├── api.ts                # Axios configuration with interceptors
+│   ├── user.api.ts           # User-related API calls (auth, requests, feedback)
+│   └── order.api.ts          # Order and ticket API calls
+├── contexts/
+│   └── AuthContext           # Authentication context (referenced)
+├── routes/
+│   └── MainRoute             # Main routing component (referenced)
+├── queries/
+│   └── useAuth.tsx           # Auth-related queries (placeholder)
+├── types/
+│   ├── api.type.ts           # API response types (referenced)
+│   ├── user.type.ts          # User, feedback, request types (referenced)
+│   ├── order.type.ts         # Order and transaction types (referenced)
+│   ├── ticket.type.ts        # Ticket status types (referenced)
+│   └── blog.type.ts          # Blog categories, tags, and utilities
+├── constants/
+│   └── path.ts               # API path constants (referenced)
+└── pages/
+    └── MetroMap/
+        └── MetroMap.css      # Leaflet map styles and customizations
 
-## 🔑 Key Features
-
-### Authentication
-- Context-based authentication system
-- Protected routes
-- User session management
-
-### API Integration
-- Axios-based API client with interceptors
-- Environment-specific API endpoints
-- Error handling and response management
-
-### Responsive Design
-- Mobile-first approach with Tailwind CSS
-- Custom breakpoints for different screen sizes
-- Swiper.js integration for touch-friendly carousels
-
-### Development Experience
-- Hot module replacement with Vite
-- TypeScript for type safety
-- ESLint for code quality
-- React Query for efficient data fetching
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙋‍♂️ Support
-
-If you have any questions or need help, please open an issue on GitHub.
+Key Technologies & Features
+Frontend Framework: React with TypeScript
+Build Tool: Vite
+Routing: React Router DOM
+State Management: React Query (@tanstack/react-query)
+HTTP Client: Axios with interceptors
+Styling: Tailwind CSS + custom CSS
+Map Integration: Leaflet for metro map visualization
+UI Components: Swiper for carousels
+Main Modules
+Authentication: User auth with context and API integration
+Metro System: Orders, tickets, and metro map functionality
+User Management: Registration, requests, and feedback
+Blog System: Content management with categories and tags
+Payment: Transaction handling for ticket orders
 
 ---
 

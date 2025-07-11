@@ -103,35 +103,33 @@ npm run build
 yarn build
 ```
 
-## 📁 Project Structure
-
+📁 Project Structure
+Code
 metro-app-fe/src/
-├── App.tsx                    # Main app component with routing and auth setup
-├── App.css                    # Global styles including Swiper customizations
-├── main.tsx                   # Entry point with React Query setup
-├── index.css                  # (referenced but not shown)
-├── vite-env.d.ts             # Vite type definitions
+├── App.tsx             # Main app component with routing and auth setup
+├── App.css             # Global styles including Swiper customizations
+├── main.tsx            # Entry point with React Query setup
 ├── apis/
-│   ├── api.ts                # Axios configuration with interceptors
-│   ├── user.api.ts           # User-related API calls (auth, requests, feedback)
-│   └── order.api.ts          # Order and ticket API calls
+│   ├── api.ts          # Axios config
+│   ├── user.api.ts     # User-related API calls
+│   └── order.api.ts    # Order/ticket API calls
 ├── contexts/
-│   └── AuthContext           # Authentication context (referenced)
+│   └── AuthContext     # Auth context
 ├── routes/
-│   └── MainRoute             # Main routing component (referenced)
+│   └── MainRoute       # Main routing component
 ├── queries/
-│   └── useAuth.tsx           # Auth-related queries (placeholder)
+│   └── useAuth.tsx     # Auth-related queries
 ├── types/
-│   ├── api.type.ts           # API response types (referenced)
-│   ├── user.type.ts          # User, feedback, request types (referenced)
-│   ├── order.type.ts         # Order and transaction types (referenced)
-│   ├── ticket.type.ts        # Ticket status types (referenced)
-│   └── blog.type.ts          # Blog categories, tags, and utilities
+│   ├── api.type.ts     # API response types
+│   ├── user.type.ts    # User, feedback, request types
+│   ├── order.type.ts   # Order/transaction types
+│   ├── ticket.type.ts  # Ticket status types
+│   └── blog.type.ts    # Blog categories/tags
 ├── constants/
-│   └── path.ts               # API path constants (referenced)
+│   └── path.ts         # API path constants
 └── pages/
     └── MetroMap/
-        └── MetroMap.css      # Leaflet map styles and customizations
+        └── MetroMap.css    # Leaflet map styles
 
 Key Technologies & Features
 Frontend Framework: React with TypeScript

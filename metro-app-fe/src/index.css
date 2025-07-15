@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+}
+
 input::-ms-reveal,
 input::-ms-clear {
   display: none;

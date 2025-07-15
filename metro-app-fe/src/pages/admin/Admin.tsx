@@ -1,6 +1,5 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { LayoutDashboard, User, Train, Ticket } from 'lucide-react';
-import { DiffOutlined, SnippetsOutlined } from '@ant-design/icons';
+import { LayoutDashboard, User, Train, Ticket, Newspaper, ScrollText, FilePlus2 } from 'lucide-react';
 import { useAdminStore } from '../../stores/admin.store';
 import { useEffect } from 'react';
 
@@ -40,13 +39,13 @@ export default function Admin() {
 							to={'requests'}
 							className={`${baseClass} ${choosen === 'requests' ? activeClass : ''} `}
 						>
-							<DiffOutlined /> Requests
+							<FilePlus2 /> Requests
 						</Link>
 						<Link
 							to={'feedbacks'}
 							className={`${baseClass} ${choosen === 'feedbacks' ? activeClass : ''} `}
 						>
-							<SnippetsOutlined /> Feedbacks
+							<ScrollText /> Feedbacks
 						</Link>
 
 						<div>Station Management</div>
@@ -63,6 +62,14 @@ export default function Admin() {
 							className={`${baseClass} ${choosen === 'tickets' ? activeClass : ''}`}
 						>
 							<Ticket /> Tickets
+						</Link>
+
+						<div>Blog Management</div>
+						<Link
+							to={'blogs'}
+							className={`${baseClass} ${choosen === 'blogs' ? activeClass : ''}`}
+						>
+							<Newspaper /> Blogs
 						</Link>
 					</div>
 				</div>

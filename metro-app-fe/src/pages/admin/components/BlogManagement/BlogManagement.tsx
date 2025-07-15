@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import {
   Plus,
   Edit,
@@ -131,7 +131,7 @@ const BlogManagement = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="min-h-screen bg-gray-50 p-4 md:p-6 max-w-full">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
         <div>
@@ -163,28 +163,28 @@ const BlogManagement = () => {
         </div>
       </div>
 
-      {/* Blogs Table */}
+      {/* Blogs Table - Responsive */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
+          <table className="w-full divide-y divide-gray-200 min-w-[1200px]">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[300px]">
                   Blog
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[120px]">
                   Category
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[150px]">
                   Author
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[150px]">
                   Stats
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[120px]">
                   Date
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[100px]">
                   Actions
                 </th>
               </tr>
@@ -192,7 +192,7 @@ const BlogManagement = () => {
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredBlogs.map((blog) => (
                 <tr key={blog.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-2 py-4">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-12 w-12">
                         <img
@@ -201,8 +201,8 @@ const BlogManagement = () => {
                           alt={blog.title}
                         />
                       </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900 line-clamp-2">
+                      <div className="ml-4 min-w-0 flex-1">
+                        <div className="text-sm font-medium text-gray-900 truncate max-w-[200px]" title={blog.title}>
                           {blog.title}
                         </div>
                         <div className="text-sm text-gray-500">
@@ -211,7 +211,7 @@ const BlogManagement = () => {
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-2 py-4 whitespace-nowrap">
                     <span
                       className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full text-white ${getCategoryColor(
                         blog.category
@@ -220,15 +220,15 @@ const BlogManagement = () => {
                       {getCategoryDisplayName(blog.category)}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-2 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <User className="w-4 h-4 text-gray-400 mr-2" />
-                      <span className="text-sm text-gray-900">
+                      <span className="text-sm text-gray-900 truncate max-w-[100px]" title={blog.author}>
                         {blog.author}
                       </span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-2 py-4 whitespace-nowrap">
                     <div className="flex items-center space-x-4 text-sm text-gray-500">
                       <div className="flex items-center">
                         <Eye className="w-4 h-4 mr-1" />
@@ -240,17 +240,17 @@ const BlogManagement = () => {
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-2 py-4 whitespace-nowrap">
                     <div className="flex items-center text-sm text-gray-500">
                       <Calendar className="w-4 h-4 mr-2" />
                       <span>{new Date(blog.date).toLocaleDateString()}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex items-center justify-end space-x-2">
                       <button
                         onClick={() => openEditForm(blog)}
-                        className="text-blue-600 hover:text-blue-900 p-1"
+                        className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50"
                         title="Edit blog"
                       >
                         <Edit className="w-4 h-4" />
@@ -258,7 +258,7 @@ const BlogManagement = () => {
                       <button
                         onClick={() => handleDeleteBlog(blog.id)}
                         disabled={deletingBlogId === blog.id}
-                        className="text-red-600 hover:text-red-900 p-1 disabled:opacity-50"
+                        className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 disabled:opacity-50"
                         title="Delete blog"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -279,8 +279,8 @@ const BlogManagement = () => {
       </div>
 
       {/* Pagination */}
-      {filteredBlogs.length >= 0 && (
-        <div className="flex items-center justify-between mt-6">
+      {filteredBlogs.length > 0 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between mt-6 gap-4">
           <div className="text-sm text-gray-700">
             Showing {filteredBlogs.length} blogs
           </div>

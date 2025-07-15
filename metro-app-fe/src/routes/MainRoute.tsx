@@ -23,6 +23,7 @@ import ManageTicketPage from "../pages/ManageTicket/ManageTicketPage";
 import VerifyRequestPage from "../pages/VerifyRequestPage/VerifyRequestPage";
 import RoleRoute from "./RoleRoute";
 import { Spin } from "antd";
+import BlogManagement from "../pages/admin/components/BlogManagement";
 
 export default function MainRoute() {
   const { isLoading } = useAuth();
@@ -93,6 +94,7 @@ export default function MainRoute() {
           <Route path="requests" element={<VerifyRequestPage />} />
           <Route path="feedbacks" element={<ManageFeedbackPage />} />
           <Route path="tickets" element={<ManageTicketPage />} />
+          <Route path="blogs" element={<BlogManagement />} />
         </Route>
       </Route>
     </Routes>

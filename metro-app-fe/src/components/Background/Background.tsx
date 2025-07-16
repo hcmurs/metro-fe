@@ -1,3 +1,3 @@
 export default function Background() {
-  return <div className="bg-[#e6fffd] w-full xl:h-165 lg:h-100 rounded-br-full"></div>;
+  return <div className="bg-[#d4fcee] w-full lg:h-120 rounded-br-full"></div>;
 }

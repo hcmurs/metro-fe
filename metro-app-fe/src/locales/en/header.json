@@ -1,0 +1,16 @@
+{
+  "nav": {
+    "home": "HOME",
+    "buyTickets": "BUY TICKETS",
+    "metroMap": "METRO MAP",
+    "blog": "BLOG"
+  },
+  "user": {
+    "profile": "Profile",
+    "myTickets": "My Tickets",
+    "logout": "Logout"
+  },
+  "auth": {
+    "login": "LOGIN"
+  }
+}

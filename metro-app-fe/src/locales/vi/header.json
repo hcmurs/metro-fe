@@ -1,0 +1,16 @@
+{
+  "nav": {
+    "home": "TRANG CHỦ",
+    "buyTickets": "MUA VÉ",
+    "metroMap": "BẢN ĐỒ METRO",
+    "blog": "BLOG"
+  },
+  "user": {
+    "profile": "Hồ sơ",
+    "myTickets": "Vé của tôi",
+    "logout": "Đăng xuất"
+  },
+  "auth": {
+    "login": "ĐĂNG NHẬP"
+  }
+}

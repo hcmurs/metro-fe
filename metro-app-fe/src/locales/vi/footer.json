@@ -1,0 +1,41 @@
+{
+  "brandName": "HCM METRO",
+  "sections": {
+    "metroServices": {
+      "title": "Dịch Vụ Metro",
+      "items": {
+        "home": "Trang Chủ",
+        "stationsMap": "Bản Đồ Ga",
+        "fareCalculator": "Tính Cước Phí",
+        "buyTickets": "Mua Vé",
+        "timetable": "Lịch Trình",
+        "support": "Hỗ Trợ"
+      }
+    },
+    "exploreLines": {
+      "title": "Khám Phá Tuyến Đường",
+      "items": {
+        "line1": "Tuyến 1: Bến Thành – Suối Tiên",
+        "line2": "Tuyến 2: Bến Thành – Tham Lương",
+        "line3": "Tuyến 3: Tân Kiên – Bến Thành",
+        "line4": "Tuyến 4: Thạnh Xuân – Hiệp Phước",
+        "futureExtensions": "Mở Rộng Tương Lai",
+        "stationGuide": "Hướng Dẫn Ga"
+      }
+    },
+    "customerCare": {
+      "title": "Chăm Sóc Khách Hàng",
+      "phone": "1900 999 888",
+      "email": "support@metrohcm.vn"
+    },
+    "connectWithUs": {
+      "title": "Kết Nối Với Chúng Tôi",
+      "subtitle": "Cập nhật tin tức và lịch trình metro"
+    }
+  },
+  "emailSubscribe": {
+    "placeholder": "EMAIL CỦA BẠN ĐỂ NHẬN TIN TỨC METRO",
+    "button": "ĐĂNG KÝ"
+  },
+  "copyright": "© 2025 HCM Metro. Tất cả quyền được bảo lưu. Vận hành bởi Cơ quan Giao thông Metro"
+}

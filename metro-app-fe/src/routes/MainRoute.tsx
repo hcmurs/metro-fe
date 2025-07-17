@@ -7,7 +7,6 @@ import Admin from "../pages/admin/Admin";
 import NewsPage from "../pages/Blogs/Blogs";
 import NewsDetail from "../pages/BlogsDetail";
 import Home from "../pages/Home";
-import LoginPage from "../pages/Login/LoginPage";
 import RegisterPage from "../pages/Register/RegisterPage";
 import BuyTicket from "../pages/BuyTicket/BuyTicket";
 import MetroMap from "../pages/MetroMap";
@@ -24,11 +23,12 @@ import VerifyRequestPage from "../pages/VerifyRequestPage/VerifyRequestPage";
 import RoleRoute from "./RoleRoute";
 import { Spin } from "antd";
 import BlogManagement from "../pages/admin/components/BlogManagement";
+import LoginPage from "../pages/login/LoginPage";
 
 export default function MainRoute() {
   const { isLoading } = useAuth();
 
-  if (isLoading) return <Spin size="large" fullscreen />
+  if (isLoading) return <Spin size="large" fullscreen />;
 
   return (
     <Routes>
@@ -48,7 +48,6 @@ export default function MainRoute() {
         <Route path={FE_PATH.MY_TICKETS} element={<MyTickets />} />
         <Route path={FE_PATH.METRO_MAP} element={<MetroMap />} />
         <Route path={FE_PATH.PAYMENT_SUCCESS} element={<PaymentSuccess />} />
-
       </Route>
 
       <Route
@@ -59,7 +58,7 @@ export default function MainRoute() {
           </RoleRoute>
         }
       />
-      
+
       <Route
         path={FE_PATH.REGISTER}
         element={

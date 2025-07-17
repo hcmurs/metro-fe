@@ -1,0 +1,51 @@
+{
+  "title": "Blog",
+  "categories": {
+    "SERVICE_UPDATE": "Cập Nhật Dịch Vụ",
+    "SAFETY_GUIDELINE": "Hướng Dẫn An Toàn",
+    "RIDER_TIPS": "Mẹo Cho Hành Khách",
+    "TECH_BEHIND_METRO": "Công Nghệ Metro",
+    "SCHEDULE_INFO": "Thông Tin Lịch Trình",
+    "PROMOTION": "Khuyến Mãi",
+    "PUBLIC_ANNOUNCEMENT": "Thông Báo Chung"
+  },
+  "tags": {
+    "STATION_GUIDE": "Hướng Dẫn Nhà Ga",
+    "ELECTRONIC_TICKETING": "Vé Điện Tử",
+    "MAP_UPDATE": "Cập Nhật Bản Đồ",
+    "DISCOUNT": "Giảm Giá",
+    "MAINTENANCE_NOTICE": "Thông Báo Bảo Trì",
+    "PEAK_HOUR_TIPS": "Mẹo Giờ Cao Điểm",
+    "NEW_LINE_OPENING": "Khai Trương Tuyến Mới",
+    "MOBILE_APP": "Ứng Dụng Di Động",
+    "LOST_AND_FOUND": "Đồ Thất Lạc",
+    "PUBLIC_ANNOUNCEMENT": "Thông Báo Chung",
+    "ACCESSIBILITY": "Hỗ Trợ Khuyết Tật"
+  },
+  "common": {
+    "viewAll": "Xem Tất Cả",
+    "readMore": "Đọc Thêm",
+    "backToNews": "Quay Lại Tin Tức",
+    "shareArticle": "Chia Sẻ Bài Viết",
+    "leaveComment": "Để Lại Bình Luận",
+    "postComment": "Đăng Bình Luận",
+    "comments": "bình luận",
+    "views": "lượt xem",
+    "minRead": "phút đọc",
+    "author": "Tác giả",
+    "aboutAuthor": "Về Tác Giả",
+    "relatedArticles": "Bài Viết Liên Quan",
+    "tags": "Thẻ",
+    "loading": "Đang tải...",
+    "error": "Lỗi",
+    "tryAgain": "Thử Lại",
+    "noArticlesFound": "Không Tìm Thấy Bài Viết",
+    "checkBackLater": "Vui lòng kiểm tra lại sau."
+  },
+  "form": {
+    "yourName": "Tên của bạn",
+    "yourEmail": "Email của bạn",
+    "writeComment": "Viết bình luận của bạn...",
+    "required": "Bắt buộc"
+  }
+}

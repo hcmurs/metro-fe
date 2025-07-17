@@ -1,22 +1,30 @@
 import { LogOut, User, Ticket } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../../contexts/AuthContext";
 import { FE_PATH } from "../../constants/path";
+import LanguageSelector from "../LanguageSelector/LanguageSelector";
 
 export default function Header() {
   const navigate = useNavigate();
+  const { t } = useTranslation("header");
 
   const [isOpen, setIsOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
-  const { isAuthenticated, contextUser: user, contextLogout: logout, isAdmin } = useAuth();
+  const {
+    isAuthenticated,
+    contextUser: user,
+    contextLogout: logout,
+    isAdmin,
+  } = useAuth();
 
   const navigationItems = [
-    { label: "HOME", path: FE_PATH.HOME },
-    { label: "BUY TICKETS", path: FE_PATH.BUY_TICKET },
-    { label: "METRO MAP", path: FE_PATH.METRO_MAP },
-    { label: "BLOG", path: "/blogs" },
+    { label: t("nav.home"), path: FE_PATH.HOME },
+    { label: t("nav.buyTickets"), path: FE_PATH.BUY_TICKET },
+    { label: t("nav.metroMap"), path: FE_PATH.METRO_MAP },
+    { label: t("nav.blog"), path: "/blogs" },
   ];
 
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -65,7 +73,12 @@ export default function Header() {
           </nav>
         )}
 
-        <div className={`${isAdmin ? "flex" : "hidden lg:flex"} items-center gap-4`}>
+        <div
+          className={`${
+            isAdmin ? "flex" : "hidden lg:flex"
+          } items-center gap-4`}
+        >
+          <LanguageSelector isDarkMode={false} />
           {isAuthenticated ? (
             <div className="relative" ref={userMenuRef}>
               <div
@@ -78,7 +91,9 @@ export default function Header() {
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 animate-fade-down">
                   <div className="px-4 py-2 text-sm text-slate-700 border-b border-gray-100">
                     <p className="font-medium">{user?.name}</p>
-                    <p className="text-xs text-gray-500 break-words">{user?.email}</p>
+                    <p className="text-xs text-gray-500 break-words">
+                      {user?.email}
+                    </p>
                   </div>
                   {isAdmin ? (
                     <button
@@ -90,26 +105,27 @@ export default function Header() {
                     </button>
                   ) : (
                     <>
+                      {" "}
                       <a
                         href="/profile"
                         className="px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 flex items-center"
                       >
                         <User className="w-4 h-4 mr-2" />
-                        Profile
+                        {t("user.profile")}
                       </a>
                       <a
                         onClick={() => navigate(FE_PATH.MY_TICKETS)}
                         className="px-4 py-2 text-sm text-slate-700 hover:bg-gray-100 flex items-center cursor-pointer"
                       >
                         <Ticket className="w-4 h-4 mr-2" />
-                        My Tickets
+                        {t("user.myTickets")}
                       </a>
                       <button
                         onClick={handleLogout}
                         className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center cursor-pointer"
                       >
                         <LogOut className="w-4 h-4 mr-2" />
-                        Logout
+                        {t("user.logout")}
                       </button>
                     </>
                   )}
@@ -118,7 +134,7 @@ export default function Header() {
             </div>
           ) : (
             <a href="/login" className="text-sm text-slate-800 hover:underline">
-              LOGIN
+              {t("auth.login")}
             </a>
           )}
         </div>
@@ -152,7 +168,7 @@ export default function Header() {
               onClick={() => navigate(FE_PATH.BUY_TICKET)}
               className="bg-green-100 hover:bg-green-200 text-green-700 px-4 py-2 rounded-md text-sm font-semibold transition-colors cursor-pointer"
             >
-              BUY TICKETS
+              {t("nav.buyTickets")}
             </a>
             {isAuthenticated ? (
               <div className="relative" ref={userMenuRef}>
@@ -166,7 +182,9 @@ export default function Header() {
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 animate-fade-down">
                     <div className="px-4 py-2 text-sm text-slate-700 border-b border-gray-100">
                       <p className="font-medium">{user?.name}</p>
-                      <p className="text-xs text-gray-500 break-words">{user?.email}</p>
+                      <p className="text-xs text-gray-500 break-words">
+                        {user?.email}
+                      </p>
                     </div>
                     {isAdmin ? (
                       <button
@@ -174,7 +192,7 @@ export default function Header() {
                         className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center cursor-pointer"
                       >
                         <LogOut className="w-4 h-4 mr-2" />
-                        Logout
+                        {t("user.logout")}
                       </button>
                     ) : (
                       <>
@@ -190,7 +208,7 @@ export default function Header() {
                           className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center cursor-pointer"
                         >
                           <LogOut className="w-4 h-4 mr-2" />
-                          Logout
+                          {t("user.logout")}
                         </button>
                       </>
                     )}
@@ -202,7 +220,7 @@ export default function Header() {
                 onClick={() => navigate(FE_PATH.LOGIN)}
                 className="text-sm text-slate-800 hover:underline cursor-pointer"
               >
-                LOGIN
+                {t("auth.login")}
               </a>
             )}
           </div>

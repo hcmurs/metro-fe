@@ -9,6 +9,7 @@ import {
   User,
   MessageCircle,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import useBlogs from "../../../../queries/useBlogs";
 import {
   useCreateBlog,
@@ -24,8 +25,10 @@ import {
   type Blog,
 } from "../../../../types/blog.type";
 import toast from "react-hot-toast";
+import LoaderContainer from "../../../../components/Loader/LoaderContainer";
 
 const BlogManagement = () => {
+  const { t } = useTranslation("blogManagement");
   const [currentPage, setCurrentPage] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -33,7 +36,12 @@ const BlogManagement = () => {
   const [deletingBlogId, setDeletingBlogId] = useState<number | null>(null);
 
   // Fetch blogs
-  const { data: blogs = [], isLoading, error } = useBlogs(currentPage, 10);
+  const { data: blogData, isLoading, error } = useBlogs(currentPage, 10);
+
+  // Extract blogs and pagination info
+  const blogs = blogData?.content || [];
+  const isLastPage = blogData?.last ?? false;
+  const totalElements = blogData?.totalElements ?? 0;
 
   // Mutations
   const createBlogMutation = useCreateBlog();
@@ -45,7 +53,7 @@ const BlogManagement = () => {
     (blog) =>
       blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       blog.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      getCategoryDisplayName(blog.category)
+      getCategoryDisplayName(blog.category, t)
         .toLowerCase()
         .includes(searchTerm.toLowerCase())
   );
@@ -54,11 +62,11 @@ const BlogManagement = () => {
     createBlogMutation.mutate(blogData, {
       onSuccess: () => {
         setIsFormOpen(false);
-        toast.success("Blog created successfully!");
+        toast.success(t("messages.createSuccess"));
       },
       onError: (error) => {
         console.error("Error creating blog:", error);
-        toast.error("Error creating blog");
+        toast.error(t("messages.createError"));
       },
     });
   };
@@ -75,25 +83,29 @@ const BlogManagement = () => {
       onSuccess: () => {
         setIsFormOpen(false);
         setEditingBlog(null);
-        toast.success("Blog updated successfully!");
+        toast.success(t("messages.updateSuccess"));
       },
       onError: (error) => {
         console.error("Error updating blog:", error);
-        toast.error("Error updating blog");
+        toast.error(t("messages.updateError"));
       },
     });
   };
 
   const handleDeleteBlog = (id: number) => {
-    if (window.confirm("Are you sure you want to delete this blog?")) {
+    if (window.confirm(t("messages.deleteConfirm"))) {
       deleteBlogMutation.mutate(id, {
         onSuccess: () => {
           setDeletingBlogId(null);
-          toast.success("Blog deleted successfully!");
+          // If we're on the last page and only have one item, go back to previous page
+          if (isLastPage && blogs.length === 1 && currentPage > 0) {
+            setCurrentPage(currentPage - 1);
+          }
+          toast.success(t("messages.deleteSuccess"));
         },
         onError: (error) => {
           console.error("Error deleting blog:", error);
-          toast.error("Error deleting blog");
+          toast.error(t("messages.deleteError"));
         },
       });
     }
@@ -109,23 +121,33 @@ const BlogManagement = () => {
     setIsFormOpen(true);
   };
 
+  const handleNextPage = () => {
+    if (!isLastPage) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   const closeForm = () => {
     setIsFormOpen(false);
     setEditingBlog(null);
   };
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
+    return <LoaderContainer />;
   }
 
   if (error) {
     return (
       <div className="text-center text-red-600 p-8">
-        <p>Error loading blogs: {error.message}</p>
+        <p>
+          {t("messages.errorLoading")}: {error.message}
+        </p>
       </div>
     );
   }
@@ -135,17 +157,15 @@ const BlogManagement = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Blog Management</h1>
-          <p className="text-gray-600 mt-1">
-            Manage your blog posts and content
-          </p>
+          <h1 className="text-2xl font-bold text-gray-900">{t("title")}</h1>
+          <p className="text-gray-600 mt-1">{t("subtitle")}</p>
         </div>
         <button
           onClick={openCreateForm}
           className="mt-4 sm:mt-0 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
         >
           <Plus className="w-4 h-4" />
-          <span>Create Blog</span>
+          <span>{t("actions.create")}</span>
         </button>
       </div>
 
@@ -155,7 +175,7 @@ const BlogManagement = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
             type="text"
-            placeholder="Search blogs..."
+            placeholder={t("actions.search")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -170,22 +190,22 @@ const BlogManagement = () => {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[300px]">
-                  Blog
+                  {t("table.blog")}
                 </th>
                 <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[120px]">
-                  Category
+                  {t("table.category")}
                 </th>
                 <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[150px]">
-                  Author
+                  {t("table.author")}
                 </th>
                 <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[150px]">
-                  Stats
+                  {t("table.stats")}
                 </th>
                 <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[120px]">
-                  Date
+                  {t("table.date")}
                 </th>
                 <th className="px-2 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[100px]">
-                  Actions
+                  {t("table.actions")}
                 </th>
               </tr>
             </thead>
@@ -202,7 +222,10 @@ const BlogManagement = () => {
                         />
                       </div>
                       <div className="ml-4 min-w-0 flex-1">
-                        <div className="text-sm font-medium text-gray-900 truncate max-w-[200px]" title={blog.title}>
+                        <div
+                          className="text-sm font-medium text-gray-900 truncate max-w-[200px]"
+                          title={blog.title}
+                        >
                           {blog.title}
                         </div>
                         <div className="text-sm text-gray-500">
@@ -217,13 +240,16 @@ const BlogManagement = () => {
                         blog.category
                       )}`}
                     >
-                      {getCategoryDisplayName(blog.category)}
+                      {getCategoryDisplayName(blog.category, t)}
                     </span>
                   </td>
                   <td className="px-2 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <User className="w-4 h-4 text-gray-400 mr-2" />
-                      <span className="text-sm text-gray-900 truncate max-w-[100px]" title={blog.author}>
+                      <span
+                        className="text-sm text-gray-900 truncate max-w-[100px]"
+                        title={blog.author}
+                      >
                         {blog.author}
                       </span>
                     </div>
@@ -251,7 +277,7 @@ const BlogManagement = () => {
                       <button
                         onClick={() => openEditForm(blog)}
                         className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50"
-                        title="Edit blog"
+                        title={t("actions.edit")}
                       >
                         <Edit className="w-4 h-4" />
                       </button>
@@ -259,7 +285,7 @@ const BlogManagement = () => {
                         onClick={() => handleDeleteBlog(blog.id)}
                         disabled={deletingBlogId === blog.id}
                         className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 disabled:opacity-50"
-                        title="Delete blog"
+                        title={t("actions.delete")}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -273,32 +299,34 @@ const BlogManagement = () => {
 
         {filteredBlogs.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500">No blogs found</p>
+            <p className="text-gray-500">{t("messages.noBlogs")}</p>
           </div>
         )}
       </div>
 
       {/* Pagination */}
-      {filteredBlogs.length > 0 && (
+      {blogs.length > 0 && (
         <div className="flex flex-col sm:flex-row items-center justify-between mt-6 gap-4">
           <div className="text-sm text-gray-700">
-            Showing {filteredBlogs.length} blogs
+            {t("messages.showing")} {blogs.length} {t("messages.blogs")} {totalElements > 0 && `of ${totalElements} total`}
           </div>
           <div className="flex items-center space-x-2">
             <button
-              onClick={() => setCurrentPage(Math.max(0, currentPage - 1))}
+              onClick={handlePreviousPage}
               disabled={currentPage === 0}
               className="px-3 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
             >
-              Previous
+              {t("actions.previous")}
             </button>
-            <span className="px-3 py-1 text-sm">Page {currentPage + 1}</span>
+            <span className="px-3 py-1 text-sm">
+              {t("messages.page")} {currentPage + 1}
+            </span>
             <button
-              onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={filteredBlogs.length < 10}
+              onClick={handleNextPage}
+              disabled={isLastPage}
               className="px-3 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
             >
-              Next
+              {t("actions.next")}
             </button>
           </div>
         </div>

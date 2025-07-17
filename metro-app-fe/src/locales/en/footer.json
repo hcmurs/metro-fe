@@ -1,0 +1,41 @@
+{
+  "brandName": "HCM METRO",
+  "sections": {
+    "metroServices": {
+      "title": "Metro Services",
+      "items": {
+        "home": "Home",
+        "stationsMap": "Stations Map",
+        "fareCalculator": "Fare Calculator",
+        "buyTickets": "Buy Tickets",
+        "timetable": "Timetable",
+        "support": "Support"
+      }
+    },
+    "exploreLines": {
+      "title": "Explore Lines",
+      "items": {
+        "line1": "Line 1: Bến Thành – Suối Tiên",
+        "line2": "Line 2: Bến Thành – Tham Lương",
+        "line3": "Line 3: Tân Kiên – Bến Thành",
+        "line4": "Line 4: Thạnh Xuân – Hiệp Phước",
+        "futureExtensions": "Future Extensions",
+        "stationGuide": "Station Guide"
+      }
+    },
+    "customerCare": {
+      "title": "Customer Care",
+      "phone": "1900 999 888",
+      "email": "support@metrohcm.vn"
+    },
+    "connectWithUs": {
+      "title": "Connect With Us",
+      "subtitle": "Stay updated on metro news and schedules"
+    }
+  },
+  "emailSubscribe": {
+    "placeholder": "YOUR EMAIL FOR METRO UPDATES",
+    "button": "SUBSCRIBE"
+  },
+  "copyright": "© 2025 HCM Metro. All Rights Reserved. Operated by Metro Transit Authority"
+}

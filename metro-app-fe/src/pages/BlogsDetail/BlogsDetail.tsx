@@ -9,9 +9,15 @@ import {
   User,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import useBlogDetail from "../../queries/useBlogsDetail";
 import BlogsDetailSkeletonLoading from "../../components/BlogsDetailSkeletonLoading";
-import { getCategoryColor, type BlogCategory } from "../../types/blog.type";
+import {
+  getCategoryColor,
+  getCategoryDisplayName,
+  getTagDisplayName,
+  type BlogCategory,
+} from "../../types/blog.type";
 
 // For related articles
 interface RelatedArticle {
@@ -25,6 +31,7 @@ interface RelatedArticle {
 const BlogsDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation("blog");
 
   // Use our custom hook to fetch blog detail
   const { data: blog, isLoading, error } = useBlogDetail(id);
@@ -57,13 +64,15 @@ const BlogsDetail = () => {
   if (error) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
-        <h2 className="text-2xl font-bold mb-4">Error loading article</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          {t("common.error")} {t("common.loading")}
+        </h2>
         <p className="text-gray-600 mb-4">{error.message}</p>
         <button
           onClick={() => navigate(-1)}
           className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
         >
-          Go Back
+          {t("common.backToNews")}
         </button>
       </div>
     );
@@ -72,12 +81,14 @@ const BlogsDetail = () => {
   if (!blog) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
-        <h2 className="text-2xl font-bold mb-4">Article not found</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          {t("common.noArticlesFound")}
+        </h2>
         <button
           onClick={() => navigate(-1)}
           className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
         >
-          Go Back
+          {t("common.backToNews")}
         </button>
       </div>
     );
@@ -105,7 +116,7 @@ const BlogsDetail = () => {
           className="flex items-center text-gray-600 hover:text-blue-600 transition-colors"
         >
           <ChevronLeft className="w-5 h-5 mr-1" />
-          <span>Back to News</span>
+          <span>{t("common.backToNews")}</span>
         </button>
       </div>
 
@@ -131,7 +142,7 @@ const BlogsDetail = () => {
                   blog.category as BlogCategory
                 )}`}
               >
-                {blog.category}
+                {getCategoryDisplayName(blog.category as BlogCategory, t)}
               </span>
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
                 {blog.title}
@@ -147,11 +158,15 @@ const BlogsDetail = () => {
                 </div>
                 <div className="flex items-center mr-6">
                   <MessageCircle className="w-4 h-4 mr-2" />
-                  <span>{blog.comments} comments</span>
+                  <span>
+                    {blog.comments} {t("common.comments")}
+                  </span>
                 </div>
                 <div className="flex items-center">
                   <Eye className="w-4 h-4 mr-2" />
-                  <span>{formattedViews} views</span>
+                  <span>
+                    {formattedViews} {t("common.views")}
+                  </span>
                 </div>
               </div>
             </div>
@@ -165,14 +180,16 @@ const BlogsDetail = () => {
             {/* Tags */}
             {blog.tags && blog.tags.length > 0 && (
               <div className="mb-12">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">Tags</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-4">
+                  {t("common.tags")}
+                </h3>
                 <div className="flex flex-wrap gap-2">
                   {blog.tags.map((tag) => (
                     <span
                       key={tag}
                       className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm"
                     >
-                      {tag}
+                      {getTagDisplayName(tag, t)}
                     </span>
                   ))}
                 </div>
@@ -182,7 +199,7 @@ const BlogsDetail = () => {
             {/* Share */}
             <div className="mb-12">
               <h3 className="text-lg font-bold text-gray-900 mb-4">
-                Share this article
+                {t("common.shareArticle")}
               </h3>
               <div className="flex space-x-4">
                 <button className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700">
@@ -200,31 +217,31 @@ const BlogsDetail = () => {
             {/* Comments Section */}
             <div>
               <h3 className="text-xl font-bold text-gray-900 mb-6">
-                Comments ({blog.comments})
+                {t("common.comments")} ({blog.comments})
               </h3>
 
               {/* Comment Form */}
               <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
                 <h4 className="text-lg font-bold text-gray-900 mb-4">
-                  Leave a Comment
+                  {t("common.leaveComment")}
                 </h4>
                 <form>
                   <div className="mb-4">
                     <textarea
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                       rows={4}
-                      placeholder="Write your comment here..."
+                      placeholder={t("form.writeComment")}
                     ></textarea>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <input
                       type="text"
-                      placeholder="Your Name"
+                      placeholder={t("form.yourName")}
                       className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                     <input
                       type="email"
-                      placeholder="Your Email"
+                      placeholder={t("form.yourEmail")}
                       className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
@@ -232,7 +249,7 @@ const BlogsDetail = () => {
                     type="submit"
                     className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                   >
-                    Post Comment
+                    {t("common.postComment")}
                   </button>
                 </form>
               </div>
@@ -268,28 +285,32 @@ const BlogsDetail = () => {
             {/* Author Info */}
             <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
               <h3 className="text-lg font-bold text-gray-900 mb-4">
-                About the Author
+                {t("common.aboutAuthor")}
               </h3>
               <div className="flex items-center mb-4">
                 <div className="w-16 h-16 rounded-full bg-gray-300 mr-4"></div>
                 <div>
                   <h4 className="font-bold text-gray-900">{blog.author}</h4>
                   <p className="text-sm text-gray-600">
-                    {blog.category} Writer
+                    {getCategoryDisplayName(blog.category as BlogCategory, t)}{" "}
+                    Writer
                   </p>
                 </div>
               </div>
               <p className="text-gray-700 mb-4">
                 Experienced writer with expertise in{" "}
-                {blog.category.toLowerCase()} topics and digital content
-                creation.
+                {getCategoryDisplayName(
+                  blog.category as BlogCategory,
+                  t
+                ).toLowerCase()}{" "}
+                topics and digital content creation.
               </p>
             </div>
 
             {/* Related Articles */}
             <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
               <h3 className="text-lg font-bold text-gray-900 mb-4">
-                Related Articles
+                {t("common.relatedArticles")}
               </h3>
               <div className="space-y-4">
                 {relatedArticles.map((related) => (

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import {
   type BlogCategory,
   type BlogTag,
@@ -30,6 +31,7 @@ const BlogForm: React.FC<BlogFormProps> = ({
   blog,
   isLoading = false,
 }) => {
+  const { t } = useTranslation("blogManagement");
   const [formData, setFormData] = useState({
     title: "",
     category: "SERVICE_UPDATE" as BlogCategory,
@@ -88,7 +90,7 @@ const BlogForm: React.FC<BlogFormProps> = ({
       <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b">
           <h2 className="text-xl font-semibold">
-            {blog ? "Edit Blog" : "Create New Blog"}
+            {blog ? t("form.editBlog") : t("form.createBlog")}
           </h2>
           <button
             onClick={onClose}
@@ -103,7 +105,7 @@ const BlogForm: React.FC<BlogFormProps> = ({
             {/* Title */}
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Title *
+                {t("form.title")} *
               </label>
               <input
                 type="text"
@@ -113,14 +115,14 @@ const BlogForm: React.FC<BlogFormProps> = ({
                   setFormData({ ...formData, title: e.target.value })
                 }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter blog title"
+                placeholder={t("form.titlePlaceholder")}
               />
             </div>
 
             {/* Category */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Category *
+                {t("form.category")} *
               </label>
               <select
                 required
@@ -135,7 +137,7 @@ const BlogForm: React.FC<BlogFormProps> = ({
               >
                 {ALL_BLOG_CATEGORIES.map((category) => (
                   <option key={category} value={category}>
-                    {getCategoryDisplayName(category)}
+                    {getCategoryDisplayName(category, t)}
                   </option>
                 ))}
               </select>
@@ -144,7 +146,7 @@ const BlogForm: React.FC<BlogFormProps> = ({
             {/* Author */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Author *
+                {t("form.author")} *
               </label>
               <input
                 type="text"
@@ -154,14 +156,14 @@ const BlogForm: React.FC<BlogFormProps> = ({
                   setFormData({ ...formData, author: e.target.value })
                 }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter author name"
+                placeholder={t("form.authorPlaceholder")}
               />
             </div>
 
             {/* Image URL */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Image URL *
+                {t("form.imageUrl")} *
               </label>
               <input
                 type="url"
@@ -171,14 +173,14 @@ const BlogForm: React.FC<BlogFormProps> = ({
                   setFormData({ ...formData, image: e.target.value })
                 }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="https://example.com/image.jpg"
+                placeholder={t("form.imageUrlPlaceholder")}
               />
             </div>
 
             {/* Read Time */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Read Time *
+                {t("form.readTime")} *
               </label>
               <input
                 type="text"
@@ -188,14 +190,14 @@ const BlogForm: React.FC<BlogFormProps> = ({
                   setFormData({ ...formData, readTime: e.target.value })
                 }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="5 min read"
+                placeholder={t("form.readTimePlaceholder")}
               />
             </div>
 
             {/* Excerpt */}
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Excerpt *
+                {t("form.excerpt")} *
               </label>
               <textarea
                 required
@@ -205,14 +207,14 @@ const BlogForm: React.FC<BlogFormProps> = ({
                 }
                 rows={3}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Brief description of the blog post"
+                placeholder={t("form.excerptPlaceholder")}
               />
             </div>
 
             {/* Tags */}
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Tags
+                {t("form.tags")}
               </label>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                 {ALL_BLOG_TAGS.map((tag) => (
@@ -223,7 +225,7 @@ const BlogForm: React.FC<BlogFormProps> = ({
                       onChange={() => handleTagToggle(tag)}
                       className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                     />
-                    <span className="text-sm">{getTagDisplayName(tag)}</span>
+                    <span className="text-sm">{getTagDisplayName(tag, t)}</span>
                   </label>
                 ))}
               </div>
@@ -232,7 +234,7 @@ const BlogForm: React.FC<BlogFormProps> = ({
             {/* Content */}
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Content *
+                {t("form.content")} *
               </label>
               <textarea
                 required
@@ -242,7 +244,7 @@ const BlogForm: React.FC<BlogFormProps> = ({
                 }
                 rows={8}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Write your blog content here..."
+                placeholder={t("form.contentPlaceholder")}
               />
             </div>
           </div>
@@ -253,14 +255,18 @@ const BlogForm: React.FC<BlogFormProps> = ({
               onClick={onClose}
               className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
             >
-              Cancel
+              {t("actions.cancel")}
             </button>
             <button
               type="submit"
               disabled={isLoading}
               className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-md transition-colors disabled:opacity-50"
             >
-              {isLoading ? "Saving..." : blog ? "Update Blog" : "Create Blog"}
+              {isLoading
+                ? t("form.saving")
+                : blog
+                ? t("actions.update")
+                : t("actions.create")}
             </button>
           </div>
         </form>

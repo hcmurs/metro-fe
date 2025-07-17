@@ -7,7 +7,7 @@ import type { Blog } from "../types/blog.type";
 const fetchBlogsList = async (
   page: number,
   perPage: number
-): Promise<Blog[]> => {
+): Promise<PaginatedResponse<Blog>["data"]> => {
   try {
     const res = await api.get<PaginatedResponse<Blog>>(`${API_PATH.BLOG}`, {
       params: {
@@ -16,7 +16,7 @@ const fetchBlogsList = async (
       },
     });
     if (res.status === 200) {
-      return res.data.data.content;
+      return res.data.data; // Return the full data object with pagination info
     } else {
       throw new Error(`Error fetching blogs: ${res.statusText}`);
     }
@@ -29,7 +29,7 @@ const fetchBlogsList = async (
 };
 
 const useBlogs = (page: number, perPage: number) => {
-  return useQuery<Blog[], Error>({
+  return useQuery<PaginatedResponse<Blog>["data"], Error>({
     queryKey: ["blogs", page, perPage],
     queryFn: () => fetchBlogsList(page, perPage),
     retry: 3,

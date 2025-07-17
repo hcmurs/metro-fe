@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import BlogsSkeletonLoading from "../../components/BlogsSkeletonLoading/BlogsSkeletonLoading";
 import useBlogs from "../../queries/useBlogs";
 import {
@@ -20,13 +21,16 @@ import {
 
 const Blogs = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation("blog");
   const [currentSlide, setCurrentSlide] = useState(0);
 
   // Fetch blogs data using the API
-  const { data: blogs, isLoading, error } = useBlogs(0, 30);
+  const { data: blogsData, isLoading, error } = useBlogs(0, 30);
 
   // Process the blogs data to separate hero and category articles
   const { heroNews, categoryNews } = useMemo(() => {
+    const blogs = blogsData?.content || [];
+    
     if (!blogs || blogs.length === 0) {
       return {
         heroNews: [],
@@ -115,7 +119,7 @@ const Blogs = () => {
     });
 
     return { heroNews, categoryNews };
-  }, [blogs]);
+  }, [blogsData]);
 
   // Auto-advance carousel
   useEffect(() => {
@@ -151,14 +155,14 @@ const Blogs = () => {
         <div className="text-center">
           <div className="text-red-500 text-6xl mb-4">⚠️</div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Error Loading Articles
+            {t("common.error")} {t("common.loading")}
           </h2>
           <p className="text-gray-600 mb-4">{error.message}</p>
           <button
             onClick={() => window.location.reload()}
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           >
-            Try Again
+            {t("common.tryAgain")}
           </button>
         </div>
       </div>
@@ -172,9 +176,9 @@ const Blogs = () => {
         <div className="text-center">
           <div className="text-gray-400 text-6xl mb-4">📰</div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            No Articles Found
+            {t("common.noArticlesFound")}
           </h2>
-          <p className="text-gray-600">Check back later for new content.</p>
+          <p className="text-gray-600">{t("common.checkBackLater")}</p>
         </div>
       </div>
     );
@@ -212,7 +216,10 @@ const Blogs = () => {
                           news.category as BlogCategory
                         )}`}
                       >
-                        {getCategoryDisplayName(news.category)}
+                        {getCategoryDisplayName(
+                          news.category as BlogCategory,
+                          t
+                        )}
                       </span>
                       <h2 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">
                         {news.title}
@@ -228,7 +235,9 @@ const Blogs = () => {
                         </div>
                         <div className="flex items-center space-x-2">
                           <MessageCircle className="w-4 h-4" />
-                          <span>{news.comments} comments</span>
+                          <span>
+                            {news.comments} {t("common.comments")}
+                          </span>
                         </div>
                         <div className="flex items-center space-x-2">
                           <Eye className="w-4 h-4" />
@@ -287,10 +296,10 @@ const Blogs = () => {
                       category as BlogCategory
                     )} mr-4 rounded`}
                   ></span>
-                  {getCategoryDisplayName(category as BlogCategory)}
+                  {getCategoryDisplayName(category as BlogCategory, t)}
                 </h2>
                 <button className="text-blue-600 hover:text-blue-800 font-medium">
-                  View All
+                  {t("common.viewAll")}
                 </button>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -313,7 +322,8 @@ const Blogs = () => {
                           )}`}
                         >
                           {getCategoryDisplayName(
-                            article.category as BlogCategory
+                            article.category as BlogCategory,
+                            t
                           )}
                         </span>
                       </div>

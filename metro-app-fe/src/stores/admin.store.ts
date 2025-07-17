@@ -2,12 +2,12 @@ import { create } from 'zustand';
 import type { TicketType } from '../types/tickettype.type';
 import type { FareMatrix } from '../types/fare.type';
 import type { Station } from '../types/station.type';
-import type { Feedback, StudentRequest } from '../types/user.type';
+import type { Feedback, StudentRequest, User } from '../types/user.type';
 
 import { apiGetTicketTypes } from '../apis/tickettype.api';
 import { apiGetFareMatrices } from '../apis/fare.api';
 import { apiGetStations } from '../apis/station.api';
-import { apiFindAllFeedbacks, apiFindAllRequests } from '../apis/user.api';
+import { apiFindAllFeedbacks, apiFindAllRequests, apiFindUserById } from '../apis/user.api';
 
 type AdminState = {
   requests: StudentRequest[];
@@ -15,6 +15,7 @@ type AdminState = {
   ticketTypes: TicketType[];
   fareMatrices: FareMatrix[];
   stations: Station[];
+  users: User[];
   isFetched: boolean;
 
   fetchAll: () => Promise<void>;
@@ -38,6 +39,7 @@ export const useAdminStore = create<AdminState>((set, get) => ({
   ticketTypes: [],
   fareMatrices: [],
   stations: [],
+  users: [],
   isFetched: false,
 
   fetchAll: async () => {
@@ -48,21 +50,45 @@ export const useAdminStore = create<AdminState>((set, get) => ({
       feedbacksRes,
       ticketTypesRes,
       fareMatricesRes,
-      stationsRes
+      stationsRes,
     ] = await Promise.all([
       apiFindAllRequests(),
       apiFindAllFeedbacks(),
       apiGetTicketTypes(),
       apiGetFareMatrices(),
-      apiGetStations()
+      apiGetStations(),
     ]);
 
+    const requests = requestsRes?.data || [];
+    const feedbacks = feedbacksRes?.data || [];
+    const ticketTypes = ticketTypesRes?.data || [];
+    const fareMatrices = fareMatricesRes?.data || [];
+    const stations = stationsRes?.data || [];
+
+    const allUserIds = [
+      ...requests.map(r => r.userId),
+      ...feedbacks.map(f => f.userId)
+    ];
+    const uniqueUserIds = Array.from(new Set(allUserIds));
+
+    const existingUserIds = new Set(get().users.map(u => u.userId));
+    const missingUserIds = uniqueUserIds.filter(id => !existingUserIds.has(id));
+
+    const fetchedUsers = await Promise.all(
+      missingUserIds.map(id =>
+        apiFindUserById(id).then(res => res?.data).catch(() => undefined)
+      )
+    );
+
+    const validFetchedUsers = fetchedUsers.filter((u): u is User => u !== undefined);
+
     set({
-      requests: requestsRes?.data || [],
-      feedbacks: feedbacksRes?.data || [],
-      ticketTypes: ticketTypesRes?.data || [],
-      fareMatrices: fareMatricesRes?.data || [],
-      stations: stationsRes?.data || [],
+      requests,
+      feedbacks,
+      ticketTypes,
+      fareMatrices,
+      stations,
+      users: [...get().users, ...validFetchedUsers],
       isFetched: true
     });
   },

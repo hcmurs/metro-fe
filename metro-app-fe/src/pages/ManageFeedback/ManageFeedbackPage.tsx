@@ -4,7 +4,7 @@ import { Button, Card, Col, Form, Image, Input, Layout, message, Modal, notifica
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { apiFindUserById, apiReplyFeedback } from '../../apis/user.api';
+import { apiReplyFeedback } from '../../apis/user.api';
 import { useAdminStore } from '../../stores/admin.store';
 import type { Feedback, User } from '../../types/user.type';
 
@@ -30,7 +30,7 @@ export default function ManageFeedbackPage() {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  const { isFetched, feedbacks, updateFeedback } = useAdminStore();
+  const { isFetched, feedbacks, updateFeedback, users } = useAdminStore();
 
   const { control, handleSubmit, formState: { errors }, clearErrors } = useForm<ResponseFormInputs>({
     resolver: zodResolver(responseSchema),
@@ -96,13 +96,8 @@ export default function ManageFeedbackPage() {
   const handleViewFeedback = async (record: Feedback) => {
     setSelectedFeedback(record);
     setShowModal(true);
-
-    const res = await apiFindUserById(record.userId);
-    if (res && res.status === 200) {
-      setSelectedUser(res.data as User);
-    } else {
-      message.error('Cannot load user data');
-    }
+    const user: User | null = users.find(u => u.userId === record.userId) || null;
+    setSelectedUser(user);
   };
 
   const handleReplyFeedback = async (data: ResponseFormInputs) => {
@@ -121,7 +116,7 @@ export default function ManageFeedbackPage() {
     } else {
       message.error("Something wen't wrong");
     }
-    
+
     setIsSubmitting(false);
   };
 

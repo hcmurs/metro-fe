@@ -1,40 +1,12 @@
-import {
-  CheckOutlined,
-  ExclamationCircleOutlined,
-  EyeOutlined,
-  FileImageOutlined,
-  FilterOutlined,
-  MessageOutlined,
-  QuestionCircleOutlined,
-  SearchOutlined,
-  SendOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Button,
-  Card,
-  Col,
-  Form,
-  Image,
-  Input,
-  Layout,
-  message,
-  Modal,
-  notification,
-  Row,
-  Select,
-  Space,
-  Table,
-  Tag,
-} from "antd";
-import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { z } from "zod";
-import { apiFindUserById, apiReplyFeedback } from "../../apis/user.api";
-import LoaderContainer from "../../components/Loader/LoaderContainer";
-import { useAdminStore } from "../../stores/admin.store";
-import type { Feedback, User } from "../../types/user.type";
+import { CheckOutlined, ExclamationCircleOutlined, EyeOutlined, FileImageOutlined, FilterOutlined, MessageOutlined, QuestionCircleOutlined, SearchOutlined, SendOutlined, UserOutlined } from '@ant-design/icons';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button, Card, Col, Form, Image, Input, Layout, message, Modal, notification, Row, Select, Space, Spin, Table, Tag } from 'antd';
+import { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { apiReplyFeedback } from '../../apis/user.api';
+import { useAdminStore } from '../../stores/admin.store';
+import type { Feedback, User } from '../../types/user.type';
 
 const { Content } = Layout;
 const { Search } = Input;
@@ -60,7 +32,7 @@ export default function ManageFeedbackPage() {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  const { isFetched, feedbacks, updateFeedback } = useAdminStore();
+  const { isFetched, feedbacks, updateFeedback, users } = useAdminStore();
 
   const {
     control,
@@ -142,13 +114,9 @@ export default function ManageFeedbackPage() {
   const handleViewFeedback = async (record: Feedback) => {
     setSelectedFeedback(record);
     setShowModal(true);
-
-    const res = await apiFindUserById(record.userId);
-    if (res && res.status === 200) {
-      setSelectedUser(res.data as User);
-    } else {
-      message.error("Cannot load user data");
-    }
+    
+    const user: User | null = users.find(u => u.userId === record.userId) || null;
+    setSelectedUser(user);
   };
 
   const handleReplyFeedback = async (data: ResponseFormInputs) => {

@@ -1,41 +1,12 @@
-import {
-  CalendarOutlined,
-  CheckOutlined,
-  CloseOutlined,
-  CreditCardOutlined,
-  ExclamationCircleOutlined,
-  EyeOutlined,
-  FileTextOutlined,
-  FilterOutlined,
-  ReadOutlined,
-  SearchOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Button,
-  Card,
-  Col,
-  Form,
-  Image,
-  Input,
-  Layout,
-  message,
-  Modal,
-  notification,
-  Row,
-  Select,
-  Space,
-  Table,
-  Tag,
-} from "antd";
-import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { z } from "zod";
-import { apiFindUserById, apiVerifyRequest } from "../../apis/user.api";
-import LoaderContainer from "../../components/Loader/LoaderContainer";
-import { useAdminStore } from "../../stores/admin.store";
-import type { StudentRequest, User } from "../../types/user.type";
+import { CalendarOutlined, CheckOutlined, CloseOutlined, CreditCardOutlined, ExclamationCircleOutlined, EyeOutlined, FileTextOutlined, FilterOutlined, ReadOutlined, SearchOutlined } from '@ant-design/icons';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button, Card, Col, Form, Image, Input, Layout, message, Modal, notification, Row, Select, Space, Spin, Table, Tag } from 'antd';
+import { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { apiVerifyRequest } from '../../apis/user.api';
+import { useAdminStore } from '../../stores/admin.store';
+import type { StudentRequest, User } from '../../types/user.type';
 
 const { Content } = Layout;
 const { Search } = Input;
@@ -61,7 +32,7 @@ export default function VerifyRequestPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
 
-  const { isFetched, requests, updateRequest } = useAdminStore();
+  const { isFetched, requests, updateRequest, users } = useAdminStore();
 
   const {
     control,
@@ -118,13 +89,9 @@ export default function VerifyRequestPage() {
   const handleViewRequest = async (record: StudentRequest) => {
     setSelectedRequest(record);
     setShowModal(true);
-
-    const res = await apiFindUserById(record.userId);
-    if (res && res.status === 200) {
-      setSelectedUser(res.data as User);
-    } else {
-      message.error("Cannot load user data");
-    }
+    
+    const user: User | null = users.find(u => u.userId === record.userId) || null;
+    setSelectedUser(user);
   };
 
   const showApproveConfirm = (record: StudentRequest) => {
@@ -194,18 +161,11 @@ export default function VerifyRequestPage() {
       ),
     },
     {
-      title: "User ID",
-      dataIndex: "userId",
-      key: "userId",
+      title: 'User',
+      dataIndex: 'userId',
+      key: 'userId',
       render: (text: string) => (
-        <div className="flex items-center">
-          <div className="w-10 h-10 rounded-full bg-[#e0f7fa] flex items-center justify-center mr-[10px]">
-            <UserOutlined className="!text-[#00838f]" />
-          </div>
-          <div>
-            <div className="font-bold">#{text}</div>
-          </div>
-        </div>
+        <div className='font-bold'>#{text}</div>
       ),
     },
     {
@@ -233,8 +193,8 @@ export default function VerifyRequestPage() {
       key: "createdAt",
     },
     {
-      title: "Actions",
-      key: "actions",
+      title: 'Action',
+      key: 'actions',
       render: (record: StudentRequest) => (
         <Space size="small">
           <Button

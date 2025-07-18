@@ -21,13 +21,13 @@ export default function Admin() {
     fetchAll();
   }, []);
 
-  const activeClass = 'bg-gradient-to-r from-blue-100 to-blue-300 text-blue-700 font-semibold border-r-4 border-blue-600 shadow-inner';
-  const baseClass = 'flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-100 transition-all duration-150';
+  const activeClass = 'bg-gradient-to-r from-white to-[#D4FCEE] text-[#007c51] font-semibold border-r-4 border-[#007c51] shadow-inner';
+  const baseClass = 'flex items-center gap-3 px-4 py-2 rounded-md hover:bg-[#D4FCEE] transition-all duration-150';
 
   return (
-    <div className='flex bg-gray-100 min-h-screen'>
+    <div className='flex bg-gradient-to-br from-[#D4FCEE] via-gray-100 to-[#D4FCEE] min-h-screen'>
       <aside className='w-64 bg-white p-6 border-r border-gray-200 sticky top-0 h-screen shadow-sm'>
-        <div className='text-2xl font-bold text-blue-600 mb-8'>Admin Panel</div>
+        <div className='text-2xl font-bold text-[#007c51] mb-8'>Admin Panel</div>
         <nav className='flex flex-col gap-6'>
           <div>
             <h3 className='text-gray-500 uppercase text-sm mb-2 font-semibold'>Overview</h3>

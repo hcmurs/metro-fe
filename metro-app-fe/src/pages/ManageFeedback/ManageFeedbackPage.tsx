@@ -1,6 +1,6 @@
-import { CheckOutlined, ExclamationCircleOutlined, EyeOutlined, FileImageOutlined, FilterOutlined, MessageOutlined, QuestionCircleOutlined, SearchOutlined, SendOutlined, UserOutlined } from '@ant-design/icons';
+import { CheckOutlined, ExclamationCircleOutlined, EyeOutlined, FileImageOutlined, FilterOutlined, MessageOutlined, QuestionCircleOutlined, SearchOutlined, SendOutlined } from '@ant-design/icons';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Card, Col, Form, Image, Input, Layout, message, Modal, notification, Row, Select, Space, Spin, Table, Tag } from 'antd';
+import { Button, Card, Col, Form, Image, Input, Layout, message, Modal, notification, Row, Select, Space, Table, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -14,7 +14,7 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 const responseSchema = z.object({
-  replyContent: z.string().min(1, "Response is required"),
+  replyContent: z.string().min(1, "Nội dung là bắt buộc").max(500, "Nội dung không được quá 500 ký tự"),
 });
 
 type ResponseFormInputs = z.infer<typeof responseSchema>;
@@ -141,51 +141,46 @@ export default function ManageFeedbackPage() {
 
   const columns = [
     {
-      title: "Feedback Info",
+      title: "Thông tin phản hồi",
       dataIndex: "feedbackId",
       key: "feedbackId",
-      render: (id: number) => <div className="font-bold">Feedback #{id}</div>,
+      render: (id: number) => <div className="font-bold">Phản hồi #{id}</div>,
     },
     {
-      title: "User ID",
+      title: "Người tạo",
       dataIndex: "userId",
       key: "userId",
       render: (userId: number) => (
-        <div className="flex items-center">
-          <div className="w-10 h-10 rounded-full bg-[#e0f7fa] flex items-center justify-center mr-[10px]">
-            <UserOutlined className="!text-[#00838f]" />
-          </div>
-          <div className="font-bold">#{userId}</div>
-        </div>
+        <div>{users.find((user: User) => user.userId === userId)?.email}</div>
       ),
     },
     {
-      title: "Category",
+      title: "Loại phản hồi",
       dataIndex: "category",
       key: "category",
       render: (category: string) => (
         <Space>
           {getCategoryIcon(category)}
-          <span className="capitalize">{category}</span>
+          <span className="capitalize">{category === "App Issue" ? "Lỗi ứng dụng" : category === "Compliment" ? "Đánh giá" : category === "Suggestion" ? "Góp ý" : "Khác"}</span>
         </Space>
       ),
     },
     {
-      title: "Status",
+      title: "Trạng thái",
       dataIndex: "status",
       key: "status",
       render: (_: any, record: Feedback) => {
         const status = getStatusFromFeedback(record);
-        return <Tag color={getStatusTagColor(status)}>{status}</Tag>;
+        return <Tag color={getStatusTagColor(status)}>{status === "PENDING" ? "Chưa phản hồi" : "Đã phản hồi"}</Tag>;
       },
     },
     {
-      title: "Submitted",
+      title: "Thời gian tạo",
       dataIndex: "createdAt",
       key: "createdAt",
     },
     {
-      title: "Actions",
+      title: "Hành động",
       key: "actions",
       render: (_: any, record: Feedback) => (
         <Space size="small">
@@ -218,9 +213,9 @@ export default function ManageFeedbackPage() {
       <Content className="!w-full !max-w-[1200px] !mx-auto">
         <div className="mb-6">
           <h1 className="text-[2em] font-bold text-[#333] mb-2">
-            Feedback Management
+            Quản lí phản hồi khách hàng
           </h1>
-          <p className="text-[#666]">Manage and respond to user feedback</p>
+          <p className="text-[#666]">Quản lí và trả lời các phản hồi từ khách hàng</p>
         </div>
 
         <Row gutter={[24, 24]} className="!mb-6">
@@ -228,7 +223,7 @@ export default function ManageFeedbackPage() {
             <Card className="!shadow-[0_1px_2px_0_rgba(0,0,0,0.03),0_1px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_0_rgba(0,0,0,0.02)]">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="m-0 text-[#666]">Total Feedback</p>
+                  <p className="m-0 text-[#666]">Tổng cộng</p>
                   <p className="font-bold text-[1.5em] m-0 text-[#333]">
                     {stats.total}
                   </p>
@@ -241,7 +236,7 @@ export default function ManageFeedbackPage() {
             <Card className="!shadow-[0_1px_2px_0_rgba(0,0,0,0.03),0_1px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_0_rgba(0,0,0,0.02)]">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="m-0 text-[#666]">Pending</p>
+                  <p className="m-0 text-[#666]">Chưa phản hồi</p>
                   <p className="font-bold text-[1.5em] m-0 text-[#faad14]">
                     {stats.pending}
                   </p>
@@ -254,7 +249,7 @@ export default function ManageFeedbackPage() {
             <Card className="!shadow-[0_1px_2px_0_rgba(0,0,0,0.03),0_1px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_0_rgba(0,0,0,0.02)]">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="m-0 text-[#666]">Responded</p>
+                  <p className="m-0 text-[#666]">Đã phản hồi</p>
                   <p className="font-bold text-[1.5em] m-0 text-[#52c41a]">
                     {stats.responded}
                   </p>
@@ -269,7 +264,7 @@ export default function ManageFeedbackPage() {
           <Row gutter={[16, 16]} align="middle">
             <Col xs={24} md={12}>
               <Search
-                placeholder="Search by user, subject, or feedback ID..."
+                placeholder="Tìm kiếm phản hồi..."
                 onSearch={(value) => setSearchTerm(value)}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="!w-full"
@@ -281,23 +276,22 @@ export default function ManageFeedbackPage() {
               <Space className="!w-full !justify-end" wrap>
                 <FilterOutlined className="!text-[rgba(0, 0, 0, 0.45)]" />
                 <Select
-                  className="!w-28"
                   defaultValue="ALL"
                   onChange={(value) => setStatusFilter(value)}
                 >
-                  <Option value="ALL">All Status</Option>
-                  <Option value="PENDING">Pending</Option>
-                  <Option value="RESPONDED">Responded</Option>
+                  <Option value="ALL">Tất cả trạng thái</Option>
+                  <Option value="PENDING">Chưa phản hồi</Option>
+                  <Option value="RESPONDED">Đã phản hồi</Option>
                 </Select>
                 <Select
                   defaultValue="ALL"
                   onChange={(value) => setCategoryFilter(value)}
                 >
-                  <Option value="ALL">All Categories</Option>
-                  <Option value="Compliment">Compliment</Option>
-                  <Option value="App Issue">App Issue</Option>
-                  <Option value="Suggestion">Suggestion</Option>
-                  <Option value="Other">Other</Option>
+                  <Option value="ALL">Tất cả thể loại</Option>
+                  <Option value="Compliment">Đánh giá</Option>
+                  <Option value="App Issue">Lỗi ứng dụng</Option>
+                  <Option value="Suggestion">Góp ý</Option>
+                  <Option value="Other">Khác</Option>
                 </Select>
               </Space>
             </Col>
@@ -333,7 +327,7 @@ export default function ManageFeedbackPage() {
                   disabled={isSubmitting}
                   className="!bg-teal-600 !text-white hover:!bg-teal-700"
                 >
-                  Send Response
+                  Phản hồi
                 </Button>
               </div>
             ) : null
@@ -341,13 +335,11 @@ export default function ManageFeedbackPage() {
         >
           {selectedFeedback && selectedUser && (
             <div className="relative">
-              {isSubmitting && <LoaderContainer />}
-
               <div>
                 <Row gutter={[24, 24]} className="!mb-6">
                   <Col xs={24} md={12}>
                     <h3 className="text-[1.2em] font-medium mb-4 text-center">
-                      Feedback Information
+                      Thông tin phản hồi
                     </h3>
                     <Space
                       direction="vertical"
@@ -355,29 +347,29 @@ export default function ManageFeedbackPage() {
                       className="!w-full"
                     >
                       <div className="font-bold">
-                        Feedback #{selectedFeedback.feedbackId}
+                        Id: {selectedFeedback.feedbackId}
                       </div>
                       <div>
-                        <span className="font-bold">Status: </span>
+                        <span className="font-bold">Trạng thái: </span>
                         <Tag
                           color={getStatusTagColor(
                             getStatusFromFeedback(selectedFeedback)
                           )}
                           className="!mt-1"
                         >
-                          {getStatusFromFeedback(selectedFeedback)}
+                          {getStatusFromFeedback(selectedFeedback) === "PENDING" ? "Chưa phản hồi" : "Đã phản hồi"}
                         </Tag>
                       </div>
                       <div>
-                        <span className="font-bold">Category: </span>
+                        <span className="font-bold">Loại phản hồi: </span>
                         <Space>
                           <span className="capitalize">
-                            {selectedFeedback.category}
+                            {selectedFeedback.category === "App Issue" ? "Lỗi ứng dụng" : selectedFeedback.category === "Compliment" ? "Đánh giá" : selectedFeedback.category === "Suggestion" ? "Góp ý" : "Khác"}
                           </span>
                         </Space>
                       </div>
                       <div>
-                        <span className="font-bold">Submitted On:</span>{" "}
+                        <span className="font-bold">Thời gian tạo:</span>{" "}
                         {selectedFeedback.createdAt}
                       </div>
                     </Space>
@@ -385,7 +377,7 @@ export default function ManageFeedbackPage() {
 
                   <Col xs={24} md={12}>
                     <h3 className="text-[1.2em] font-medium mb-4 text-center">
-                      User Information
+                      Thông tin người dùng
                     </h3>
                     <Space
                       direction="vertical"
@@ -393,10 +385,10 @@ export default function ManageFeedbackPage() {
                       className="!w-full"
                     >
                       <div className="font-bold">
-                        User #{selectedFeedback.userId}
+                        Id: {selectedFeedback.userId}
                       </div>
                       <div>
-                        <span className="font-bold">Name:</span>{" "}
+                        <span className="font-bold">Tên:</span>{" "}
                         {selectedUser.name}
                       </div>
                       <div>
@@ -404,7 +396,7 @@ export default function ManageFeedbackPage() {
                         {selectedUser.email}
                       </div>
                       <div>
-                        <span className="font-bold">Created at:</span>{" "}
+                        <span className="font-bold">Thời gian tạo tài khoản:</span>{" "}
                         {selectedUser.createdAt}
                       </div>
                     </Space>
@@ -415,7 +407,7 @@ export default function ManageFeedbackPage() {
                   <Col xs={24}>
                     <div className="text-[#888] text-[0.9em] mb-2">
                       <MessageOutlined className="!mr-1" />
-                      Feedback Message
+                      Nội dung phản hồi
                     </div>
                     <div className="border border-[#f0f0f0] rounded-lg p-4 bg-[#fafafa]">
                       <p className="m-0 text-[#333] whitespace-pre-wrap">
@@ -428,7 +420,7 @@ export default function ManageFeedbackPage() {
                     <Col xs={24}>
                       <div className="text-[#888] text-[0.9em] mb-2">
                         <FileImageOutlined className="!mr-1" />
-                        Image
+                        Ảnh
                       </div>
                       <Image
                         src={selectedFeedback.image}
@@ -442,7 +434,7 @@ export default function ManageFeedbackPage() {
                 {selectedFeedback.reply && (
                   <div className="mb-6">
                     <div className="text-[#888] text-[0.9em] mb-2">
-                      Admin Response
+                      Phản hồi từ quản trị viên
                     </div>
                     <div className="p-3 bg-[#f0f9ff] border border-[#91d5ff] rounded-lg">
                       <p className="m-0 text-[#0050b3]">
@@ -465,7 +457,7 @@ export default function ManageFeedbackPage() {
           title={
             <>
               <SendOutlined style={{ color: "#1890ff", marginRight: 8 }} />
-              Send Response
+              Trả lời phản hồi
             </>
           }
           footer={null}
@@ -473,7 +465,7 @@ export default function ManageFeedbackPage() {
         >
           <Form layout="vertical" onFinish={handleSubmit(handleReplyFeedback)}>
             <Form.Item
-              label="Response"
+              label="Nội dung"
               name="replyContent"
               validateStatus={errors.replyContent ? "error" : ""}
               help={errors.replyContent?.message}
@@ -486,7 +478,7 @@ export default function ManageFeedbackPage() {
                   <TextArea
                     {...field}
                     rows={6}
-                    placeholder="Type your response here..."
+                    placeholder="Ghi phản hồi tại đây..."
                   />
                 )}
               />
@@ -499,7 +491,7 @@ export default function ManageFeedbackPage() {
                 loading={isSubmitting}
                 className="!bg-teal-600 !text-white hover:!bg-teal-700"
               >
-                Submit
+                Gửi
               </Button>
             </div>
           </Form>

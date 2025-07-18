@@ -38,7 +38,15 @@ export type Blog = {
 };
 
 // Function to convert category to display text
-export const getCategoryDisplayName = (category: BlogCategory): string => {
+export const getCategoryDisplayName = (
+  category: BlogCategory,
+  t?: (key: string) => string
+): string => {
+  if (t) {
+    return t(`categories.${category}`);
+  }
+
+  // Fallback for when t is not available
   switch (category) {
     case "SERVICE_UPDATE":
       return "Service Updates";
@@ -60,7 +68,15 @@ export const getCategoryDisplayName = (category: BlogCategory): string => {
 };
 
 // Function to convert tag to display text
-export const getTagDisplayName = (tag: BlogTag): string => {
+export const getTagDisplayName = (
+  tag: BlogTag,
+  t?: (key: string) => string
+): string => {
+  if (t) {
+    return t(`tags.${tag}`);
+  }
+
+  // Fallback for when t is not available
   switch (tag) {
     case "STATION_GUIDE":
       return "Station Guide";

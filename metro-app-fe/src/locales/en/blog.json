@@ -1,0 +1,51 @@
+{
+  "title": "Blog",
+  "categories": {
+    "SERVICE_UPDATE": "Service Updates",
+    "SAFETY_GUIDELINE": "Safety Guidelines",
+    "RIDER_TIPS": "Rider Tips",
+    "TECH_BEHIND_METRO": "Technology",
+    "SCHEDULE_INFO": "Schedule Info",
+    "PROMOTION": "Promotions",
+    "PUBLIC_ANNOUNCEMENT": "Announcements"
+  },
+  "tags": {
+    "STATION_GUIDE": "Station Guide",
+    "ELECTRONIC_TICKETING": "Electronic Ticketing",
+    "MAP_UPDATE": "Map Update",
+    "DISCOUNT": "Discount",
+    "MAINTENANCE_NOTICE": "Maintenance Notice",
+    "PEAK_HOUR_TIPS": "Peak Hour Tips",
+    "NEW_LINE_OPENING": "New Line Opening",
+    "MOBILE_APP": "Mobile App",
+    "LOST_AND_FOUND": "Lost and Found",
+    "PUBLIC_ANNOUNCEMENT": "Public Announcement",
+    "ACCESSIBILITY": "Accessibility"
+  },
+  "common": {
+    "viewAll": "View All",
+    "readMore": "Read More",
+    "backToNews": "Back to News",
+    "shareArticle": "Share this article",
+    "leaveComment": "Leave a Comment",
+    "postComment": "Post Comment",
+    "comments": "comments",
+    "views": "views",
+    "minRead": "min read",
+    "author": "Author",
+    "aboutAuthor": "About the Author",
+    "relatedArticles": "Related Articles",
+    "tags": "Tags",
+    "loading": "Loading...",
+    "error": "Error",
+    "tryAgain": "Try Again",
+    "noArticlesFound": "No Articles Found",
+    "checkBackLater": "Check back later for new content."
+  },
+  "form": {
+    "yourName": "Your Name",
+    "yourEmail": "Your Email",
+    "writeComment": "Write your comment here...",
+    "required": "Required"
+  }
+}

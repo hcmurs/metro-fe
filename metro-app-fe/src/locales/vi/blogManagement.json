@@ -1,0 +1,59 @@
+{
+  "title": "Quản Lý Blog",
+  "subtitle": "Quản lý bài viết và nội dung blog của bạn",
+  "actions": {
+    "create": "Tạo Blog",
+    "edit": "Chỉnh Sửa",
+    "delete": "Xóa",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "update": "Cập Nhật",
+    "search": "Tìm kiếm blog...",
+    "previous": "Trước",
+    "next": "Tiếp",
+    "viewAll": "Xem Tất Cả"
+  },
+  "form": {
+    "createBlog": "Tạo Blog Mới",
+    "editBlog": "Chỉnh Sửa Blog",
+    "title": "Tiêu đề",
+    "titlePlaceholder": "Nhập tiêu đề blog",
+    "category": "Danh mục",
+    "author": "Tác giả",
+    "authorPlaceholder": "Nhập tên tác giả",
+    "imageUrl": "URL Hình ảnh",
+    "imageUrlPlaceholder": "https://example.com/image.jpg",
+    "readTime": "Thời gian đọc",
+    "readTimePlaceholder": "5 phút đọc",
+    "excerpt": "Tóm tắt",
+    "excerptPlaceholder": "Mô tả ngắn gọn về bài viết blog",
+    "content": "Nội dung",
+    "contentPlaceholder": "Viết nội dung blog của bạn tại đây...",
+    "tags": "Thẻ",
+    "required": "Bắt buộc",
+    "saving": "Đang lưu..."
+  },
+  "table": {
+    "blog": "Blog",
+    "category": "Danh Mục",
+    "author": "Tác Giả",
+    "stats": "Thống Kê",
+    "date": "Ngày",
+    "actions": "Hành Động"
+  },
+  "messages": {
+    "loading": "Đang tải...",
+    "noBlogs": "Không tìm thấy blog",
+    "errorLoading": "Lỗi khi tải blog",
+    "createSuccess": "Blog đã được tạo thành công!",
+    "updateSuccess": "Blog đã được cập nhật thành công!",
+    "deleteSuccess": "Blog đã được xóa thành công!",
+    "createError": "Lỗi khi tạo blog",
+    "updateError": "Lỗi khi cập nhật blog",
+    "deleteError": "Lỗi khi xóa blog",
+    "deleteConfirm": "Bạn có chắc chắn muốn xóa blog này không?",
+    "showing": "Hiển thị",
+    "blogs": "blog",
+    "page": "Trang"
+  }
+}

@@ -24,6 +24,7 @@ export interface StudentRequest {
 	userId: number;
   title: string;
   content: string;
+	citizenIdNumber: string;
   endDate: string;
   createdAt: string;
   requestStatus: 'PENDING' | 'APPROVED' | 'REJECTED';
@@ -34,6 +35,7 @@ export interface StudentRequest {
 
 export interface StudentRequestCreation {
 	content: string;
+	citizenIdNumber: string;
 	studentCardImage: string;
 	citizenIdentityCardImage: string;
 	endDate: string;

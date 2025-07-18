@@ -25,20 +25,20 @@ export default function UserInfoTab() {
     <div>
       <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-400">
         <Title level={4} className="!mb-0 text-emerald-700">
-          Personal Information
+          Thông tin cá nhân
         </Title>
       </div>
 
       <div className="space-y-4">
-        <FieldDisplay label="Full Name" value={name} />
-        <FieldDisplay label="Email Address" value={email} />
+        <FieldDisplay label="Họ và Tên" value={name} />
+        <FieldDisplay label="Địa chỉ email" value={email} />
 
         {isStudent && (
           <>
-            <FieldDisplay label="Student Status" value={isStudent ? 'Verified ' : 'Not verified'} />
+            <FieldDisplay label="Trạng thái sinh viên" value={isStudent ? 'Đã duyệt ' : 'Chưa duyệt'} />
             {studentExpiredDate && (
               <FieldDisplay
-                label="Student Verification Expiry"
+                label="Ngày hết hạn sinh viên"
                 value={studentExpiredDate}
               />
             )}

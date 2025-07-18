@@ -25,19 +25,19 @@ export default function ProfilePage() {
               className={`flex-1 md:flex-none px-6 py-4 text-sm font-medium text-left transition-all duration-200 ${activeTab === 'info' ? 'text-teal-800 bg-[#e6fffd] border-b-2 md:border-b-0 md:border-l-4 border-teal-500' : 'text-gray-600 hover:text-teal-700 hover:bg-[#e6fffd]/50'}`}
               onClick={() => setActiveTab('info')}
             >
-              Personal Information
+              Thông tin cá nhân
             </button>
             <button
               className={`flex-1 md:flex-none px-6 py-4 text-sm font-medium text-left transition-all duration-200 ${activeTab === 'student' ? 'text-teal-800 bg-[#e6fffd] border-b-2 md:border-b-0 md:border-l-4 border-teal-500' : 'text-gray-600 hover:text-teal-700 hover:bg-[#e6fffd]/50'}`}
               onClick={() => setActiveTab('student')}
             >
-              Student Request
+              Yêu cầu sinh viên
             </button>
             <button
               className={`flex-1 md:flex-none px-6 py-4 text-sm font-medium text-left transition-all duration-200 ${activeTab === 'feedback' ? 'text-teal-800 bg-[#e6fffd] border-b-2 md:border-b-0 md:border-l-4 border-teal-500' : 'text-gray-600 hover:text-teal-700 hover:bg-[#e6fffd]/50'}`}
               onClick={() => setActiveTab('feedback')}
             >
-              Feedback
+              Ý kiến phản hồi
             </button>
           </div>
         </div>

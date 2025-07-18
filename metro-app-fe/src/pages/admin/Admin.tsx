@@ -1,88 +1,107 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { LayoutDashboard, User, Train, Ticket, Newspaper, ScrollText, FilePlus2 } from 'lucide-react';
+import {
+  LayoutDashboard,
+  User,
+  Train,
+  Ticket,
+  Newspaper,
+  ScrollText,
+  FilePlus2
+} from 'lucide-react';
 import { useAdminStore } from '../../stores/admin.store';
 import { useEffect } from 'react';
 
 export default function Admin() {
-	const location = useLocation();
-	const choosen = location.pathname.split('/')[2] || '';
-	const activeClass = 'text-blue-500 border-l-4 border-blue-500 bg-blue-100';
-	const baseClass = 'p-2 hover:bg-blue-100 text-black flex gap-2 rounded';
+  const location = useLocation();
+  const choosen = location.pathname.split('/')[2] || '';
 
-	const fetchAll = useAdminStore(state => state.fetchAll);
+  const fetchAll = useAdminStore(state => state.fetchAll);
 
-	useEffect(() => {
-		fetchAll();
-	}, []);
+  useEffect(() => {
+    fetchAll();
+  }, []);
 
-	return (
-		<div className='flex bg-gray-200'>
-			<div className='w-1/6'>
-				<div className='w-full h-screen bg-white text-black p-5 sticky top-0'>
-					<div className='flex flex-col mt-5 gap-4'>
-						<div>Overview</div>
-						<Link
-							to={'dashboard'}
-							className={`${baseClass} ${choosen === 'dashboard' ? activeClass : ''}`}
-						>
-							<LayoutDashboard /> Dashboard
-						</Link>
+  const activeClass = 'bg-gradient-to-r from-blue-100 to-blue-300 text-blue-700 font-semibold border-r-4 border-blue-600 shadow-inner';
+  const baseClass = 'flex items-center gap-3 px-4 py-2 rounded-md hover:bg-blue-100 transition-all duration-150';
 
-						<div>User Management</div>
-						<Link
-							to={'users'}
-							className={`${baseClass} ${choosen === 'users' ? activeClass : ''} `}
-						>
-							<User /> Users
-						</Link>
-						<Link
-							to={'logs'}
-							className={`${baseClass} ${choosen === 'logs' ? activeClass : ''} `}
-						>
-							<User /> User Log
-						</Link>
-						<Link
-							to={'requests'}
-							className={`${baseClass} ${choosen === 'requests' ? activeClass : ''} `}
-						>
-							<FilePlus2 /> Requests
-						</Link>
-						<Link
-							to={'feedbacks'}
-							className={`${baseClass} ${choosen === 'feedbacks' ? activeClass : ''} `}
-						>
-							<ScrollText /> Feedbacks
-						</Link>
+  return (
+    <div className='flex bg-gray-100 min-h-screen'>
+      <aside className='w-64 bg-white p-6 border-r border-gray-200 sticky top-0 h-screen shadow-sm'>
+        <div className='text-2xl font-bold text-blue-600 mb-8'>Admin Panel</div>
+        <nav className='flex flex-col gap-6'>
+          <div>
+            <h3 className='text-gray-500 uppercase text-sm mb-2 font-semibold'>Overview</h3>
+            <Link
+              to={'dashboard'}
+              className={`${baseClass} ${choosen === 'dashboard' ? activeClass : ''}`}
+            >
+              <LayoutDashboard size={20} /> Dashboard
+            </Link>
+          </div>
 
-						<div>Station Management</div>
-						<Link
-							to={'route'}
-							className={`${baseClass} ${choosen === 'route' ? activeClass : ''}`}
-						>
-							<Train /> Route
-						</Link>
+          <div>
+            <h3 className='text-gray-500 uppercase text-sm mb-2 font-semibold'>User Management</h3>
+            <Link
+              to={'users'}
+              className={`${baseClass} ${choosen === 'users' ? activeClass : ''}`}
+            >
+              <User size={20} /> Users
+            </Link>
+            <Link
+              to={'logs'}
+              className={`${baseClass} ${choosen === 'logs' ? activeClass : ''}`}
+            >
+              <User size={20} /> User Log
+            </Link>
+            <Link
+              to={'requests'}
+              className={`${baseClass} ${choosen === 'requests' ? activeClass : ''}`}
+            >
+              <FilePlus2 size={20} /> Requests
+            </Link>
+            <Link
+              to={'feedbacks'}
+              className={`${baseClass} ${choosen === 'feedbacks' ? activeClass : ''}`}
+            >
+              <ScrollText size={20} /> Feedbacks
+            </Link>
+          </div>
 
-						<div>Ticket Management</div>
-						<Link
-							to={'tickets'}
-							className={`${baseClass} ${choosen === 'tickets' ? activeClass : ''}`}
-						>
-							<Ticket /> Tickets
-						</Link>
+          <div>
+            <h3 className='text-gray-500 uppercase text-sm mb-2 font-semibold'>Station Management</h3>
+            <Link
+              to={'route'}
+              className={`${baseClass} ${choosen === 'route' ? activeClass : ''}`}
+            >
+              <Train size={20} /> Route
+            </Link>
+          </div>
 
-						<div>Blog Management</div>
-						<Link
-							to={'blogs'}
-							className={`${baseClass} ${choosen === 'blogs' ? activeClass : ''}`}
-						>
-							<Newspaper /> Blogs
-						</Link>
-					</div>
-				</div>
-			</div>
-			<div className='w-5/6 p-5'>
-				<Outlet />
-			</div>
-		</div>
-	)
+          <div>
+            <h3 className='text-gray-500 uppercase text-sm mb-2 font-semibold'>Ticket Management</h3>
+            <Link
+              to={'tickets'}
+              className={`${baseClass} ${choosen === 'tickets' ? activeClass : ''}`}
+            >
+              <Ticket size={20} /> Tickets
+            </Link>
+          </div>
+
+          <div>
+            <h3 className='text-gray-500 uppercase text-sm mb-2 font-semibold'>Blog Management</h3>
+            <Link
+              to={'blogs'}
+              className={`${baseClass} ${choosen === 'blogs' ? activeClass : ''}`}
+            >
+              <Newspaper size={20} /> Blogs
+            </Link>
+          </div>
+        </nav>
+      </aside>
+
+      <main className='flex-1 p-6'>
+        <Outlet />
+      </main>
+    </div>
+  );
 }

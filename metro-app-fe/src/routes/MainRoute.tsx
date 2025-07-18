@@ -23,7 +23,7 @@ import VerifyRequestPage from "../pages/VerifyRequestPage/VerifyRequestPage";
 import RoleRoute from "./RoleRoute";
 import { Spin } from "antd";
 import BlogManagement from "../pages/admin/components/BlogManagement";
-import LoginPage from "../pages/login/LoginPage";
+import LoginPage from "../pages/Login/LoginPage";
 
 export default function MainRoute() {
   const { isLoading } = useAuth();

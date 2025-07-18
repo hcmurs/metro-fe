@@ -1,6 +1,6 @@
 import { CalendarOutlined, CheckOutlined, CloseOutlined, CreditCardOutlined, ExclamationCircleOutlined, EyeOutlined, FileTextOutlined, FilterOutlined, ReadOutlined, SearchOutlined } from '@ant-design/icons';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Card, Col, Form, Image, Input, Layout, message, Modal, notification, Row, Select, Space, Spin, Table, Tag } from 'antd';
+import { Button, Card, Col, Form, Image, Input, Layout, message, Modal, notification, Row, Select, Space, Table, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -13,18 +13,14 @@ const { Search } = Input;
 const { Option } = Select;
 
 const rejectSchema = z.object({
-  rejectionReason: z.string().min(1, "Rejection Reason is required"),
+  rejectionReason: z.string().min(1, "Lí do từ chối là bắt buộc").max(500, "Lí do từ chối không được quá 500 ký tự"),
 });
 
 type RejectFormInputs = z.infer<typeof rejectSchema>;
 
 export default function VerifyRequestPage() {
-  const [filteredRequests, setFilteredRequests] = useState<StudentRequest[]>(
-    []
-  );
-  const [selectedRequest, setSelectedRequest] = useState<StudentRequest | null>(
-    null
-  );
+  const [filteredRequests, setFilteredRequests] = useState<StudentRequest[]>([]);
+  const [selectedRequest, setSelectedRequest] = useState<StudentRequest | null>(null);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -89,19 +85,19 @@ export default function VerifyRequestPage() {
   const handleViewRequest = async (record: StudentRequest) => {
     setSelectedRequest(record);
     setShowModal(true);
-    
+
     const user: User | null = users.find(u => u.userId === record.userId) || null;
     setSelectedUser(user);
   };
 
   const showApproveConfirm = (record: StudentRequest) => {
     Modal.confirm({
-      title: "Approve this request?",
+      title: "Xác nhận duyệt yêu cầu này?",
       icon: <ExclamationCircleOutlined />,
-      content: "This action will approve the student's discount request.",
-      okText: "Approve",
+      content: "Hành động này sẽ duyệt yêu cầu giảm giá dành cho sinh viên",
+      okText: "Duyệt",
       okType: "primary",
-      cancelText: "Cancel",
+      cancelText: "Hủy",
       centered: true,
       onOk: async () => {
         await handleApproveRequest(record);
@@ -148,12 +144,12 @@ export default function VerifyRequestPage() {
 
   const columns = [
     {
-      title: "Request Info",
+      title: "Thông tin yêu cầu",
       dataIndex: "requestId",
       key: "requestId",
       render: (text: string, record: StudentRequest) => (
         <div>
-          <div className="font-bold">Request #{text}</div>
+          <div className="font-bold">Yêu cầu #{text}</div>
           <div className="text-[#888] max-w-[250px] overflow-hidden text-ellipsis whitespace-nowrap">
             {record.content}
           </div>
@@ -161,15 +157,15 @@ export default function VerifyRequestPage() {
       ),
     },
     {
-      title: 'User',
+      title: 'Người tạo',
       dataIndex: 'userId',
       key: 'userId',
-      render: (text: string) => (
-        <div className='font-bold'>#{text}</div>
+      render: (text: string, record: StudentRequest) => (
+        <div>{users.find((user: User) => user.userId === record.userId)?.email}</div>
       ),
     },
     {
-      title: "Graduation Date",
+      title: "Ngày tốt nghiệp",
       dataIndex: "endDate",
       key: "endDate",
       render: (text: string) => (
@@ -180,20 +176,26 @@ export default function VerifyRequestPage() {
       ),
     },
     {
-      title: "Status",
+      title: "Trạng thái",
       dataIndex: "requestStatus",
       key: "requestStatus",
       render: (status: string) => (
-        <Tag color={getStatusTagColor(status)}>{status}</Tag>
+        <Tag color={getStatusTagColor(status)}>
+          {status === "PENDING"
+            ? "Chờ duyệt"
+            : status === "APPROVED"
+              ? "Thành công"
+              : "Từ chối"}
+        </Tag>
       ),
     },
     {
-      title: "Submitted",
+      title: "Thời gian tạo",
       dataIndex: "createdAt",
       key: "createdAt",
     },
     {
-      title: 'Action',
+      title: 'Hành động',
       key: 'actions',
       render: (record: StudentRequest) => (
         <Space size="small">
@@ -213,10 +215,10 @@ export default function VerifyRequestPage() {
       <Content className="!w-full !max-w-[1200px] !mx-auto">
         <div className="mb-6">
           <h1 className="text-[2em] font-bold text-[#333] mb-2">
-            Student Request Management
+            Quản lí yêu cầu sinh viên
           </h1>
           <p className="text-[#666]">
-            Review and manage student discount requests
+            Xem và quản lí các yêu cầu sinh viên để cấp thẻ giảm giá
           </p>
         </div>
 
@@ -225,7 +227,7 @@ export default function VerifyRequestPage() {
             <Card className="!shadow-[0_1px_2px_0_rgba(0,0,0,0.03),0_1px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_0_rgba(0,0,0,0.02)]">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="m-0 text-[#666]">Total Requests</p>
+                  <p className="m-0 text-[#666]">Tổng yêu cầu</p>
                   <p className="font-bold text-[1.5em] m-0 text-[#333]">
                     {requests.length}
                   </p>
@@ -238,7 +240,7 @@ export default function VerifyRequestPage() {
             <Card className="!shadow-[0_1px_2px_0_rgba(0,0,0,0.03),0_1px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_0_rgba(0,0,0,0.02)]">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="m-0 text-[#666]">Pending</p>
+                  <p className="m-0 text-[#666]">Chờ duyệt</p>
                   <p className="font-bold text-[1.5em] m-0 text-[#faad14]">
                     {
                       requests.filter((r) => r.requestStatus === "PENDING")
@@ -254,7 +256,7 @@ export default function VerifyRequestPage() {
             <Card className="!shadow-[0_1px_2px_0_rgba(0,0,0,0.03),0_1px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_0_rgba(0,0,0,0.02)]">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="m-0 text-[#666]">Approved</p>
+                  <p className="m-0 text-[#666]">Thành công</p>
                   <p className="font-bold text-[1.5em] m-0 text-[#52c41a]">
                     {
                       requests.filter((r) => r.requestStatus === "APPROVED")
@@ -270,7 +272,7 @@ export default function VerifyRequestPage() {
             <Card className="!shadow-[0_1px_2px_0_rgba(0,0,0,0.03),0_1px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_0_rgba(0,0,0,0.02)]">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="m-0 text-[#666]">Rejected</p>
+                  <p className="m-0 text-[#666]">Từ chối</p>
                   <p className="font-bold text-[1.5em] m-0 text-[#ff4d4f]">
                     {
                       requests.filter((r) => r.requestStatus === "REJECTED")
@@ -288,7 +290,7 @@ export default function VerifyRequestPage() {
           <Row gutter={[16, 16]} align="middle">
             <Col xs={24} md={18}>
               <Search
-                placeholder="Search by user ID, request ID, or content..."
+                placeholder="Tìm kiếm theo ID, nội dung, ngày tạo..."
                 onSearch={(value) => setSearchTerm(value)}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="!w-full"
@@ -304,10 +306,10 @@ export default function VerifyRequestPage() {
                   className="!w-[120px]"
                   onChange={(value) => setStatusFilter(value)}
                 >
-                  <Option value="ALL">All Status</Option>
-                  <Option value="PENDING">Pending</Option>
-                  <Option value="APPROVED">Approved</Option>
-                  <Option value="REJECTED">Rejected</Option>
+                  <Option value="ALL">Tất cả</Option>
+                  <Option value="PENDING">Chờ duyệt</Option>
+                  <Option value="APPROVED">Thành công</Option>
+                  <Option value="REJECTED">Từ chối</Option>
                 </Select>
               </Space>
             </Col>
@@ -342,7 +344,7 @@ export default function VerifyRequestPage() {
                   disabled={isSubmitting}
                   className="!bg-teal-600 !text-white hover:!bg-teal-700"
                 >
-                  Approve
+                  Duyệt
                 </Button>
                 <Button
                   danger
@@ -350,7 +352,7 @@ export default function VerifyRequestPage() {
                   disabled={isSubmitting}
                   className="!bg-red-600 !text-white hover:!bg-red-700"
                 >
-                  Reject
+                  Từ chối
                 </Button>
               </div>
             ) : null
@@ -358,13 +360,11 @@ export default function VerifyRequestPage() {
         >
           {selectedRequest && selectedUser && (
             <div className="relative">
-              {isSubmitting && <LoaderContainer />}
-
               <div className="py-6 px-0">
                 <Row gutter={[24, 24]} className="!mb-6">
                   <Col xs={24} md={12}>
                     <h3 className="text-[1.2em] font-medium mb-4 text-center">
-                      Request Information
+                      Thông tin yêu cầu
                     </h3>
                     <Space
                       direction="vertical"
@@ -372,29 +372,28 @@ export default function VerifyRequestPage() {
                       className="!w-full"
                     >
                       <div className="font-bold">
-                        Request #{selectedRequest.requestId}
+                        Id: {selectedRequest.requestId}
                       </div>
                       <div>
-                        <span className="font-bold">Status: </span>
-                        <Tag
-                          color={getStatusTagColor(
-                            selectedRequest.requestStatus
-                          )}
-                          className="!mt-1"
-                        >
-                          {selectedRequest.requestStatus}
+                        <span className="font-bold">Trạng thái: </span>
+                        <Tag color={getStatusTagColor(selectedRequest.requestStatus)}>
+                          {selectedRequest.requestStatus === "PENDING"
+                            ? "Chờ duyệt"
+                            : selectedRequest.requestStatus === "APPROVED"
+                              ? "Thành công"
+                              : "Từ chối"}
                         </Tag>
                       </div>
                       <div>
-                        <span className="font-bold">Description:</span>{" "}
+                        <span className="font-bold">Mô tả:</span>{" "}
                         {selectedRequest.content}
                       </div>
                       <div>
-                        <span className="font-bold">Graduation Date:</span>{" "}
+                        <span className="font-bold">Ngày tốt nghiệp:</span>{" "}
                         {selectedRequest.endDate}
                       </div>
                       <div>
-                        <span className="font-bold">Submitted On:</span>{" "}
+                        <span className="font-bold">Thời gian tạo:</span>{" "}
                         {selectedRequest.createdAt}
                       </div>
                     </Space>
@@ -402,7 +401,7 @@ export default function VerifyRequestPage() {
 
                   <Col xs={24} md={12}>
                     <h3 className="text-[1.2em] font-medium mb-4 text-center">
-                      User Information
+                      Thông tin người dùng
                     </h3>
                     <Space
                       direction="vertical"
@@ -410,10 +409,10 @@ export default function VerifyRequestPage() {
                       className="!w-full"
                     >
                       <div className="font-bold">
-                        User #{selectedRequest.userId}
+                        Id: {selectedRequest.userId}
                       </div>
                       <div>
-                        <span className="font-bold">Name:</span>{" "}
+                        <span className="font-bold">Tên:</span>{" "}
                         {selectedUser.name}
                       </div>
                       <div>
@@ -421,7 +420,7 @@ export default function VerifyRequestPage() {
                         {selectedUser.email}
                       </div>
                       <div>
-                        <span className="font-bold">Created at:</span>{" "}
+                        <span className="font-bold">Thời gian tạo tài khoản:</span>{" "}
                         {selectedUser.createdAt}
                       </div>
                     </Space>
@@ -432,16 +431,16 @@ export default function VerifyRequestPage() {
                   <Col xs={24} md={12}>
                     <div className="text-[#888] text-[0.9em] mb-2">
                       <CreditCardOutlined className="!mr-1" />
-                      Citizen Identity Card
+                      CCCD
                     </div>
                     <div className="border border-[#f0f0f0] rounded-lg p-4 bg-[#fafafa] flex justify-center items-center">
                       {selectedRequest.citizenIdentityCardImage &&
-                      selectedRequest.citizenIdentityCardImage.startsWith(
-                        "data:image"
-                      ) ? (
+                        selectedRequest.citizenIdentityCardImage.startsWith(
+                          "data:image"
+                        ) ? (
                         <Image
                           src={selectedRequest.citizenIdentityCardImage}
-                          alt="Citizen Identity Card"
+                          alt="CCCD"
                           className="!w-full !h-[192px] !object-contain"
                         />
                       ) : (
@@ -454,16 +453,16 @@ export default function VerifyRequestPage() {
                   <Col xs={24} md={12}>
                     <div className="text-[#888] text-[0.9em] mb-2">
                       <ReadOutlined className="!mr-1" />
-                      Student Card
+                      Thẻ sinh viên
                     </div>
                     <div className="border border-[#f0f0f0] rounded-lg p-4 bg-[#fafafa] flex justify-center items-center">
                       {selectedRequest.studentCardImage &&
-                      selectedRequest.studentCardImage.startsWith(
-                        "data:image"
-                      ) ? (
+                        selectedRequest.studentCardImage.startsWith(
+                          "data:image"
+                        ) ? (
                         <Image
                           src={selectedRequest.studentCardImage}
-                          alt="Student Card"
+                          alt="Thẻ sinh viên"
                           className="!w-full !h-[192px] !object-contain"
                         />
                       ) : (
@@ -503,7 +502,7 @@ export default function VerifyRequestPage() {
               <ExclamationCircleOutlined
                 style={{ color: "#faad14", marginRight: 8 }}
               />
-              Reject Request
+              Từ chối yêu cầu
             </>
           }
           footer={null}
@@ -511,7 +510,7 @@ export default function VerifyRequestPage() {
         >
           <Form layout="vertical" onFinish={handleSubmit(handleRejectRequest)}>
             <Form.Item
-              label="Rejection Reason"
+              label="Lí do từ chối"
               name="rejectionReason"
               validateStatus={errors.rejectionReason ? "error" : ""}
               help={errors.rejectionReason?.message}
@@ -525,7 +524,7 @@ export default function VerifyRequestPage() {
                   <Input.TextArea
                     {...field}
                     rows={4}
-                    placeholder="Provide a clear reason for rejection..."
+                    placeholder="Ghi lí do từ chối tại đây..."
                   />
                 )}
               />
@@ -533,7 +532,7 @@ export default function VerifyRequestPage() {
 
             <div className="flex justify-end gap-2">
               <Button type="primary" htmlType="submit" loading={isSubmitting}>
-                Submit
+                Gửi
               </Button>
             </div>
           </Form>

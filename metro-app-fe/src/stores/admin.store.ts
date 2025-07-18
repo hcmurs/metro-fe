@@ -8,6 +8,8 @@ import { apiGetTicketTypes } from '../apis/tickettype.api';
 import { apiGetFareMatrices } from '../apis/fare.api';
 import { apiGetStations } from '../apis/station.api';
 import { apiFindAllFeedbacks, apiFindAllRequests, apiFindUserById } from '../apis/user.api';
+import type { HourUsageStatistic, StationUsageStatistic, TicketTypeStatistic } from '../types/cronjob.type';
+import { apiFindAllHourUsageStatistics, apiFindAllStationUsageStatistics, apiFindAllTicketTypeStatistics } from '../apis/cronjob.api';
 
 type AdminState = {
   requests: StudentRequest[];
@@ -16,6 +18,12 @@ type AdminState = {
   fareMatrices: FareMatrix[];
   stations: Station[];
   users: User[];
+
+  //cronjob statistics
+  ticketTypeStatistics: TicketTypeStatistic[];
+  stationUsageStatistic: StationUsageStatistic[];
+  hourUsageStatistic: HourUsageStatistic[];
+
   isFetched: boolean;
 
   fetchAll: () => Promise<void>;
@@ -40,6 +48,11 @@ export const useAdminStore = create<AdminState>((set, get) => ({
   fareMatrices: [],
   stations: [],
   users: [],
+
+  ticketTypeStatistics: [],
+  stationUsageStatistic: [],
+  hourUsageStatistic: [],
+
   isFetched: false,
 
   fetchAll: async () => {
@@ -51,12 +64,18 @@ export const useAdminStore = create<AdminState>((set, get) => ({
       ticketTypesRes,
       fareMatricesRes,
       stationsRes,
+      ticketTypeStatsRes,
+      stationUsageStatsRes,
+      hourUsageStatsRes
     ] = await Promise.all([
       apiFindAllRequests(),
       apiFindAllFeedbacks(),
       apiGetTicketTypes(),
       apiGetFareMatrices(),
       apiGetStations(),
+      apiFindAllTicketTypeStatistics(),
+      apiFindAllStationUsageStatistics(),
+      apiFindAllHourUsageStatistics()
     ]);
 
     const requests = requestsRes?.data || [];
@@ -64,6 +83,10 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     const ticketTypes = ticketTypesRes?.data || [];
     const fareMatrices = fareMatricesRes?.data || [];
     const stations = stationsRes?.data || [];
+
+    const ticketTypeStatistics = ticketTypeStatsRes?.data || [];
+    const stationUsageStatistic = stationUsageStatsRes?.data || [];
+    const hourUsageStatistic = hourUsageStatsRes?.data || [];
 
     const allUserIds = [
       ...requests.map(r => r.userId),
@@ -89,6 +112,9 @@ export const useAdminStore = create<AdminState>((set, get) => ({
       fareMatrices,
       stations,
       users: [...get().users, ...validFetchedUsers],
+      ticketTypeStatistics,
+      stationUsageStatistic,
+      hourUsageStatistic,
       isFetched: true
     });
   },

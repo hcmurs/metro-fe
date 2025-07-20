@@ -46,7 +46,7 @@ export default function MetroBlogCarousel() {
                             <SkeletonCard />
                         </SwiperSlide>
                     ))
-                    : data?.map((blog, index) => (
+                    : data?.content?.map((blog, index) => (
                         <SwiperSlide key={blog.id} className="pb-10">
                             <div className="flex flex-col h-full bg-white rounded-lg shadow-[0_10px_30px_rgba(0,0,0,0.1)] overflow-hidden pb-10">
                                 <div className="relative">

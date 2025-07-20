@@ -13,14 +13,6 @@ export const apiGetStations = async (): Promise<ApiResponse<Station[]> | null> =
   }
 };
 
-export const apiGetStationsByRouteId = async (routeId: number): Promise<ApiResponse<Station[]> | null> => {
-  try {
-    const res = await api.get(`${API_PATH.STATIONS}/route/${routeId}`);
-    return res.data as ApiResponse<Station[]>;
-  } catch {
-    return null;
-  }
-};
 
 export const apiGetBusStation = async(): Promise<ApiResponse<BusStation[]> | null> => {
   try {

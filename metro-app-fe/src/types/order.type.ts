@@ -78,6 +78,23 @@ export interface OrderPageState {
   quantity?: number;
   amount: number;
   selectedPaymentMethod?: PaymentMethodResponse;
+  // Additional information for enhanced order display
+  routeInfo?: {
+    routeId: number;
+    routeName: string;
+    routeCode: string;
+  };
+  journeyDetails?: {
+    distance?: number;
+    estimatedDuration?: number;
+    stopsCount?: number;
+  };
+  purchaseTimestamp?: string;
+  orderSummary?: {
+    subtotal: number;
+    processingFee: number;
+    total: number;
+  };
 }
 
 

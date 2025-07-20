@@ -27,6 +27,7 @@ export const API_PATH = {
   LOCAL_LOGIN: "/auth/local-login",
   BLOG: "http://localhost:4003/api/users/blogs",
   STATIONS: "http://localhost:4003/api/stations",
+  STATION_ROUTE: "http://localhost:4003/api/station-routes",
   SCHEDULES: "http://localhost:4003/api/schedules",
   ROUTE: "http://localhost:4003/api/routes",
   TICKET: "http://localhost:4003/api/ts/tickets",

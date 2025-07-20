@@ -4,6 +4,7 @@ export interface FareMatrix {
     price: number;
     startStationId: number;
     endStationId: number;
+   distanceInKm: number 
     isActive: boolean;
     createdAt: string;
     updatedAt: string;

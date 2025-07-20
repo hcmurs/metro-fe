@@ -3,8 +3,12 @@ import {
   ClockCircleOutlined,
   CreditCardOutlined,
   EnvironmentOutlined,
+  NodeIndexOutlined,
+  InfoCircleOutlined,
+  CalendarOutlined,
+  RightOutlined,
 } from "@ant-design/icons";
-import { Card, Col, Divider, Row, Typography } from "antd";
+import { Card, Col, Divider, Row, Typography, Tag, Space } from "antd";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -251,12 +255,83 @@ export default function Order() {
                         Single Journey Ticket
                       </Text>
                     </div>
+
+                    {/* Route Information */}
+                    {orderData.routeInfo && (
+                      <div style={{ marginBottom: "1.5rem" }}>
+                        <div
+                          style={{
+                            background: "#ffffff",
+                            padding: "1rem",
+                            borderRadius: "8px",
+                            border: "1px solid #d1fae5",
+                            marginBottom: "1rem",
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              marginBottom: "0.5rem",
+                            }}
+                          >
+                            <NodeIndexOutlined
+                              style={{
+                                color: "#059669",
+                                marginRight: "0.5rem",
+                                fontSize: "1rem",
+                              }}
+                            />
+                            <Text
+                              strong
+                              style={{
+                                color: "#047857",
+                                fontSize: "1rem",
+                                fontWeight: "600",
+                              }}
+                            >
+                              Route Information
+                            </Text>
+                          </div>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "0.5rem",
+                            }}
+                          >
+                            <Tag
+                              color="green"
+                              style={{
+                                fontSize: "0.875rem",
+                                fontWeight: "500",
+                                padding: "0.25rem 0.75rem",
+                                borderRadius: "6px",
+                              }}
+                            >
+                              {orderData.routeInfo.routeCode}
+                            </Tag>
+                            <Text
+                              style={{
+                                fontSize: "1rem",
+                                color: "#374151",
+                                fontWeight: "500",
+                              }}
+                            >
+                              {orderData.routeInfo.routeName}
+                            </Text>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
                     <div
                       style={{
                         display: "grid",
-                        gridTemplateColumns: "1fr 1fr",
-                        gap: "1.5rem",
-                        marginTop: "1rem",
+                        gridTemplateColumns: "1fr auto 1fr",
+                        gap: "1rem",
+                        alignItems: "center",
+                        marginBottom: "1.5rem",
                       }}
                     >
                       <div>
@@ -283,6 +358,22 @@ export default function Order() {
                           ({orderData.startStation?.stationCode})
                         </Text>
                       </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          padding: "0.5rem",
+                        }}
+                      >
+                        <RightOutlined
+                          style={{
+                            color: "#059669",
+                            fontSize: "1.25rem",
+                            fontWeight: "bold",
+                          }}
+                        />
+                      </div>
                       <div>
                         <Text
                           style={{
@@ -308,6 +399,231 @@ export default function Order() {
                         </Text>
                       </div>
                     </div>
+
+                    {/* Journey Details */}
+                    {orderData.journeyDetails && (
+                      <div style={{ marginBottom: "1.5rem" }}>
+                        <div
+                          style={{
+                            background: "#ffffff",
+                            padding: "1rem",
+                            borderRadius: "8px",
+                            border: "1px solid #d1fae5",
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              marginBottom: "0.75rem",
+                            }}
+                          >
+                            <InfoCircleOutlined
+                              style={{
+                                color: "#059669",
+                                marginRight: "0.5rem",
+                                fontSize: "1rem",
+                              }}
+                            />
+                            <Text
+                              strong
+                              style={{
+                                color: "#047857",
+                                fontSize: "1rem",
+                                fontWeight: "600",
+                              }}
+                            >
+                              Journey Details
+                            </Text>
+                          </div>
+                          <div
+                            style={{
+                              display: "grid",
+                              gridTemplateColumns: "repeat(3, 1fr)",
+                              gap: "1rem",
+                            }}
+                          >
+                            <div style={{ textAlign: "center" }}>
+                              <Text
+                                style={{
+                                  fontSize: "0.75rem",
+                                  color: "#6b7280",
+                                  display: "block",
+                                  marginBottom: "0.25rem",
+                                }}
+                              >
+                                Distance
+                              </Text>
+                              <Text
+                                strong
+                                style={{
+                                  fontSize: "1rem",
+                                  color: "#059669",
+                                  fontWeight: "600",
+                                }}
+                              >
+                                {orderData.journeyDetails.distance?.toFixed(1) || "N/A"} km
+                              </Text>
+                            </div>
+                            <div style={{ textAlign: "center" }}>
+                              <Text
+                                style={{
+                                  fontSize: "0.75rem",
+                                  color: "#6b7280",
+                                  display: "block",
+                                  marginBottom: "0.25rem",
+                                }}
+                              >
+                                Est. Duration
+                              </Text>
+                              <Text
+                                strong
+                                style={{
+                                  fontSize: "1rem",
+                                  color: "#059669",
+                                  fontWeight: "600",
+                                }}
+                              >
+                                {orderData.journeyDetails.estimatedDuration || "N/A"} min
+                              </Text>
+                            </div>
+                            <div style={{ textAlign: "center" }}>
+                              <Text
+                                style={{
+                                  fontSize: "0.75rem",
+                                  color: "#6b7280",
+                                  display: "block",
+                                  marginBottom: "0.25rem",
+                                }}
+                              >
+                                Stops
+                              </Text>
+                              <Text
+                                strong
+                                style={{
+                                  fontSize: "1rem",
+                                  color: "#059669",
+                                  fontWeight: "600",
+                                }}
+                              >
+                                {orderData.journeyDetails.stopsCount || "N/A"}
+                              </Text>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Ticket Validity */}
+                    <div style={{ marginBottom: "1.5rem" }}>
+                      <div
+                        style={{
+                          background: "#ffffff",
+                          padding: "1rem",
+                          borderRadius: "8px",
+                          border: "1px solid #d1fae5",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            marginBottom: "0.75rem",
+                          }}
+                        >
+                          <CalendarOutlined
+                            style={{
+                              color: "#059669",
+                              marginRight: "0.5rem",
+                              fontSize: "1rem",
+                            }}
+                          />
+                          <Text
+                            strong
+                            style={{
+                              color: "#047857",
+                              fontSize: "1rem",
+                              fontWeight: "600",
+                            }}
+                          >
+                            Ticket Validity
+                          </Text>
+                        </div>
+                        <div
+                          style={{
+                            display: "grid",
+                            gridTemplateColumns: "1fr 1fr",
+                            gap: "1rem",
+                          }}
+                        >
+                          <div style={{ textAlign: "center" }}>
+                            <Text
+                              style={{
+                                fontSize: "0.75rem",
+                                color: "#6b7280",
+                                display: "block",
+                                marginBottom: "0.25rem",
+                              }}
+                            >
+                              Valid From
+                            </Text>
+                            <Text
+                              strong
+                              style={{
+                                fontSize: "0.875rem",
+                                color: "#059669",
+                                fontWeight: "600",
+                              }}
+                            >
+                              {new Date().toLocaleDateString("vi-VN")}
+                            </Text>
+                          </div>
+                          <div style={{ textAlign: "center" }}>
+                            <Text
+                              style={{
+                                fontSize: "0.75rem",
+                                color: "#6b7280",
+                                display: "block",
+                                marginBottom: "0.25rem",
+                              }}
+                            >
+                              Valid Until
+                            </Text>
+                            <Text
+                              strong
+                              style={{
+                                fontSize: "0.875rem",
+                                color: "#059669",
+                                fontWeight: "600",
+                              }}
+                            >
+                              {new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString("vi-VN")}
+                            </Text>
+                          </div>
+                        </div>
+                        <div
+                          style={{
+                            marginTop: "0.75rem",
+                            padding: "0.5rem",
+                            background: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)",
+                            borderRadius: "6px",
+                            border: "1px solid #f59e0b",
+                            textAlign: "center",
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontSize: "0.75rem",
+                              color: "#92400e",
+                              fontWeight: "500",
+                            }}
+                          >
+                            ⚠️ Journey tickets are valid for 30 days from purchase
+                          </Text>
+                        </div>
+                      </div>
+                    </div>
+
                     <Divider
                       style={{ margin: "1rem 0", borderColor: "#a7f3d0" }}
                     />
@@ -434,6 +750,116 @@ export default function Order() {
                           Valid for: {orderData.ticketType?.validityDuration}{" "}
                           days
                         </Text>
+                      </div>
+
+                      {/* Pass Validity Dates */}
+                      <div style={{ marginTop: "1rem" }}>
+                        <div
+                          style={{
+                            background: "#ffffff",
+                            padding: "1rem",
+                            borderRadius: "8px",
+                            border: "1px solid #d1fae5",
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              marginBottom: "0.75rem",
+                            }}
+                          >
+                            <CalendarOutlined
+                              style={{
+                                color: "#059669",
+                                marginRight: "0.5rem",
+                                fontSize: "1rem",
+                              }}
+                            />
+                            <Text
+                              strong
+                              style={{
+                                color: "#047857",
+                                fontSize: "1rem",
+                                fontWeight: "600",
+                              }}
+                            >
+                              Pass Validity Period
+                            </Text>
+                          </div>
+                          <div
+                            style={{
+                              display: "grid",
+                              gridTemplateColumns: "1fr 1fr",
+                              gap: "1rem",
+                            }}
+                          >
+                            <div style={{ textAlign: "center" }}>
+                              <Text
+                                style={{
+                                  fontSize: "0.75rem",
+                                  color: "#6b7280",
+                                  display: "block",
+                                  marginBottom: "0.25rem",
+                                }}
+                              >
+                                Valid From
+                              </Text>
+                              <Text
+                                strong
+                                style={{
+                                  fontSize: "0.875rem",
+                                  color: "#059669",
+                                  fontWeight: "600",
+                                }}
+                              >
+                                {new Date().toLocaleDateString("vi-VN")}
+                              </Text>
+                            </div>
+                            <div style={{ textAlign: "center" }}>
+                              <Text
+                                style={{
+                                  fontSize: "0.75rem",
+                                  color: "#6b7280",
+                                  display: "block",
+                                  marginBottom: "0.25rem",
+                                }}
+                              >
+                                Valid Until
+                              </Text>
+                              <Text
+                                strong
+                                style={{
+                                  fontSize: "0.875rem",
+                                  color: "#059669",
+                                  fontWeight: "600",
+                                }}
+                              >
+                                {new Date(Date.now() + (orderData.ticketType?.validityDuration || 0) * 24 * 60 * 60 * 1000).toLocaleDateString("vi-VN")}
+                              </Text>
+                            </div>
+                          </div>
+                          <div
+                            style={{
+                              marginTop: "0.75rem",
+                              padding: "0.5rem",
+                              background: "linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)",
+                              borderRadius: "6px",
+                              border: "1px solid #16a34a",
+                              textAlign: "center",
+                            }}
+                          >
+                            <Text
+                              style={{
+                                fontSize: "0.75rem",
+                                color: "#15803d",
+                                fontWeight: "500",
+                              }}
+                            >
+                              ✅ Unlimited rides during validity period
+                            </Text>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <Divider
@@ -595,6 +1021,159 @@ export default function Order() {
                 </Card>
               )}
             </Card>
+
+            {/* Purchase Information */}
+            <Card
+              style={{
+                borderRadius: "16px",
+                border: "none",
+                boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08)",
+                background: "#ffffff",
+                overflow: "hidden",
+                marginTop: "2rem",
+              }}
+              bodyStyle={{ padding: "2rem" }}
+            >
+              <Title
+                level={3}
+                style={{
+                  color: "#059669",
+                  marginBottom: "1.5rem",
+                  fontSize: "1.5rem",
+                  fontWeight: "600",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <CalendarOutlined
+                  style={{ marginRight: "0.5rem", fontSize: "1.25rem" }}
+                />
+                Purchase Information
+              </Title>
+
+              <div
+                style={{
+                  background:
+                    "linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%)",
+                  padding: "1.5rem",
+                  borderRadius: "12px",
+                  border: "1px solid #e5e7eb",
+                }}
+              >
+                <Row gutter={[16, 16]}>
+                  <Col xs={24} sm={12}>
+                    <div>
+                      <Text
+                        style={{
+                          fontSize: "0.875rem",
+                          color: "#6b7280",
+                          fontWeight: "500",
+                          display: "block",
+                          marginBottom: "0.5rem",
+                        }}
+                      >
+                        Order Type:
+                      </Text>
+                      <Tag
+                        color={orderData.orderType === "single" ? "blue" : "green"}
+                        style={{
+                          fontSize: "0.875rem",
+                          fontWeight: "500",
+                          padding: "0.25rem 0.75rem",
+                          borderRadius: "6px",
+                          textTransform: "capitalize",
+                        }}
+                      >
+                        {orderData.orderType === "single" ? "Single Journey" : "Metro Pass"}
+                      </Tag>
+                    </div>
+                  </Col>
+                  <Col xs={24} sm={12}>
+                    <div>
+                      <Text
+                        style={{
+                          fontSize: "0.875rem",
+                          color: "#6b7280",
+                          fontWeight: "500",
+                          display: "block",
+                          marginBottom: "0.5rem",
+                        }}
+                      >
+                        Purchase Time:
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: "1rem",
+                          color: "#374151",
+                          fontWeight: "500",
+                        }}
+                      >
+                        {orderData.purchaseTimestamp
+                          ? new Date(orderData.purchaseTimestamp).toLocaleString("vi-VN", {
+                              year: "numeric",
+                              month: "2-digit",
+                              day: "2-digit",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              second: "2-digit",
+                            })
+                          : new Date().toLocaleString("vi-VN")}
+                      </Text>
+                    </div>
+                  </Col>
+                  <Col xs={24} sm={12}>
+                    <div>
+                      <Text
+                        style={{
+                          fontSize: "0.875rem",
+                          color: "#6b7280",
+                          fontWeight: "500",
+                          display: "block",
+                          marginBottom: "0.5rem",
+                        }}
+                      >
+                        Quantity:
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: "1.25rem",
+                          color: "#059669",
+                          fontWeight: "600",
+                        }}
+                      >
+                        {orderData.quantity || 1} ticket{(orderData.quantity || 1) > 1 ? "s" : ""}
+                      </Text>
+                    </div>
+                  </Col>
+                  <Col xs={24} sm={12}>
+                    <div>
+                      <Text
+                        style={{
+                          fontSize: "0.875rem",
+                          color: "#6b7280",
+                          fontWeight: "500",
+                          display: "block",
+                          marginBottom: "0.5rem",
+                        }}
+                      >
+                        Status:
+                      </Text>
+                      <Tag
+                        color="orange"
+                        style={{
+                          fontSize: "0.875rem",
+                          fontWeight: "500",
+                          padding: "0.25rem 0.75rem",
+                          borderRadius: "6px",
+                        }}
+                      >
+                        Pending Payment
+                      </Tag>
+                    </div>
+                  </Col>
+                </Row>
+              </div>
+            </Card>
           </Col>
 
           {/* Order Total & Actions */}
@@ -635,7 +1214,8 @@ export default function Order() {
                     Subtotal:
                   </Text>
                   <Text style={{ fontSize: "1rem", fontWeight: "500" }}>
-                    {calculateTotal().toLocaleString("vi-VN")} VND
+                    {orderData.orderSummary?.subtotal?.toLocaleString("vi-VN") || 
+                     calculateTotal().toLocaleString("vi-VN")} VND
                   </Text>
                 </div>
                 <div
@@ -649,7 +1229,7 @@ export default function Order() {
                     Processing Fee:
                   </Text>
                   <Text style={{ fontSize: "1rem", fontWeight: "500" }}>
-                    0 VND
+                    {orderData.orderSummary?.processingFee?.toLocaleString("vi-VN") || "0"} VND
                   </Text>
                 </div>
                 <Divider style={{ margin: "1rem 0", borderColor: "#e5e7eb" }} />
@@ -678,7 +1258,8 @@ export default function Order() {
                       fontWeight: "700",
                     }}
                   >
-                    {calculateTotal().toLocaleString("vi-VN")} VND
+                    {orderData.orderSummary?.total?.toLocaleString("vi-VN") || 
+                     calculateTotal().toLocaleString("vi-VN")} VND
                   </Text>
                 </div>
               </div>

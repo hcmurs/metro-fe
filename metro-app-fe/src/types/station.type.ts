@@ -8,6 +8,12 @@ export interface StationRequest {
     sequenceOrder: number
 }
 
+export interface StationRouteRequest {
+    routeId: number,
+    stationId: number,
+    sequenceOrder: number,
+}
+
 export interface Station {
     stationId: number,
     stationCode: string,
@@ -15,11 +21,21 @@ export interface Station {
     address: string,
     latitude: number,
     longitude: number,
-    sequenceOrder: number,
     status: string,
     createAt: string,
     updateAt: string,
-    routeId: number,
+    isDeleted: boolean
+}
+
+export interface StationRouteResponse{
+    id: number,
+    RouteId: number,
+    sequenceOrder: number,
+    stationsResponse: Station
+    status: Status
+    isDeleted: boolean,
+    createAt: string,
+    updateAt: string,
 }
 
 export interface BusStation{
@@ -56,4 +72,4 @@ export interface BusRoute{
     trip_spacing: string
 }
 
-export type Status = 'open' | 'closed'
+export type Status = 'active' | 'decommissioned' | 'maintenance'

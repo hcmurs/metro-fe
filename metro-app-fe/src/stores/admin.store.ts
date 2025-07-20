@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 import type { TicketType } from '../types/tickettype.type';
-import type { FareMatrix } from '../types/fare.type';
+import type { FareMatrix, FarePricing } from '../types/fare.type';
 import type { Station } from '../types/station.type';
 import type { Feedback, StudentRequest, User } from '../types/user.type';
 
 import { apiGetTicketTypes } from '../apis/tickettype.api';
-import { apiGetFareMatrices } from '../apis/fare.api';
+import { apiFindAllFarePricing, apiGetFareMatrices } from '../apis/fare.api';
 import { apiGetStations } from '../apis/station.api';
 import { apiFindAllFeedbacks, apiFindAllRequests, apiFindUserById } from '../apis/user.api';
 import type { HourUsageStatistic, StationUsageStatistic, TicketTypeStatistic } from '../types/cronjob.type';
@@ -16,6 +16,7 @@ type AdminState = {
   feedbacks: Feedback[];
   ticketTypes: TicketType[];
   fareMatrices: FareMatrix[];
+  farePricings: FarePricing[];
   stations: Station[];
   users: User[];
 
@@ -30,12 +31,14 @@ type AdminState = {
 
   setTicketTypes: (data: TicketType[]) => void;
   setFareMatrices: (data: FareMatrix[]) => void;
+  setFarePricings: (farePricings: FarePricing[]) => void;
   setStations: (data: Station[]) => void;
   setFeedbacks: (data: Feedback[]) => void;
   setRequests: (data: StudentRequest[]) => void;
 
   updateTicketType: (data: TicketType) => void;
   updateFareMatrix: (data: FareMatrix) => void;
+  updateFarePricing: (farePricing: FarePricing) => void;
   updateStation: (data: Station) => void;
   updateFeedback: (data: Feedback) => void;
   updateRequest: (data: StudentRequest) => void;
@@ -46,6 +49,7 @@ export const useAdminStore = create<AdminState>((set, get) => ({
   feedbacks: [],
   ticketTypes: [],
   fareMatrices: [],
+  farePricings: [],
   stations: [],
   users: [],
 
@@ -63,6 +67,7 @@ export const useAdminStore = create<AdminState>((set, get) => ({
       feedbacksRes,
       ticketTypesRes,
       fareMatricesRes,
+      farePricingsRes,
       stationsRes,
       ticketTypeStatsRes,
       stationUsageStatsRes,
@@ -72,6 +77,7 @@ export const useAdminStore = create<AdminState>((set, get) => ({
       apiFindAllFeedbacks(),
       apiGetTicketTypes(),
       apiGetFareMatrices(),
+      apiFindAllFarePricing(),
       apiGetStations(),
       apiFindAllTicketTypeStatistics(),
       apiFindAllStationUsageStatistics(),
@@ -82,6 +88,7 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     const feedbacks = feedbacksRes?.data || [];
     const ticketTypes = ticketTypesRes?.data || [];
     const fareMatrices = fareMatricesRes?.data || [];
+    const farePricings = farePricingsRes?.data || [];
     const stations = stationsRes?.data || [];
 
     const ticketTypeStatistics = ticketTypeStatsRes?.data || [];
@@ -110,6 +117,7 @@ export const useAdminStore = create<AdminState>((set, get) => ({
       feedbacks,
       ticketTypes,
       fareMatrices,
+      farePricings,
       stations,
       users: [...get().users, ...validFetchedUsers],
       ticketTypeStatistics,
@@ -121,6 +129,7 @@ export const useAdminStore = create<AdminState>((set, get) => ({
 
   setTicketTypes: (data) => set({ ticketTypes: data }),
   setFareMatrices: (data) => set({ fareMatrices: data }),
+  setFarePricings: (farePricings) => set({ farePricings }),
   setStations: (data) => set({ stations: data }),
   setFeedbacks: (data) => set({ feedbacks: data }),
   setRequests: (data) => set({ requests: data }),
@@ -137,6 +146,13 @@ export const useAdminStore = create<AdminState>((set, get) => ({
       fareMatrices: state.fareMatrices.map((f) =>
         f.fareMatrixId === updated.fareMatrixId ? updated : f
       )
+    })),
+
+  updateFarePricing: (updatedFarePricing) =>
+    set((state) => ({
+      farePricings: state.farePricings.map((pricing) =>
+        pricing.id === updatedFarePricing.id ? updatedFarePricing : pricing
+      ),
     })),
 
   updateStation: (updated: Station) =>

@@ -33,6 +33,7 @@ export const API_PATH = {
   TICKETTYPE: "http://localhost:4003/api/ts/ticket-types",
   TICKETUSAGE: "http://localhost:4003/api/ts/ticket-usage-logs",
   FARE: "http://localhost:4003/api/ts/fare-matrices",
+  FARE_PRICING: "http://localhost:4003/api/ts/fare-pricing",
   ORDER: "http://localhost:4003/api/orders",
   PAYMENT: "http://localhost:4003/api/orders/payment-methods",
   VNPAY: "http://localhost:4003/api/payment",

@@ -15,6 +15,7 @@ export interface FareMatrixRequest {
     endStationId: number;
     isActive: boolean;
     name: string;
+    distanceInKm?: number
 }
 
 export interface FindFareRequest {
@@ -23,3 +24,17 @@ export interface FindFareRequest {
 }
 
 
+export interface FarePricing {
+  id: number;
+  minDistanceKm: number;
+  maxDistanceKm: number;
+  price: number;
+  isActive: boolean;
+}
+
+export interface FarePricingRequest {
+  minDistanceKm: number;
+  maxDistanceKm: number;
+  price: number;
+  isActive: boolean;
+}

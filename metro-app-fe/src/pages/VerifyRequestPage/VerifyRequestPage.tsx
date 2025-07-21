@@ -420,6 +420,10 @@ export default function VerifyRequestPage() {
                         {selectedUser.email}
                       </div>
                       <div>
+                        <span className="font-bold">CCCD:</span>{" "}
+                        {selectedRequest.citizenIdNumber}
+                      </div>
+                      <div>
                         <span className="font-bold">Thời gian tạo tài khoản:</span>{" "}
                         {selectedUser.createdAt}
                       </div>

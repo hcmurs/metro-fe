@@ -67,6 +67,15 @@ export const apiGetFareMatrix = async (id: number): Promise<ApiResponse<FareMatr
 	}
 }
 
+export const apiUpdateStatusFareMatrix = async (id: number, status: boolean): Promise<ApiResponse<FareMatrix> | null> => {
+	try {
+		const res = await api.put(`${API_PATH.FARE}/update-status/${id}?status=${status}`);
+		return res.data as ApiResponse<FareMatrix>;
+	} catch {
+		return null
+	}
+}
+
 export const apiFindAllFarePricing = async (): Promise<ApiResponse<FarePricing[]> | null> => {
 	try {
 		const res = await api.get(`${API_PATH.FARE_PRICING}`);

@@ -17,7 +17,6 @@ type AdminState = {
   ticketTypes: TicketType[];
   fareMatrices: FareMatrix[];
   farePricings: FarePricing[];
-  stations: Station[];
   users: User[];
 
   //cronjob statistics
@@ -32,14 +31,12 @@ type AdminState = {
   setTicketTypes: (data: TicketType[]) => void;
   setFareMatrices: (data: FareMatrix[]) => void;
   setFarePricings: (farePricings: FarePricing[]) => void;
-  setStations: (data: Station[]) => void;
   setFeedbacks: (data: Feedback[]) => void;
   setRequests: (data: StudentRequest[]) => void;
 
   updateTicketType: (data: TicketType) => void;
   updateFareMatrix: (data: FareMatrix) => void;
   updateFarePricing: (farePricing: FarePricing) => void;
-  updateStation: (data: Station) => void;
   updateFeedback: (data: Feedback) => void;
   updateRequest: (data: StudentRequest) => void;
 };
@@ -68,7 +65,6 @@ export const useAdminStore = create<AdminState>((set, get) => ({
       ticketTypesRes,
       fareMatricesRes,
       farePricingsRes,
-      stationsRes,
       ticketTypeStatsRes,
       stationUsageStatsRes,
       hourUsageStatsRes
@@ -78,7 +74,6 @@ export const useAdminStore = create<AdminState>((set, get) => ({
       apiGetTicketTypes(),
       apiGetFareMatrices(),
       apiFindAllFarePricing(),
-      apiGetStations(),
       apiFindAllTicketTypeStatistics(),
       apiFindAllStationUsageStatistics(),
       apiFindAllHourUsageStatistics()
@@ -89,7 +84,6 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     const ticketTypes = ticketTypesRes?.data || [];
     const fareMatrices = fareMatricesRes?.data || [];
     const farePricings = farePricingsRes?.data || [];
-    const stations = stationsRes?.data || [];
 
     const ticketTypeStatistics = ticketTypeStatsRes?.data || [];
     const stationUsageStatistic = stationUsageStatsRes?.data || [];
@@ -118,7 +112,6 @@ export const useAdminStore = create<AdminState>((set, get) => ({
       ticketTypes,
       fareMatrices,
       farePricings,
-      stations,
       users: [...get().users, ...validFetchedUsers],
       ticketTypeStatistics,
       stationUsageStatistic,
@@ -130,7 +123,6 @@ export const useAdminStore = create<AdminState>((set, get) => ({
   setTicketTypes: (data) => set({ ticketTypes: data }),
   setFareMatrices: (data) => set({ fareMatrices: data }),
   setFarePricings: (farePricings) => set({ farePricings }),
-  setStations: (data) => set({ stations: data }),
   setFeedbacks: (data) => set({ feedbacks: data }),
   setRequests: (data) => set({ requests: data }),
 
@@ -153,13 +145,6 @@ export const useAdminStore = create<AdminState>((set, get) => ({
       farePricings: state.farePricings.map((pricing) =>
         pricing.id === updatedFarePricing.id ? updatedFarePricing : pricing
       ),
-    })),
-
-  updateStation: (updated: Station) =>
-    set((state) => ({
-      stations: state.stations.map((s) =>
-        s.stationId === updated.stationId ? updated : s
-      )
     })),
 
   updateFeedback: (updated: Feedback) =>

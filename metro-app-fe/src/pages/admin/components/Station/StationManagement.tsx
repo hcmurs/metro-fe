@@ -8,42 +8,31 @@ import {
   Clock,
   CheckCircle,
   XCircle,
+  Eye,
+  RotateCcw,
+  Settings,
 } from "lucide-react";
+import { Modal, Form, Input, InputNumber, Button, message } from "antd";
 import {
   apiGetStations,
   apiCreateStation,
   apiUpdateStation,
   apiDeleteStation,
   apiGetStationByName,
+  apiUpdateStationStatus,
 } from "../../../../apis/station.api";
-import type { Station, StationRequest } from "../../../../types/station.type";
+import type { Station, StationRequest, Status } from "../../../../types/station.type";
 import LoaderContainer from "../../../../components/Loader/LoaderContainer";
-
-interface StationFormData {
-  stationCode: string;
-  name: string;
-  address: string;
-  latitude: number;
-  longitude: number;
-  sequenceOrder: number;
-  routeId: number;
-}
 
 export default function StationManagement() {
   const [stations, setStations] = useState<Station[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [showModal, setShowModal] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const [editingStation, setEditingStation] = useState<Station | null>(null);
-  const [formData, setFormData] = useState<StationFormData>({
-    stationCode: "",
-    name: "",
-    address: "",
-    latitude: 0,
-    longitude: 0,
-    sequenceOrder: 0,
-    routeId: 0,
-  });
+  const [showDescriptionModal, setShowDescriptionModal] = useState(false);
+  const [selectedStation, setSelectedStation] = useState<Station | null>(null);
+  const [form] = Form.useForm();
 
   useEffect(() => {
     fetchStations();
@@ -82,91 +71,176 @@ export default function StationManagement() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleSubmit = async (values: StationRequest) => {
     try {
       if (editingStation) {
-        // Update existing station
-        const updatedStation: Station = {
-          ...editingStation,
-          ...formData,
+        // Update existing station - use StationRequest type for update
+        const updateData: StationRequest = {
+          stationCode: values.stationCode,
+          name: values.name,
+          address: values.address,
+          latitude: values.latitude,
+          longitude: values.longitude,
         };
-        const response = await apiUpdateStation(
-          updatedStation,
-          editingStation.stationId
-        );
+        const response = await apiUpdateStation(updateData, editingStation.stationId);
         if (response?.data) {
           setStations(
             stations.map((s) =>
               s.stationId === editingStation.stationId ? response.data : s
             )
           );
+          message.success("Station updated successfully!");
         }
       } else {
         // Create new station
-        const newStation: StationRequest = formData;
-        const response = await apiCreateStation(newStation);
+        const response = await apiCreateStation(values);
         if (response?.data) {
           setStations([...stations, response.data]);
+          message.success("Station created successfully!");
         }
       }
 
-      resetForm();
-      setShowModal(false);
+      handleCloseModal();
     } catch (error) {
       console.error("Error saving station:", error);
+      message.error("Failed to save station. Please try again.");
     }
   };
 
   const handleEdit = (station: Station) => {
     setEditingStation(station);
-    setFormData({
+    form.setFieldsValue({
       stationCode: station.stationCode,
       name: station.name,
       address: station.address,
       latitude: station.latitude,
       longitude: station.longitude,
-      sequenceOrder: station.sequenceOrder,
-      routeId: station.routeId,
     });
-    setShowModal(true);
+    setShowForm(true);
   };
 
-  const handleDelete = async (stationId: number) => {
-    if (window.confirm("Are you sure you want to delete this station?")) {
-      try {
-        await apiDeleteStation(stationId);
-        setStations(stations.filter((s) => s.stationId !== stationId));
-      } catch (error) {
-        console.error("Error deleting station:", error);
-      }
-    }
-  };
-
-  const resetForm = () => {
-    setFormData({
-      stationCode: "",
-      name: "",
-      address: "",
-      latitude: 0,
-      longitude: 0,
-      sequenceOrder: 0,
-      routeId: 0,
-    });
+  const handleAdd = () => {
     setEditingStation(null);
+    form.resetFields();
+    setShowForm(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowForm(false);
+    setEditingStation(null);
+    form.resetFields();
+  };
+
+  const handleViewDetails = (station: Station) => {
+    setSelectedStation(station);
+    setShowDescriptionModal(true);
+  };
+
+  const handleDelete = async (station: Station) => {
+    Modal.confirm({
+      title: 'Delete Station',
+      content: (
+        <div>
+          <p>Are you sure you want to delete this station?</p>
+          <div className="mt-2 p-3 bg-gray-50 rounded">
+            <p><strong>Station:</strong> {station.name}</p>
+            <p><strong>Code:</strong> {station.stationCode}</p>
+            <p><strong>Address:</strong> {station.address}</p>
+          </div>
+          <p className="mt-2 text-red-600 text-sm">This action cannot be undone.</p>
+        </div>
+      ),
+      okText: 'Delete',
+      okType: 'danger',
+      cancelText: 'Cancel',
+      onOk: async () => {
+        try {
+          await apiDeleteStation(station.stationId);
+          setStations(stations.filter((s) => s.stationId !== station.stationId));
+          message.success("Station deleted successfully!");
+        } catch (error) {
+          console.error("Error deleting station:", error);
+          message.error("Failed to delete station. Please try again.");
+        }
+      },
+    });
+  };
+
+  const handleStatusToggle = async (station: Station) => {
+    // Cycle through status values: active -> maintenance -> decommissioned -> active
+    const statusCycle: Status[] = ['active', 'maintenance', 'decommissioned'];
+    const currentIndex = statusCycle.indexOf(station.status as Status);
+    const nextStatus = statusCycle[(currentIndex + 1) % statusCycle.length];
+
+    Modal.confirm({
+      title: 'Update Station Status',
+      content: (
+        <div>
+          <p>Are you sure you want to change the station status?</p>
+          <div className="mt-2 p-3 bg-gray-50 rounded">
+            <p><strong>Station:</strong> {station.name}</p>
+            <p><strong>Current Status:</strong> {station.status}</p>
+            <p><strong>New Status:</strong> {nextStatus}</p>
+          </div>
+        </div>
+      ),
+      okText: 'Update Status',
+      okType: 'primary',
+      cancelText: 'Cancel',
+      onOk: async () => {
+        try {
+          const response = await apiUpdateStationStatus(station.stationId, nextStatus);
+          if (response?.data) {
+            setStations(
+              stations.map((s) =>
+                s.stationId === station.stationId 
+                  ? { ...s, status: nextStatus }
+                  : s
+              )
+            );
+            message.success(`Station status updated to ${nextStatus}!`);
+          }
+        } catch (error) {
+          console.error("Error updating station status:", error);
+          message.error("Failed to update station status. Please try again.");
+        }
+      },
+    });
   };
 
   const getStatusBadge = (status: string) => {
-    const isActive = status === "open";
+    const isActive = status === "active";
+    const isDecommissioned = status === "decommissioned";
+    const isMaintenance = status === "maintenance";
+    
+    let badgeClass = "";
+    let icon = null;
+    let text = "";
+    
+    if (isActive) {
+      badgeClass = "bg-green-100 text-green-800";
+      icon = <CheckCircle size={12} />;
+      text = "Active";
+    } else if (isDecommissioned) {
+      badgeClass = "bg-red-100 text-red-800";
+      icon = <XCircle size={12} />;
+      text = "Decommissioned";
+    } else if (isMaintenance) {
+      badgeClass = "bg-yellow-100 text-yellow-800";
+      icon = <Clock size={12} />;
+      text = "Maintenance";
+    } else {
+      badgeClass = "bg-gray-100 text-gray-800";
+      icon = <XCircle size={12} />;
+      text = "Unknown";
+    }
+    
     return (
       <span
-        className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-          isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-        }`}
+        className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${badgeClass}`}
       >
-        {isActive ? <CheckCircle size={12} /> : <XCircle size={12} />}
-        {isActive ? "Active" : "Inactive"}
+        {icon}
+        {text}
       </span>
     );
   };
@@ -185,10 +259,7 @@ export default function StationManagement() {
             </p>
           </div>
           <button
-            onClick={() => {
-              resetForm();
-              setShowModal(true);
-            }}
+            onClick={handleAdd}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
           >
             <Plus size={20} />
@@ -277,30 +348,42 @@ export default function StationManagement() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 text-xs">
-                    <div>
-                      <span className="text-gray-500">Route ID:</span>
-                      <p className="font-medium text-gray-900">
-                        {station.routeId}
-                      </p>
-                    </div>
-                    <div>
-                      <span className="text-gray-500">Sequence:</span>
-                      <p className="font-medium text-gray-900">
-                        {station.sequenceOrder}
-                      </p>
-                    </div>
-                  </div>
-
                   <div className="flex items-center gap-2 text-xs text-gray-500">
                     <Clock size={12} />
                     <span>
-                      Updated: {new Date(station.updateAt).toLocaleDateString()}
+                      Updated: {new Date(station.updatedAt).toLocaleDateString()}
                     </span>
                   </div>
                 </div>
 
                 <div className="flex gap-2 mt-4 pt-4 border-t border-gray-100">
+                  <button
+                    onClick={() => handleViewDetails(station)}
+                    className="flex-1 bg-green-50 hover:bg-green-100 text-green-700 px-3 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm"
+                  >
+                    <Eye size={16} />
+                    Details
+                  </button>
+                  <button
+                    onClick={() => handleStatusToggle(station)}
+                    className={`flex-1 px-3 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm ${
+                      station.status === 'active' 
+                        ? 'bg-yellow-50 hover:bg-yellow-100 text-yellow-700'
+                        : station.status === 'maintenance'
+                        ? 'bg-red-50 hover:bg-red-100 text-red-700'
+                        : 'bg-green-50 hover:bg-green-100 text-green-700'
+                    }`}
+                    title={`Change status from ${station.status}`}
+                  >
+                    {station.status === 'active' ? (
+                      <Settings size={16} />
+                    ) : station.status === 'maintenance' ? (
+                      <XCircle size={16} />
+                    ) : (
+                      <RotateCcw size={16} />
+                    )}
+                    Status
+                  </button>
                   <button
                     onClick={() => handleEdit(station)}
                     className="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm"
@@ -309,7 +392,7 @@ export default function StationManagement() {
                     Edit
                   </button>
                   <button
-                    onClick={() => handleDelete(station.stationId)}
+                    onClick={() => handleDelete(station)}
                     className="flex-1 bg-red-50 hover:bg-red-100 text-red-700 px-3 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm"
                   >
                     <Trash2 size={16} />
@@ -334,167 +417,189 @@ export default function StationManagement() {
         </div>
       )}
 
-      {/* Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                {editingStation ? "Edit Station" : "Add New Station"}
-              </h2>
+      {/* Add/Edit Modal */}
+      <Modal
+        title={
+          <div className="flex items-center gap-2">
+            <MapPin className="text-blue-600" size={20} />
+            <span>{editingStation ? "Edit Station" : "Add New Station"}</span>
+          </div>
+        }
+        open={showForm}
+        onCancel={handleCloseModal}
+        footer={null}
+        width={600}
+        destroyOnClose
+      >
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          className="mt-4"
+        >
+          <Form.Item
+            label="Station Code"
+            name="stationCode"
+            rules={[
+              { required: true, message: "Please enter station code" },
+              { pattern: /^[A-Z0-9]+$/, message: "Station code should contain only uppercase letters and numbers" }
+            ]}
+          >
+            <Input placeholder="e.g., ST001" />
+          </Form.Item>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+          <Form.Item
+            label="Station Name"
+            name="name"
+            rules={[
+              { required: true, message: "Please enter station name" },
+              { min: 2, message: "Station name must be at least 2 characters" }
+            ]}
+          >
+            <Input placeholder="Enter station name" />
+          </Form.Item>
+
+          <Form.Item
+            label="Address"
+            name="address"
+            rules={[
+              { required: true, message: "Please enter address" },
+              { min: 10, message: "Address must be at least 10 characters" }
+            ]}
+          >
+            <Input.TextArea rows={3} placeholder="Enter full address" />
+          </Form.Item>
+
+          <div className="grid grid-cols-2 gap-4">
+            <Form.Item
+              label="Latitude"
+              name="latitude"
+              rules={[
+                { required: true, message: "Please enter latitude" },
+                { type: "number", min: -90, max: 90, message: "Latitude must be between -90 and 90" }
+              ]}
+            >
+              <InputNumber
+                className="w-full"
+                placeholder="0.000000"
+                step={0.000001}
+                precision={6}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Longitude"
+              name="longitude"
+              rules={[
+                { required: true, message: "Please enter longitude" },
+                { type: "number", min: -180, max: 180, message: "Longitude must be between -180 and 180" }
+              ]}
+            >
+              <InputNumber
+                className="w-full"
+                placeholder="0.000000"
+                step={0.000001}
+                precision={6}
+              />
+            </Form.Item>
+          </div>
+
+          <div className="flex gap-3 pt-4">
+            <Button onClick={handleCloseModal} className="flex-1">
+              Cancel
+            </Button>
+            <Button type="primary" htmlType="submit" className="flex-1">
+              {editingStation ? "Update Station" : "Create Station"}
+            </Button>
+          </div>
+        </Form>
+      </Modal>
+
+      {/* Description Modal */}
+      <Modal
+        title={
+          <div className="flex items-center gap-2">
+            <MapPin className="text-blue-600" size={20} />
+            <span>Station Details</span>
+          </div>
+        }
+        open={showDescriptionModal}
+        onCancel={() => setShowDescriptionModal(false)}
+        footer={null}
+        width={600}
+      >
+        {selectedStation && (
+          <div className="space-y-6">
+            {/* Basic Information */}
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <h3 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
+                <MapPin size={16} />
+                Basic Information
+              </h3>
+              <div className="space-y-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Station Code
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.stationCode}
-                    onChange={(e) =>
-                      setFormData({ ...formData, stationCode: e.target.value })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="e.g., ST001"
-                  />
+                  <span className="text-blue-700 font-medium">Station Name:</span>
+                  <p className="text-blue-900 text-lg">{selectedStation.name}</p>
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Station Name
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Station name"
-                  />
+                  <span className="text-blue-700 font-medium">Station Code:</span>
+                  <p className="text-blue-900 font-mono">{selectedStation.stationCode}</p>
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Address
-                  </label>
-                  <textarea
-                    required
-                    value={formData.address}
-                    onChange={(e) =>
-                      setFormData({ ...formData, address: e.target.value })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    rows={3}
-                    placeholder="Full address"
-                  />
+                  <span className="text-blue-700 font-medium">Address:</span>
+                  <p className="text-blue-900">{selectedStation.address}</p>
                 </div>
+              </div>
+            </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Latitude
-                    </label>
-                    <input
-                      type="number"
-                      step="any"
-                      required
-                      value={formData.latitude}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          latitude: parseFloat(e.target.value),
-                        })
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="0.000000"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Longitude
-                    </label>
-                    <input
-                      type="number"
-                      step="any"
-                      required
-                      value={formData.longitude}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          longitude: parseFloat(e.target.value),
-                        })
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="0.000000"
-                    />
-                  </div>
+            {/* Location Information */}
+            <div className="bg-green-50 p-4 rounded-lg">
+              <h3 className="font-semibold text-green-900 mb-2 flex items-center gap-2">
+                <MapPin size={16} />
+                Location Coordinates
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <span className="text-green-700 font-medium">Latitude:</span>
+                  <p className="text-green-900 font-mono">{selectedStation.latitude.toFixed(6)}</p>
                 </div>
+                <div>
+                  <span className="text-green-700 font-medium">Longitude:</span>
+                  <p className="text-green-900 font-mono">{selectedStation.longitude.toFixed(6)}</p>
+                </div>
+              </div>
+            </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Route ID
-                    </label>
-                    <input
-                      type="number"
-                      required
-                      value={formData.routeId}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          routeId: parseInt(e.target.value),
-                        })
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="1"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Sequence Order
-                    </label>
-                    <input
-                      type="number"
-                      required
-                      value={formData.sequenceOrder}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          sequenceOrder: parseInt(e.target.value),
-                        })
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="1"
-                    />
+            {/* Status and Metadata */}
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                <CheckCircle size={16} />
+                Status & Metadata
+              </h3>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="text-gray-700 font-medium">Status:</span>
+                  <div className="mt-1">
+                    {getStatusBadge(selectedStation.status)}
                   </div>
                 </div>
-
-                <div className="flex gap-3 pt-4">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowModal(false);
-                      resetForm();
-                    }}
-                    className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-                  >
-                    {editingStation ? "Update" : "Create"}
-                  </button>
+                <div>
+                  <span className="text-gray-700 font-medium">Station ID:</span>
+                  <p className="text-gray-900">{selectedStation.stationId}</p>
                 </div>
-              </form>
+                <div>
+                  <span className="text-gray-700 font-medium">Created At:</span>
+                  <p className="text-gray-900">{new Date(selectedStation.createdAt).toLocaleString()}</p>
+                </div>
+                <div>
+                  <span className="text-gray-700 font-medium">Updated At:</span>
+                  <p className="text-gray-900">{new Date(selectedStation.updatedAt).toLocaleString()}</p>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </Modal>
     </div>
   );
 }

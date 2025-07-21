@@ -1,7 +1,7 @@
 import { API_PATH } from "../constants/path";
 import type { ApiResponse } from "../types/api.type";
 import api from "./api";
-import type { Station,StationRequest,BusStation,BusStationDetail } from "../types/station.type";
+import type { Station,StationRequest,BusStation,BusStationDetail, Status } from "../types/station.type";
 
 
 export const apiGetStations = async (): Promise<ApiResponse<Station[]> | null> => {
@@ -78,3 +78,11 @@ export const apiGetStationById = async (stationId: number): Promise<ApiResponse<
       return null;
     }
   }
+  export const apiUpdateStationStatus = async (id: number, status: Status): Promise<ApiResponse<Station> | null> => {
+  try {
+    const res = await api.post(`${API_PATH.STATIONS}/status/${id}?status=${status}`);
+    return res.data as ApiResponse<Station>;
+  } catch {
+    return null;
+  }
+}

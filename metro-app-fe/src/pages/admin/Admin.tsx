@@ -6,7 +6,10 @@ import {
   Ticket,
   Newspaper,
   ScrollText,
-  FilePlus2
+  FilePlus2,
+  MapPin,
+  Route as RouteIcon,
+  GitBranch
 } from 'lucide-react';
 import { useAdminStore } from '../../stores/admin.store';
 import { useEffect } from 'react';
@@ -53,6 +56,24 @@ export default function Admin() {
               className={`${baseClass} ${choosen === 'feedbacks' ? activeClass : ''}`}
             >
               <ScrollText size={20} /> Ý kiến khách hàng
+            </Link>
+            <Link
+              to={'stations'}
+              className={`${baseClass} ${choosen === 'stations' ? activeClass : ''}`}
+            >
+              <MapPin size={20} /> Stations
+            </Link>
+            <Link
+              to={'routes'}
+              className={`${baseClass} ${choosen === 'routes' ? activeClass : ''}`}
+            >
+              <RouteIcon size={20} /> Routes
+            </Link>
+            <Link
+              to={'station-routes'}
+              className={`${baseClass} ${choosen === 'station-routes' ? activeClass : ''}`}
+            >
+              <GitBranch size={20} /> Station Routes
             </Link>
             <Link
               to={'route'}

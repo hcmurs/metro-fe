@@ -16,6 +16,9 @@ import PaymentSuccess from "../pages/PaymentSuccess";
 import ProfilePage from "../pages/Profile/ProfilePage";
 import Dashboard from "../pages/admin/components/Dashboard/Dashboard";
 import Station from "../pages/admin/components/Station/Station";
+import StationManagement from "../pages/admin/components/Station/StationManagement";
+import RouteManagement from "../pages/admin/components/Route/RouteManagement";
+import StationRouteManagement from "../pages/admin/components/StationRoute/StationRouteManagement";
 import UserManagement from "../pages/admin/components/User/UserManagement";
 import ManageFeedbackPage from "../pages/ManageFeedback/ManageFeedbackPage";
 import ManageTicketPage from "../pages/ManageTicket/ManageTicketPage";
@@ -90,6 +93,9 @@ export default function MainRoute() {
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="users" element={<UserManagement />} />
+          <Route path="stations" element={<StationManagement />} />
+          <Route path="routes" element={<RouteManagement />} />
+          <Route path="station-routes" element={<StationRouteManagement />} />
           <Route path="route" element={<Station />} />
           <Route path="requests" element={<VerifyRequestPage />} />
           <Route path="feedbacks" element={<ManageFeedbackPage />} />

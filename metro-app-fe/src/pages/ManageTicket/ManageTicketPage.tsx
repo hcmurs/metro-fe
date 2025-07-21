@@ -39,22 +39,32 @@ const { Search } = Input;
 const { Option } = Select;
 
 const ticketTypeSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(100, 'Name must be less than 100 characters'),
-  price: z.number().min(1000, 'Price must be greater than 1000'),
-  description: z.string().max(500, 'Description must be less than 500 characters').optional(),
+  name: z.string().min(1, 'Loại vé là bắt buộc').max(100, 'Không được vượt quá 100 kí tự'),
+  price: z.number().min(1000, 'Giá phải lớn hơn 1000'),
+  description: z.string().max(500, 'Mô tả không được vượt quá 500 kí tự').optional(),
   validityDuration:
     z.number({
-      required_error: "Validity duration is required",
-      invalid_type_error: "Validity duration is required"
+      required_error: "Thời gian là bắt buộc",
+      invalid_type_error: "Thời gian là bắt buộc"
     })
-      .min(1, 'Validity duration must be equal or greater than 1 day')
-      .max(365, 'Validity duration cannot exceed 365'),
+      .min(1, 'Thời gian phải từ 1 ngày trở lên')
+      .max(365, 'Thời gian không được vượt quá 365 ngày'),
   isActive: z.boolean()
 });
 
 const farePricingSchema = z.object({
-  minDistanceKm: z.number().min(0, 'Min distance must be greater than or equal to 0'),
-  maxDistanceKm: z.number().min(1, 'Max distance must be greater than 0'),
+  minDistanceKm:
+    z.number({
+      required_error: "Khoảng cách là bắt buộc",
+      invalid_type_error: "Khoảng cách là bắt buộc"
+    })
+      .min(0, 'Min distance must be greater than or equal to 0'),
+  maxDistanceKm:
+    z.number({
+      required_error: "Khoảng cách là bắt buộc",
+      invalid_type_error: "Khoảng cách là bắt buộc"
+    })
+      .min(1, 'Max distance must be greater than 0'),
   price: z.number().min(1000, 'Price must be greater than 1000'),
   isActive: z.boolean()
 }).refine((data) => data.maxDistanceKm > data.minDistanceKm, {
@@ -365,7 +375,7 @@ export default function ManageTicketPage() {
 
   const handlePricingSubmit = async (data: FarePricingFormInputs) => {
     if (isOverlapping(data.minDistanceKm, data.maxDistanceKm, farePricings, editingPricing?.id)) {
-      notification.error({message: "Khoảng cách này bị trùng hoặc lồng với một khoảng đã có."});
+      notification.error({ message: "Khoảng cách này bị trùng hoặc lồng với một khoảng đã có." });
       return;
     }
 
@@ -922,7 +932,7 @@ export default function ManageTicketPage() {
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
-                  label="Name"
+                  label="Loại vé"
                   validateStatus={ticketForm.formState.errors.name ? 'error' : ''}
                   help={ticketForm.formState.errors.name?.message}
                   required
@@ -942,7 +952,7 @@ export default function ManageTicketPage() {
               </Col>
               <Col span={12}>
                 <Form.Item
-                  label="Price"
+                  label="Giá"
                   validateStatus={ticketForm.formState.errors.price ? 'error' : ''}
                   help={ticketForm.formState.errors.price?.message}
                   required
@@ -953,7 +963,7 @@ export default function ManageTicketPage() {
                     render={({ field }) => (
                       <InputNumber
                         {...field}
-                        placeholder="Enter price"
+                        placeholder="Nhập giá"
                         min={0}
                         step={1}
                         className="!w-full"
@@ -968,7 +978,7 @@ export default function ManageTicketPage() {
             </Row>
 
             <Form.Item
-              label="Validity Duration (Day)"
+              label="Thời gian (Ngày)"
               validateStatus={ticketForm.formState.errors.validityDuration ? 'error' : ''}
               help={ticketForm.formState.errors.validityDuration?.message}
               required
@@ -989,7 +999,7 @@ export default function ManageTicketPage() {
             </Form.Item>
 
             <Form.Item
-              label="Description"
+              label="Mô tả chi tiết"
               validateStatus={ticketForm.formState.errors.description ? 'error' : ''}
               help={ticketForm.formState.errors.description?.message}
             >
@@ -999,7 +1009,7 @@ export default function ManageTicketPage() {
                 render={({ field }) => (
                   <Input.TextArea
                     {...field}
-                    placeholder="Enter ticket description (optional)"
+                    placeholder="Thêm mô tả cho loại vé (tùy chọn)"
                     rows={3}
                     maxLength={500}
                     showCount
@@ -1009,7 +1019,7 @@ export default function ManageTicketPage() {
             </Form.Item>
 
             {!editingTicket && (
-              <Form.Item label="Status">
+              <Form.Item label="Trạng thái">
                 <Controller
                   name="isActive"
                   control={ticketForm.control}
@@ -1023,7 +1033,7 @@ export default function ManageTicketPage() {
                   )}
                 />
                 <span className="ml-2">
-                  {ticketForm.watch('isActive') ? 'Active' : 'Inactive'}
+                  {ticketForm.watch('isActive') ? 'Hoạt động' : 'Không hoạt động'}
                 </span>
               </Form.Item>
             )}
@@ -1036,7 +1046,7 @@ export default function ManageTicketPage() {
                   loading={isSubmitting}
                   className="!bg-teal-600 !text-white hover:!bg-teal-700"
                 >
-                  {editingTicket ? 'Update' : 'Create'} Ticket Type
+                  {editingTicket ? 'Cập nhật' : 'Xác nhận'}
                 </Button>
               </Space>
             </Form.Item>
@@ -1046,7 +1056,7 @@ export default function ManageTicketPage() {
         <Modal
           open={showPricingModal}
           onCancel={() => setShowPricingModal(false)}
-          title={editingPricing ? 'Edit Fare Pricing' : 'Add New Fare Pricing'}
+          title={editingPricing ? 'Cập nhật giá vé' : 'Thêm giá vé mới'}
           footer={null}
           centered
           width={600}
@@ -1058,7 +1068,7 @@ export default function ManageTicketPage() {
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
-                  label="Min Distance (km)"
+                  label="Từ (km)"
                   validateStatus={pricingForm.formState.errors.minDistanceKm ? 'error' : ''}
                   help={pricingForm.formState.errors.minDistanceKm?.message}
                   required
@@ -1069,7 +1079,6 @@ export default function ManageTicketPage() {
                     render={({ field }) => (
                       <InputNumber
                         {...field}
-                        placeholder="Enter min distance"
                         min={0}
                         step={1}
                         className="!w-full"
@@ -1081,7 +1090,7 @@ export default function ManageTicketPage() {
               </Col>
               <Col span={12}>
                 <Form.Item
-                  label="Max Distance (km)"
+                  label="Đến (km)"
                   validateStatus={pricingForm.formState.errors.maxDistanceKm ? 'error' : ''}
                   help={pricingForm.formState.errors.maxDistanceKm?.message}
                   required
@@ -1105,7 +1114,7 @@ export default function ManageTicketPage() {
             </Row>
 
             <Form.Item
-              label="Price"
+              label="Giá"
               validateStatus={pricingForm.formState.errors.price ? 'error' : ''}
               help={pricingForm.formState.errors.price?.message}
               required
@@ -1116,7 +1125,7 @@ export default function ManageTicketPage() {
                 render={({ field }) => (
                   <InputNumber
                     {...field}
-                    placeholder="Enter price"
+                    placeholder="Nhập giá"
                     min={0}
                     step={1}
                     className="!w-full"
@@ -1128,26 +1137,6 @@ export default function ManageTicketPage() {
               />
             </Form.Item>
 
-            {!editingPricing && (
-              <Form.Item label="Status">
-                <Controller
-                  name="isActive"
-                  control={pricingForm.control}
-                  render={({ field }) => (
-                    <Switch
-                      {...field}
-                      checked={field.value}
-                      checkedChildren={<CheckOutlined />}
-                      unCheckedChildren={<CloseOutlined />}
-                    />
-                  )}
-                />
-                <span className="ml-2">
-                  {pricingForm.watch('isActive') ? 'Active' : 'Inactive'}
-                </span>
-              </Form.Item>
-            )}
-
             <Form.Item className="!mb-0 !mt-6">
               <Space className="!w-full !justify-end">
                 <Button
@@ -1156,7 +1145,7 @@ export default function ManageTicketPage() {
                   loading={isSubmitting}
                   className="!bg-teal-600 !text-white hover:!bg-teal-700"
                 >
-                  {editingPricing ? 'Update' : 'Create'} Pricing Rule
+                  {editingPricing ? 'Cập nhật' : 'Xác nhận'}
                 </Button>
               </Space>
             </Form.Item>

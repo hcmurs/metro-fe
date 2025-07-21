@@ -27,7 +27,7 @@ export default function Admin() {
   return (
     <div className='flex bg-gradient-to-br from-[#D4FCEE] via-gray-100 to-[#D4FCEE] min-h-screen'>
       <aside className='w-64 bg-white p-6 border-r border-gray-200 sticky top-0 h-screen shadow-sm'>
-        <div className='text-2xl font-bold text-[#007c51] mb-8'>Admin Panel</div>
+        <div className='text-2xl font-bold text-[#007c51] mb-8'>Bảng điều khiển</div>
         <nav className='flex flex-col gap-6'>
           <div>
             <Link

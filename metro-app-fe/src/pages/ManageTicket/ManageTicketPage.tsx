@@ -15,7 +15,6 @@ import {
   Input,
   InputNumber,
   Layout,
-  message,
   Modal,
   notification,
   Row,
@@ -25,14 +24,14 @@ import {
   Table,
   Tabs,
 } from 'antd';
-import { CircleDollarSign, ClockPlus, Route, Ticket } from 'lucide-react';
+import { Calculator, CircleDollarSign, ClockPlus, Route, Ruler, Ticket } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { apiCreateFareMatrix, apiUpdateFareMatrix } from '../../apis/fare.api';
+import { apiCreateFarePricing, apiGetFareMatrices, apiUpdateFareMatrix, apiUpdateFarePricing } from '../../apis/fare.api';
 import { apiCreateTicketType, apiUpdateTicketType } from '../../apis/tickettype.api';
 import { useAdminStore } from '../../stores/admin.store';
-import type { FareMatrix, FareMatrixRequest } from '../../types/fare.type';
+import type { FareMatrix, FareMatrixRequest, FarePricing, FarePricingRequest } from '../../types/fare.type';
 import type { TicketType, TicketTypeRequest } from '../../types/tickettype.type';
 
 const { Content } = Layout;
@@ -40,29 +39,41 @@ const { Search } = Input;
 const { Option } = Select;
 
 const ticketTypeSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(100, 'Name must be less than 100 characters'),
-  price: z.number().min(1000, 'Price must be greater than 1000'),
-  description: z.string().max(500, 'Description must be less than 500 characters').optional(),
+  name: z.string().min(1, 'Loại vé là bắt buộc').max(100, 'Không được vượt quá 100 kí tự'),
+  price: z.number().min(1000, 'Giá phải lớn hơn 1000'),
+  description: z.string().max(500, 'Mô tả không được vượt quá 500 kí tự').optional(),
   validityDuration:
     z.number({
-      required_error: "Validity duration is required",
-      invalid_type_error: "Validity duration is required"
+      required_error: "Thời gian là bắt buộc",
+      invalid_type_error: "Thời gian là bắt buộc"
     })
-      .min(1, 'Validity duration must be equal or greater than 1 day')
-      .max(365, 'Validity duration cannot exceed 365'),
+      .min(1, 'Thời gian phải từ 1 ngày trở lên')
+      .max(365, 'Thời gian không được vượt quá 365 ngày'),
   isActive: z.boolean()
 });
 
-const fareMatrixSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(100, 'Name must be less than 100 characters'),
+const farePricingSchema = z.object({
+  minDistanceKm:
+    z.number({
+      required_error: "Khoảng cách là bắt buộc",
+      invalid_type_error: "Khoảng cách là bắt buộc"
+    })
+      .min(0, 'Min distance must be greater than or equal to 0'),
+  maxDistanceKm:
+    z.number({
+      required_error: "Khoảng cách là bắt buộc",
+      invalid_type_error: "Khoảng cách là bắt buộc"
+    })
+      .min(1, 'Max distance must be greater than 0'),
   price: z.number().min(1000, 'Price must be greater than 1000'),
-  startStationId: z.number().min(1, 'Start station is required'),
-  endStationId: z.number().min(1, 'End station is required'),
   isActive: z.boolean()
+}).refine((data) => data.maxDistanceKm > data.minDistanceKm, {
+  message: "Max distance must be greater than min distance",
+  path: ["maxDistanceKm"],
 });
 
 type TicketTypeFormInputs = z.infer<typeof ticketTypeSchema>;
-type FareMatrixFormInputs = z.infer<typeof fareMatrixSchema>;
+type FarePricingFormInputs = z.infer<typeof farePricingSchema>;
 
 export default function ManageTicketPage() {
   const [filteredTickets, setFilteredTickets] = useState<TicketType[]>([]);
@@ -74,15 +85,19 @@ export default function ManageTicketPage() {
   const [fareStatusFilter, setFareStatusFilter] = useState<string>('ALL');
 
   const [showTicketModal, setShowTicketModal] = useState(false);
-  const [showFareModal, setShowFareModal] = useState(false);
   const [editingTicket, setEditingTicket] = useState<TicketType | null>(null);
-  const [editingFare, setEditingFare] = useState<FareMatrix | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [filteredFarePricing, setFilteredFarePricing] = useState<FarePricing[]>([]);
+  const [pricingSearchTerm, setPricingSearchTerm] = useState('');
+  const [showPricingModal, setShowPricingModal] = useState(false);
+  const [editingPricing, setEditingPricing] = useState<FarePricing | null>(null);
+  const [pricingSortBy, setPricingSortBy] = useState<string>('id');
 
   const [ticketSortBy, setTicketSortBy] = useState<string>('id');
   const [fareSortBy, setFareSortBy] = useState<string>('id');
 
-  const { ticketTypes, fareMatrices, stations, setTicketTypes, setFareMatrices, updateTicketType, updateFareMatrix, isFetched } = useAdminStore();
+  const { ticketTypes, fareMatrices, farePricings, stations, setTicketTypes, setFareMatrices, setFarePricings, updateTicketType, updateFareMatrix, updateFarePricing, isFetched } = useAdminStore();
 
   const ticketForm = useForm<TicketTypeFormInputs>({
     resolver: zodResolver(ticketTypeSchema),
@@ -96,14 +111,13 @@ export default function ManageTicketPage() {
     },
   });
 
-  const fareForm = useForm<FareMatrixFormInputs>({
-    resolver: zodResolver(fareMatrixSchema),
+  const pricingForm = useForm<FarePricingFormInputs>({
+    resolver: zodResolver(farePricingSchema),
     mode: 'onChange',
     defaultValues: {
-      name: '',
+      minDistanceKm: 0,
+      maxDistanceKm: 1,
       price: 0,
-      startStationId: 0,
-      endStationId: 0,
       isActive: true
     }
   });
@@ -132,6 +146,21 @@ export default function ManageTicketPage() {
           return a.price - b.price;
         case 'created':
           return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        default:
+          return 0;
+      }
+    });
+  };
+
+  const sortFarePricing = (pricings: FarePricing[], sortBy: string) => {
+    return [...pricings].sort((a, b) => {
+      switch (sortBy) {
+        case 'id':
+          return a.id - b.id;
+        case 'price':
+          return a.price - b.price;
+        case 'distance':
+          return a.minDistanceKm - b.minDistanceKm;
         default:
           return 0;
       }
@@ -181,6 +210,22 @@ export default function ManageTicketPage() {
     setFilteredFareMatrix(sorted);
   }, [fareSearchTerm, fareStatusFilter, fareMatrices, fareSortBy]);
 
+  useEffect(() => {
+    let filtered = farePricings;
+
+    if (pricingSearchTerm) {
+      filtered = filtered.filter(pricing =>
+        pricing.id.toString().includes(pricingSearchTerm.toLowerCase()) ||
+        pricing.minDistanceKm.toString().includes(pricingSearchTerm.toLowerCase()) ||
+        pricing.maxDistanceKm.toString().includes(pricingSearchTerm.toLowerCase()) ||
+        pricing.price.toString().includes(pricingSearchTerm.toLowerCase())
+      );
+    }
+
+    const sorted = sortFarePricing(filtered, pricingSortBy);
+    setFilteredFarePricing(sorted);
+  }, [pricingSearchTerm, farePricings, pricingSortBy]);
+
   const handleAddTicket = () => {
     setEditingTicket(null);
     ticketForm.reset({
@@ -203,30 +248,6 @@ export default function ManageTicketPage() {
       isActive: ticket.isActive
     });
     setShowTicketModal(true);
-  };
-
-  const handleAddFare = () => {
-    setEditingFare(null);
-    fareForm.reset({
-      name: '',
-      price: 0,
-      startStationId: 1,
-      endStationId: 1,
-      isActive: true
-    });
-    setShowFareModal(true);
-  };
-
-  const handleEditFare = (fare: FareMatrix) => {
-    setEditingFare(fare);
-    fareForm.reset({
-      name: fare.name,
-      price: fare.price,
-      startStationId: fare.startStationId,
-      endStationId: fare.endStationId,
-      isActive: fare.isActive
-    });
-    setShowFareModal(true);
   };
 
   const handleTicketTypeSubmit = async (data: TicketTypeFormInputs) => {
@@ -265,52 +286,6 @@ export default function ManageTicketPage() {
     } finally {
       if (!isError) {
         setShowTicketModal(false);
-      }
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleFareSubmit = async (data: FareMatrixFormInputs) => {
-    if (data.startStationId === data.endStationId) {
-      message.error('Start and end stations must be different');
-      return;
-    }
-
-    let isError = false;
-    setIsSubmitting(true);
-    const fareMatrixRequest: FareMatrixRequest = {
-      name: data.name,
-      endStationId: data.endStationId,
-      startStationId: data.startStationId,
-      isActive: data.isActive,
-      price: data.price
-    };
-
-    try {
-      if (editingFare) {
-        const res = await apiUpdateFareMatrix(fareMatrixRequest, editingFare.fareMatrixId);
-        if (res && res.status === 200) {
-          const updatedFareMatrix: FareMatrix = res.data;
-          updateFareMatrix(updatedFareMatrix);
-          notification.success({ message: 'Update successfully' });
-        } else {
-          isError = true;
-          notification.error({ message: 'Fail to update, try again later' });
-        }
-      } else {
-        const res = await apiCreateFareMatrix(fareMatrixRequest);
-        if (res && res.status === 200) {
-          const newFareMatrix: FareMatrix = res.data;
-          setFareMatrices([...fareMatrices, newFareMatrix]);
-          notification.success({ message: 'Create successfully' });
-        } else {
-          isError = true;
-          notification.error({ message: 'Fail to create, try again later' });
-        }
-      }
-    } finally {
-      if (!isError) {
-        setShowFareModal(false);
       }
       setIsSubmitting(false);
     }
@@ -364,6 +339,89 @@ export default function ManageTicketPage() {
     }
   };
 
+  const isOverlapping = (
+    min: number,
+    max: number,
+    existing: FarePricing[],
+    editingId?: number
+  ): boolean => {
+    return existing.some(rule => {
+      if (rule.id === editingId) return false;
+      return Math.max(min, rule.minDistanceKm) < Math.min(max, rule.maxDistanceKm);
+    });
+  };
+
+  const handleAddPricing = () => {
+    setEditingPricing(null);
+    pricingForm.reset({
+      minDistanceKm: 0,
+      maxDistanceKm: 1,
+      price: 0,
+      isActive: true
+    });
+    setShowPricingModal(true);
+  };
+
+  const handleEditPricing = (pricing: FarePricing) => {
+    setEditingPricing(pricing);
+    pricingForm.reset({
+      minDistanceKm: pricing.minDistanceKm,
+      maxDistanceKm: pricing.maxDistanceKm,
+      price: pricing.price,
+      isActive: pricing.isActive
+    });
+    setShowPricingModal(true);
+  };
+
+  const handlePricingSubmit = async (data: FarePricingFormInputs) => {
+    if (isOverlapping(data.minDistanceKm, data.maxDistanceKm, farePricings, editingPricing?.id)) {
+      notification.error({ message: "Khoảng cách này bị trùng hoặc lồng với một khoảng đã có." });
+      return;
+    }
+
+    let isError = false;
+    setIsSubmitting(true);
+    const farePricingRequest: FarePricingRequest = {
+      minDistanceKm: data.minDistanceKm,
+      maxDistanceKm: data.maxDistanceKm,
+      price: data.price,
+      isActive: data.isActive
+    };
+
+    try {
+      if (editingPricing) {
+        const res = await apiUpdateFarePricing(farePricingRequest, editingPricing.id);
+        if (res && res.status === 200) {
+          const updatedFarePricing: FarePricing = res.data;
+          updateFarePricing(updatedFarePricing);
+          const fareMatricesRes = await apiGetFareMatrices();
+          if (fareMatricesRes && fareMatricesRes.data) {
+            setFareMatrices(fareMatricesRes.data);
+          }
+          notification.success({ message: 'Update successfully' });
+        } else {
+          isError = true;
+          notification.error({ message: 'Fail to update, try again later' });
+        }
+      } else {
+        const res = await apiCreateFarePricing(farePricingRequest);
+        if (res && res.status === 200) {
+          const newFarePricing: FarePricing = res.data;
+          setFarePricings([...farePricings, newFarePricing]);
+          notification.success({ message: 'Create successfully' });
+        } else {
+          isError = true;
+          notification.error({ message: 'Fail to create, try again later' });
+        }
+      }
+    } finally {
+      if (!isError) {
+        setShowPricingModal(false);
+      }
+      setIsSubmitting(false);
+    }
+  };
+
   const getStationName = (stationId: number) => {
     const station = stations.find(s => s.stationId === stationId);
     return station ? station.name : `Station #${stationId}`;
@@ -371,7 +429,7 @@ export default function ManageTicketPage() {
 
   const ticketTypeColumns = [
     {
-      title: 'Name',
+      title: 'Loại vé',
       dataIndex: 'name',
       key: 'name',
       render: (name: string, record: TicketType) => (
@@ -382,7 +440,7 @@ export default function ManageTicketPage() {
       ),
     },
     {
-      title: 'Price',
+      title: 'Giá',
       dataIndex: 'price',
       key: 'price',
       render: (price: number) => {
@@ -398,19 +456,19 @@ export default function ManageTicketPage() {
       },
     },
     {
-      title: 'Duration',
+      title: 'Thời gian',
       dataIndex: 'validityDuration',
       key: 'validityDuration',
       render: (duration: number) => {
         if (duration !== 0) {
-          return `${duration} DAYS`;
+          return `${duration} ngày`;
         } else {
-          return "SINGLE"
+          return "Vé đơn"
         }
       },
     },
     {
-      title: 'Status',
+      title: 'Trạng thái',
       dataIndex: 'isActive',
       key: 'isActive',
       render: (isActive: boolean, record: TicketType) => (
@@ -423,13 +481,13 @@ export default function ManageTicketPage() {
       ),
     },
     {
-      title: 'Created',
+      title: 'Ngày tạo',
       dataIndex: 'createdAt',
       key: 'createdAt',
       render: (date: string) => new Date(date).toLocaleDateString(),
     },
     {
-      title: 'Actions',
+      title: 'Hành động',
       key: 'actions',
       render: (record: TicketType) => (
         <Space size="small">
@@ -446,7 +504,7 @@ export default function ManageTicketPage() {
 
   const fareColumns = [
     {
-      title: 'Name',
+      title: 'Tên tuyến',
       dataIndex: 'name',
       key: 'name',
       render: (name: string, record: FareMatrix) => (
@@ -457,7 +515,7 @@ export default function ManageTicketPage() {
       ),
     },
     {
-      title: 'Route',
+      title: 'Chi tiết',
       key: 'route',
       render: (record: FareMatrix) => (
         <div className='flex items-center'>
@@ -467,7 +525,15 @@ export default function ManageTicketPage() {
       ),
     },
     {
-      title: 'Price',
+      title: 'Khoảng cách',
+      dataIndex: 'distanceInKm',
+      key: 'distanceInKm',
+      render: (distanceInKm: number) => (
+        <span>{distanceInKm} km</span>
+      ),
+    },
+    {
+      title: 'Giá',
       dataIndex: 'price',
       key: 'price',
       render: (price: number) => (
@@ -475,7 +541,7 @@ export default function ManageTicketPage() {
       ),
     },
     {
-      title: 'Status',
+      title: 'Trạng thái',
       dataIndex: 'isActive',
       key: 'isActive',
       render: (isActive: boolean, record: FareMatrix) => (
@@ -488,20 +554,44 @@ export default function ManageTicketPage() {
       ),
     },
     {
-      title: 'Created',
+      title: 'Ngày tạo',
       dataIndex: 'createdAt',
       key: 'createdAt',
       render: (date: string) => new Date(date).toLocaleDateString(),
     },
+  ];
+
+  const pricingColumns = [
     {
-      title: 'Actions',
+      title: 'Khoảng cách',
+      key: 'distance',
+      render: (record: FarePricing) => (
+        <div>
+          <div className='font-bold flex items-center'>
+            <Ruler className='!text-[#1890ff] !mr-2' size={16} />
+            {record.minDistanceKm} - {record.maxDistanceKm} km
+          </div>
+          <div className="text-[#888] text-[0.9em]">ID: #{record.id}</div>
+        </div>
+      ),
+    },
+    {
+      title: 'Giá',
+      dataIndex: 'price',
+      key: 'price',
+      render: (price: number) => (
+        <span className='font-bold text-[#52c41a]'>{price.toLocaleString('vi-VN')} VNĐ</span>
+      ),
+    },
+    {
+      title: 'Hành động',
       key: 'actions',
-      render: (record: FareMatrix) => (
+      render: (record: FarePricing) => (
         <Space size="small">
           <Button
             type="text"
             icon={<EditOutlined />}
-            onClick={() => handleEditFare(record)}
+            onClick={() => handleEditPricing(record)}
             title="Edit"
           />
         </Space>
@@ -521,14 +611,21 @@ export default function ManageTicketPage() {
     return { total: fareMatrices.length, active, inactive };
   };
 
+  const getPricingStats = () => {
+    const active = farePricings.filter(p => p.isActive).length;
+    const inactive = farePricings.filter(p => !p.isActive).length;
+    return { total: farePricings.length, active, inactive };
+  };
+
   const ticketStats = getTicketStats();
   const fareStats = getFareStats();
+  const pricingStats = getPricingStats();
 
   const items = [
     {
       label: (
         <span>
-          Ticket Types
+          Loại vé
         </span>
       ),
       key: 'tickets',
@@ -539,7 +636,7 @@ export default function ManageTicketPage() {
               <Card className="!shadow-[0_1px_2px_0_rgba(0,0,0,0.03),0_1px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_0_rgba(0,0,0,0.02)]">
                 <div className='flex items-center justify-between'>
                   <div>
-                    <p className='m-0 text-[#666]'>Total Tickets</p>
+                    <p className='m-0 text-[#666]'>Tổng số loại vé</p>
                     <p className='font-bold text-[1.5em] m-0 text-[#333]'>{ticketStats.total}</p>
                   </div>
                   <Ticket className='!text-[2em] !text-[#1890ff]' />
@@ -550,7 +647,7 @@ export default function ManageTicketPage() {
               <Card className="!shadow-[0_1px_2px_0_rgba(0,0,0,0.03),0_1px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_0_rgba(0,0,0,0.02)]">
                 <div className='flex items-center justify-between'>
                   <div>
-                    <p className='m-0 text-[#666]'>Active</p>
+                    <p className='m-0 text-[#666]'>Đang hoạt động</p>
                     <p className='font-bold text-[1.5em] m-0 text-[#52c41a]'>{ticketStats.active}</p>
                   </div>
                   <CheckOutlined className='!text-[2em] !text-[#52c41a]' />
@@ -561,7 +658,7 @@ export default function ManageTicketPage() {
               <Card className="!shadow-[0_1px_2px_0_rgba(0,0,0,0.03),0_1px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_0_rgba(0,0,0,0.02)]">
                 <div className='flex items-center justify-between'>
                   <div>
-                    <p className='m-0 text-[#666]'>Inactive</p>
+                    <p className='m-0 text-[#666]'>Không hoạt động</p>
                     <p className='font-bold text-[1.5em] m-0 text-[#ff4d4f]'>{ticketStats.inactive}</p>
                   </div>
                   <CloseOutlined className='!text-[2em] !text-[#ff4d4f]' />
@@ -574,7 +671,7 @@ export default function ManageTicketPage() {
             <Row gutter={[16, 16]} align="middle">
               <Col xs={24} md={12}>
                 <Search
-                  placeholder="Search by name, description, or ID..."
+                  placeholder="Tìm kiếm..."
                   onSearch={(value) => setTicketSearchTerm(value)}
                   onChange={(e) => setTicketSearchTerm(e.target.value)}
                   className='!w-full'
@@ -586,23 +683,21 @@ export default function ManageTicketPage() {
                 <Space className='!w-full !justify-end' wrap>
                   <FilterOutlined className='!text-[rgba(0, 0, 0, 0.45)]' />
                   <Select
-                    className='!w-25'
                     defaultValue="ALL"
                     onChange={(value) => setTicketStatusFilter(value)}
                   >
-                    <Option value="ALL">All Status</Option>
-                    <Option value="ACTIVE">Active</Option>
-                    <Option value="INACTIVE">Inactive</Option>
+                    <Option value="ALL">Tất cả trạng thái</Option>
+                    <Option value="ACTIVE">Đang hoạt động</Option>
+                    <Option value="INACTIVE">Không hoạt động</Option>
                   </Select>
                   <Select
-                    className='!w-32'
                     defaultValue="id"
                     onChange={(value) => setTicketSortBy(value)}
                     placeholder="Sort by"
                   >
-                    <Option value="id">Sort by ID</Option>
-                    <Option value="price">Sort by Price</Option>
-                    <Option value="created">Sort by Created Date</Option>
+                    <Option value="id">Sắp xếp theo ID</Option>
+                    <Option value="price">Sắp xếp theo giá</Option>
+                    <Option value="created">Sắp xếp theo ngày tạo</Option>
                   </Select>
                   <Button
                     type="primary"
@@ -610,7 +705,7 @@ export default function ManageTicketPage() {
                     onClick={handleAddTicket}
                     className='!bg-teal-600 !text-white hover:!bg-teal-700'
                   >
-                    Add Ticket Type
+                    Thêm loại vé mới
                   </Button>
                 </Space>
               </Col>
@@ -637,7 +732,7 @@ export default function ManageTicketPage() {
     {
       label: (
         <span>
-          Fare Matrix
+          Các tuyến xe
         </span>
       ),
       key: 'fare',
@@ -648,7 +743,7 @@ export default function ManageTicketPage() {
               <Card className="!shadow-[0_1px_2px_0_rgba(0,0,0,0.03),0_1px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_0_rgba(0,0,0,0.02)]">
                 <div className='flex items-center justify-between'>
                   <div>
-                    <p className='m-0 text-[#666]'>Total Routes</p>
+                    <p className='m-0 text-[#666]'>Tổng các tuyến xe</p>
                     <p className='font-bold text-[1.5em] m-0 text-[#333]'>{fareStats.total}</p>
                   </div>
                   <Route className='!text-[2em] !text-[#1890ff]' />
@@ -659,7 +754,7 @@ export default function ManageTicketPage() {
               <Card className="!shadow-[0_1px_2px_0_rgba(0,0,0,0.03),0_1px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_0_rgba(0,0,0,0.02)]">
                 <div className='flex items-center justify-between'>
                   <div>
-                    <p className='m-0 text-[#666]'>Active</p>
+                    <p className='m-0 text-[#666]'>Đang hoạt động</p>
                     <p className='font-bold text-[1.5em] m-0 text-[#52c41a]'>{fareStats.active}</p>
                   </div>
                   <CheckOutlined className='!text-[2em] !text-[#52c41a]' />
@@ -670,7 +765,7 @@ export default function ManageTicketPage() {
               <Card className="!shadow-[0_1px_2px_0_rgba(0,0,0,0.03),0_1px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_0_rgba(0,0,0,0.02)]">
                 <div className='flex items-center justify-between'>
                   <div>
-                    <p className='m-0 text-[#666]'>Inactive</p>
+                    <p className='m-0 text-[#666]'>Không hoạt động</p>
                     <p className='font-bold text-[1.5em] m-0 text-[#ff4d4f]'>{fareStats.inactive}</p>
                   </div>
                   <CloseOutlined className='!text-[2em] !text-[#ff4d4f]' />
@@ -683,7 +778,7 @@ export default function ManageTicketPage() {
             <Row gutter={[16, 16]} align="middle">
               <Col xs={24} md={12}>
                 <Search
-                  placeholder="Search by name, stations, or ID..."
+                  placeholder="Tìm kiếm..."
                   onSearch={(value) => setFareSearchTerm(value)}
                   onChange={(e) => setFareSearchTerm(e.target.value)}
                   className='!w-full'
@@ -695,32 +790,22 @@ export default function ManageTicketPage() {
                 <Space className='!w-full !justify-end' wrap>
                   <FilterOutlined className='!text-[rgba(0, 0, 0, 0.45)]' />
                   <Select
-                    className='!w-25'
                     defaultValue="ALL"
                     onChange={(value) => setFareStatusFilter(value)}
                   >
-                    <Option value="ALL">All Status</Option>
-                    <Option value="ACTIVE">Active</Option>
-                    <Option value="INACTIVE">Inactive</Option>
+                    <Option value="ALL">Tất cả trạng thái</Option>
+                    <Option value="ACTIVE">Đang hoạt động</Option>
+                    <Option value="INACTIVE">Không hoạt động</Option>
                   </Select>
                   <Select
-                    className='!w-32'
                     defaultValue="id"
                     onChange={(value) => setFareSortBy(value)}
                     placeholder="Sort by"
                   >
-                    <Option value="id">Sort by ID</Option>
-                    <Option value="price">Sort by Price</Option>
-                    <Option value="created">Sort by Created Date</Option>
+                    <Option value="id">Sắp xếp theo ID</Option>
+                    <Option value="price">Sắp xếp theo giá</Option>
+                    <Option value="created">Sắp xếp theo ngày tạo</Option>
                   </Select>
-                  <Button
-                    type="primary"
-                    icon={<PlusOutlined />}
-                    onClick={handleAddFare}
-                    className='!bg-teal-600 !text-white hover:!bg-teal-700'
-                  >
-                    Add Fare Route
-                  </Button>
                 </Space>
               </Col>
             </Row>
@@ -743,14 +828,91 @@ export default function ManageTicketPage() {
         </>
       ),
     },
+    {
+      label: (
+        <span>
+          Giá vé
+        </span>
+      ),
+      key: 'pricing',
+      children: (
+        <>
+          <Row gutter={[24, 24]} className='!mb-6'>
+            <Col xs={24} sm={8} md={8}>
+              <Card className="!shadow-[0_1px_2px_0_rgba(0,0,0,0.03),0_1px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_0_rgba(0,0,0,0.02)]">
+                <div className='flex items-center justify-between'>
+                  <div>
+                    <p className='m-0 text-[#666]'>Tổng số</p>
+                    <p className='font-bold text-[1.5em] m-0 text-[#333]'>{pricingStats.total}</p>
+                  </div>
+                  <Calculator className='!text-[2em] !text-[#1890ff]' />
+                </div>
+              </Card>
+            </Col>
+          </Row>
+
+          <Card className='!mb-6 !shadow-[0_1px_2px_0_rgba(0,0,0,0.03),0_1px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_0_rgba(0,0,0,0.02)]'>
+            <Row gutter={[16, 16]} align="middle">
+              <Col xs={24} md={12}>
+                <Search
+                  placeholder="Tìm kiếm..."
+                  onSearch={(value) => setPricingSearchTerm(value)}
+                  onChange={(e) => setPricingSearchTerm(e.target.value)}
+                  className='!w-full'
+                  prefix={<SearchOutlined />}
+                  allowClear
+                />
+              </Col>
+              <Col xs={24} md={12}>
+                <Space className='!w-full !justify-end' wrap>
+                  <FilterOutlined className='!text-[rgba(0, 0, 0, 0.45)]' />
+                  <Select
+                    defaultValue="id"
+                    onChange={(value) => setPricingSortBy(value)}
+                    placeholder="Sort by"
+                  >
+                    <Option value="id">Sắp xép theo ID</Option>
+                    <Option value="price">Sắp xép theo giá</Option>
+                    <Option value="distance">Sắp xép theo khoảng cách</Option>
+                  </Select>
+                  <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={handleAddPricing}
+                    className='!bg-teal-600 !text-white hover:!bg-teal-700'
+                  >
+                    Thêm giá vé mới
+                  </Button>
+                </Space>
+              </Col>
+            </Row>
+          </Card>
+
+          <Card className="!shadow-[0_1px_2px_0_rgba(0,0,0,0.03),0_1px_6px_-1px_rgba(0,0,0,0.02),0_2px_4px_0_rgba(0,0,0,0.02)]">
+            <Table
+              loading={!isFetched}
+              columns={pricingColumns}
+              dataSource={filteredFarePricing}
+              rowKey="id"
+              pagination={{
+                pageSize: 10,
+                showSizeChanger: false,
+                total: filteredFarePricing.length,
+              }}
+              scroll={{ x: 'max-content' }}
+            />
+          </Card>
+        </>
+      ),
+    },
   ];
 
   return (
     <Layout className='!min-h-screen !bg-[#f0f2f5] !p-6'>
       <Content className="!w-full !max-w-[1400px] !mx-auto">
         <div className='mb-6'>
-          <h1 className="text-[2em] font-bold text-[#333] mb-2">Ticket Management</h1>
-          <p className='text-[#666]'>Manage ticket types and fare matrix for the system</p>
+          <h1 className="text-[2em] font-bold text-[#333] mb-2">Quản lí vé</h1>
+          <p className='text-[#666]'>Quản lí chi tiết vé cho hệ thống</p>
         </div>
 
         <Tabs defaultActiveKey="tickets" size="large" items={items} />
@@ -758,7 +920,7 @@ export default function ManageTicketPage() {
         <Modal
           open={showTicketModal}
           onCancel={() => setShowTicketModal(false)}
-          title={editingTicket ? 'Edit Ticket Type' : 'Add New Ticket Type'}
+          title={editingTicket ? 'Cập nhật vé' : 'Thêm loại vé mới'}
           footer={null}
           centered
           width={600}
@@ -770,7 +932,7 @@ export default function ManageTicketPage() {
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
-                  label="Name"
+                  label="Loại vé"
                   validateStatus={ticketForm.formState.errors.name ? 'error' : ''}
                   help={ticketForm.formState.errors.name?.message}
                   required
@@ -790,7 +952,7 @@ export default function ManageTicketPage() {
               </Col>
               <Col span={12}>
                 <Form.Item
-                  label="Price"
+                  label="Giá"
                   validateStatus={ticketForm.formState.errors.price ? 'error' : ''}
                   help={ticketForm.formState.errors.price?.message}
                   required
@@ -801,7 +963,7 @@ export default function ManageTicketPage() {
                     render={({ field }) => (
                       <InputNumber
                         {...field}
-                        placeholder="Enter price"
+                        placeholder="Nhập giá"
                         min={0}
                         step={1}
                         className="!w-full"
@@ -816,7 +978,7 @@ export default function ManageTicketPage() {
             </Row>
 
             <Form.Item
-              label="Validity Duration (Day)"
+              label="Thời gian (Ngày)"
               validateStatus={ticketForm.formState.errors.validityDuration ? 'error' : ''}
               help={ticketForm.formState.errors.validityDuration?.message}
               required
@@ -837,7 +999,7 @@ export default function ManageTicketPage() {
             </Form.Item>
 
             <Form.Item
-              label="Description"
+              label="Mô tả chi tiết"
               validateStatus={ticketForm.formState.errors.description ? 'error' : ''}
               help={ticketForm.formState.errors.description?.message}
             >
@@ -847,7 +1009,7 @@ export default function ManageTicketPage() {
                 render={({ field }) => (
                   <Input.TextArea
                     {...field}
-                    placeholder="Enter ticket description (optional)"
+                    placeholder="Thêm mô tả cho loại vé (tùy chọn)"
                     rows={3}
                     maxLength={500}
                     showCount
@@ -857,7 +1019,7 @@ export default function ManageTicketPage() {
             </Form.Item>
 
             {!editingTicket && (
-              <Form.Item label="Status">
+              <Form.Item label="Trạng thái">
                 <Controller
                   name="isActive"
                   control={ticketForm.control}
@@ -871,7 +1033,7 @@ export default function ManageTicketPage() {
                   )}
                 />
                 <span className="ml-2">
-                  {ticketForm.watch('isActive') ? 'Active' : 'Inactive'}
+                  {ticketForm.watch('isActive') ? 'Hoạt động' : 'Không hoạt động'}
                 </span>
               </Form.Item>
             )}
@@ -884,7 +1046,7 @@ export default function ManageTicketPage() {
                   loading={isSubmitting}
                   className="!bg-teal-600 !text-white hover:!bg-teal-700"
                 >
-                  {editingTicket ? 'Update' : 'Create'} Ticket Type
+                  {editingTicket ? 'Cập nhật' : 'Xác nhận'}
                 </Button>
               </Space>
             </Form.Item>
@@ -892,58 +1054,58 @@ export default function ManageTicketPage() {
         </Modal>
 
         <Modal
-          open={showFareModal}
-          onCancel={() => setShowFareModal(false)}
-          title={editingFare ? 'Edit Fare Matrix' : 'Add New Fare Matrix'}
+          open={showPricingModal}
+          onCancel={() => setShowPricingModal(false)}
+          title={editingPricing ? 'Cập nhật giá vé' : 'Thêm giá vé mới'}
           footer={null}
           centered
           width={600}
         >
           <Form
             layout="vertical"
-            onFinish={fareForm.handleSubmit(handleFareSubmit)}
+            onFinish={pricingForm.handleSubmit(handlePricingSubmit)}
           >
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
-                  label="Route Name"
-                  validateStatus={fareForm.formState.errors.name ? 'error' : ''}
-                  help={fareForm.formState.errors.name?.message}
+                  label="Từ (km)"
+                  validateStatus={pricingForm.formState.errors.minDistanceKm ? 'error' : ''}
+                  help={pricingForm.formState.errors.minDistanceKm?.message}
                   required
                 >
                   <Controller
-                    name="name"
-                    control={fareForm.control}
-                    render={({ field }) => (
-                      <Input
-                        {...field}
-                        placeholder="Enter route name"
-                        prefix={<Route size={20} />}
-                      />
-                    )}
-                  />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  label="Price"
-                  validateStatus={fareForm.formState.errors.price ? 'error' : ''}
-                  help={fareForm.formState.errors.price?.message}
-                  required
-                >
-                  <Controller
-                    name="price"
-                    control={fareForm.control}
+                    name="minDistanceKm"
+                    control={pricingForm.control}
                     render={({ field }) => (
                       <InputNumber
                         {...field}
-                        placeholder="Enter price"
                         min={0}
                         step={1}
                         className="!w-full"
-                        prefix={<CircleDollarSign size={20} />}
-                        formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
-                        parser={(value) => Number(value!.replace(/\./g, ''))}
+                        prefix={<Ruler size={20} />}
+                      />
+                    )}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="Đến (km)"
+                  validateStatus={pricingForm.formState.errors.maxDistanceKm ? 'error' : ''}
+                  help={pricingForm.formState.errors.maxDistanceKm?.message}
+                  required
+                >
+                  <Controller
+                    name="maxDistanceKm"
+                    control={pricingForm.control}
+                    render={({ field }) => (
+                      <InputNumber
+                        {...field}
+                        placeholder="Enter max distance"
+                        min={1}
+                        step={1}
+                        className="!w-full"
+                        prefix={<Ruler size={20} />}
                       />
                     )}
                   />
@@ -951,90 +1113,29 @@ export default function ManageTicketPage() {
               </Col>
             </Row>
 
-            <Row gutter={16}>
-              <Col span={12}>
-                <Form.Item
-                  label="Start Station"
-                  validateStatus={fareForm.formState.errors.startStationId ? 'error' : ''}
-                  help={fareForm.formState.errors.startStationId?.message}
-                  required
-                >
-                  <Controller
-                    name="startStationId"
-                    control={fareForm.control}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        placeholder="Select start station"
-                        className="!w-full"
-                        showSearch
-                        optionFilterProp="children"
-                        filterOption={(input, option) =>
-                          option?.children?.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
-                      >
-                        {stations.map(station => (
-                          <Option key={station.stationId} value={station.stationId}>
-                            {station.name}
-                          </Option>
-                        ))}
-                      </Select>
-                    )}
+            <Form.Item
+              label="Giá"
+              validateStatus={pricingForm.formState.errors.price ? 'error' : ''}
+              help={pricingForm.formState.errors.price?.message}
+              required
+            >
+              <Controller
+                name="price"
+                control={pricingForm.control}
+                render={({ field }) => (
+                  <InputNumber
+                    {...field}
+                    placeholder="Nhập giá"
+                    min={0}
+                    step={1}
+                    className="!w-full"
+                    prefix={<CircleDollarSign size={20} />}
+                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
+                    parser={(value) => Number(value!.replace(/\./g, ''))}
                   />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  label="End Station"
-                  validateStatus={fareForm.formState.errors.endStationId ? 'error' : ''}
-                  help={fareForm.formState.errors.endStationId?.message}
-                  required
-                >
-                  <Controller
-                    name="endStationId"
-                    control={fareForm.control}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        placeholder="Select end station"
-                        className="!w-full"
-                        showSearch
-                        optionFilterProp="children"
-                        filterOption={(input, option) =>
-                          option?.children?.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
-                      >
-                        {stations.map(station => (
-                          <Option key={station.stationId} value={station.stationId}>
-                            {station.name}
-                          </Option>
-                        ))}
-                      </Select>
-                    )}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-
-            {!editingFare && (
-              <Form.Item label="Status">
-                <Controller
-                  name="isActive"
-                  control={fareForm.control}
-                  render={({ field }) => (
-                    <Switch
-                      {...field}
-                      checked={field.value}
-                      checkedChildren={<CheckOutlined />}
-                      unCheckedChildren={<CloseOutlined />}
-                    />
-                  )}
-                />
-                <span className="ml-2">
-                  {fareForm.watch('isActive') ? 'Active' : 'Inactive'}
-                </span>
-              </Form.Item>
-            )}
+                )}
+              />
+            </Form.Item>
 
             <Form.Item className="!mb-0 !mt-6">
               <Space className="!w-full !justify-end">
@@ -1044,7 +1145,7 @@ export default function ManageTicketPage() {
                   loading={isSubmitting}
                   className="!bg-teal-600 !text-white hover:!bg-teal-700"
                 >
-                  {editingFare ? 'Update' : 'Create'} Fare Matrix
+                  {editingPricing ? 'Cập nhật' : 'Xác nhận'}
                 </Button>
               </Space>
             </Form.Item>

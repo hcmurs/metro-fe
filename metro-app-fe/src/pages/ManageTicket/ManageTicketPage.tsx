@@ -97,7 +97,7 @@ export default function ManageTicketPage() {
   const [ticketSortBy, setTicketSortBy] = useState<string>('id');
   const [fareSortBy, setFareSortBy] = useState<string>('id');
 
-  const { ticketTypes, fareMatrices, farePricings, stations, setTicketTypes, setFareMatrices, setFarePricings, updateTicketType, updateFareMatrix, updateFarePricing, isFetched } = useAdminStore();
+  const { ticketTypes, fareMatrices, farePricings, setTicketTypes, setFareMatrices, setFarePricings, updateTicketType, updateFareMatrix, updateFarePricing, isFetched } = useAdminStore();
 
   const ticketForm = useForm<TicketTypeFormInputs>({
     resolver: zodResolver(ticketTypeSchema),
@@ -422,11 +422,6 @@ export default function ManageTicketPage() {
     }
   };
 
-  const getStationName = (stationId: number) => {
-    const station = stations.find(s => s.stationId === stationId);
-    return station ? station.name : `Station #${stationId}`;
-  };
-
   const ticketTypeColumns = [
     {
       title: 'Loại vé',
@@ -511,16 +506,6 @@ export default function ManageTicketPage() {
         <div>
           <div className='font-bold'>{name}</div>
           <div className="text-[#888] text-[0.9em]">ID: #{record.fareMatrixId}</div>
-        </div>
-      ),
-    },
-    {
-      title: 'Chi tiết',
-      key: 'route',
-      render: (record: FareMatrix) => (
-        <div className='flex items-center'>
-          <Route className='!text-[#1890ff] !mr-2' />
-          <span>{getStationName(record.startStationId)} → {getStationName(record.endStationId)}</span>
         </div>
       ),
     },

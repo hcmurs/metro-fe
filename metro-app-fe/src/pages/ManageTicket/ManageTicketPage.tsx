@@ -80,7 +80,6 @@ export default function ManageTicketPage() {
 
   const [filteredFarePricing, setFilteredFarePricing] = useState<FarePricing[]>([]);
   const [pricingSearchTerm, setPricingSearchTerm] = useState('');
-  const [pricingStatusFilter, setPricingStatusFilter] = useState<string>('ALL');
   const [showPricingModal, setShowPricingModal] = useState(false);
   const [editingPricing, setEditingPricing] = useState<FarePricing | null>(null);
   const [pricingSortBy, setPricingSortBy] = useState<string>('id');
@@ -213,14 +212,9 @@ export default function ManageTicketPage() {
       );
     }
 
-    if (pricingStatusFilter !== 'ALL') {
-      const isActive = pricingStatusFilter === 'ACTIVE';
-      filtered = filtered.filter(pricing => pricing.isActive === isActive);
-    }
-
     const sorted = sortFarePricing(filtered, pricingSortBy);
     setFilteredFarePricing(sorted);
-  }, [pricingSearchTerm, pricingStatusFilter, farePricings, pricingSortBy]);
+  }, [pricingSearchTerm, farePricings, pricingSortBy]);
 
   const handleAddTicket = () => {
     setEditingTicket(null);
@@ -335,6 +329,18 @@ export default function ManageTicketPage() {
     }
   };
 
+  const isOverlapping = (
+    min: number,
+    max: number,
+    existing: FarePricing[],
+    editingId?: number
+  ): boolean => {
+    return existing.some(rule => {
+      if (rule.id === editingId) return false;
+      return Math.max(min, rule.minDistanceKm) < Math.min(max, rule.maxDistanceKm);
+    });
+  };
+
   const handleAddPricing = () => {
     setEditingPricing(null);
     pricingForm.reset({
@@ -358,6 +364,11 @@ export default function ManageTicketPage() {
   };
 
   const handlePricingSubmit = async (data: FarePricingFormInputs) => {
+    if (isOverlapping(data.minDistanceKm, data.maxDistanceKm, farePricings, editingPricing?.id)) {
+      notification.error({message: "Khoảng cách này bị trùng hoặc lồng với một khoảng đã có."});
+      return;
+    }
+
     let isError = false;
     setIsSubmitting(true);
     const farePricingRequest: FarePricingRequest = {
@@ -397,29 +408,6 @@ export default function ManageTicketPage() {
       if (!isError) {
         setShowPricingModal(false);
       }
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleTogglePricingStatus = async (data: FarePricing) => {
-    setIsSubmitting(true);
-    const farePricingRequest: FarePricingRequest = {
-      minDistanceKm: data.minDistanceKm,
-      maxDistanceKm: data.maxDistanceKm,
-      price: data.price,
-      isActive: !data.isActive
-    };
-
-    try {
-      const res = await apiUpdateFarePricing(farePricingRequest, data.id);
-      if (res && res.status === 200) {
-        const updatedFarePricing: FarePricing = res.data;
-        updateFarePricing(updatedFarePricing);
-        notification.success({ message: `${!data.isActive ? 'Activated' : 'Deactivated'} successfully` });
-      } else {
-        notification.error({ message: 'Failed to update status, try again later' });
-      }
-    } finally {
       setIsSubmitting(false);
     }
   };

@@ -30,70 +30,47 @@ export default function Admin() {
         <div className='text-2xl font-bold text-[#007c51] mb-8'>Admin Panel</div>
         <nav className='flex flex-col gap-6'>
           <div>
-            <h3 className='text-gray-500 uppercase text-sm mb-2 font-semibold'>Overview</h3>
             <Link
               to={'dashboard'}
               className={`${baseClass} ${choosen === 'dashboard' ? activeClass : ''}`}
             >
-              <LayoutDashboard size={20} /> Dashboard
-            </Link>
-          </div>
-
-          <div>
-            <h3 className='text-gray-500 uppercase text-sm mb-2 font-semibold'>User Management</h3>
-            <Link
-              to={'users'}
-              className={`${baseClass} ${choosen === 'users' ? activeClass : ''}`}
-            >
-              <User size={20} /> Users
+              <LayoutDashboard size={20} /> Thống kê
             </Link>
             <Link
               to={'logs'}
               className={`${baseClass} ${choosen === 'logs' ? activeClass : ''}`}
             >
-              <User size={20} /> User Log
+              <User size={20} /> Thống kê vé
             </Link>
             <Link
               to={'requests'}
               className={`${baseClass} ${choosen === 'requests' ? activeClass : ''}`}
             >
-              <FilePlus2 size={20} /> Requests
+              <FilePlus2 size={20} /> Yêu cầu sinh viên
             </Link>
             <Link
               to={'feedbacks'}
               className={`${baseClass} ${choosen === 'feedbacks' ? activeClass : ''}`}
             >
-              <ScrollText size={20} /> Feedbacks
+              <ScrollText size={20} /> Ý kiến khách hàng
             </Link>
-          </div>
-
-          <div>
-            <h3 className='text-gray-500 uppercase text-sm mb-2 font-semibold'>Station Management</h3>
             <Link
               to={'route'}
               className={`${baseClass} ${choosen === 'route' ? activeClass : ''}`}
             >
-              <Train size={20} /> Route
+              <Train size={20} /> Ga
             </Link>
-          </div>
-
-          <div>
-            <h3 className='text-gray-500 uppercase text-sm mb-2 font-semibold'>Ticket Management</h3>
             <Link
               to={'tickets'}
               className={`${baseClass} ${choosen === 'tickets' ? activeClass : ''}`}
             >
-              <Ticket size={20} /> Tickets
+              <Ticket size={20} /> Vé
             </Link>
-          </div>
-
-          <div>
-            <h3 className='text-gray-500 uppercase text-sm mb-2 font-semibold'>Blog Management</h3>
             <Link
               to={'blogs'}
               className={`${baseClass} ${choosen === 'blogs' ? activeClass : ''}`}
             >
-              <Newspaper size={20} /> Blogs
+              <Newspaper size={20} /> Tin tức
             </Link>
           </div>
         </nav>

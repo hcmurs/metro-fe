@@ -28,7 +28,7 @@ import { Calculator, CircleDollarSign, ClockPlus, Route, Ruler, Ticket } from 'l
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { apiCreateFarePricing, apiGetFareMatrices, apiUpdateFareMatrix, apiUpdateFarePricing } from '../../apis/fare.api';
+import { apiCreateFarePricing, apiGetFareMatrices, apiUpdateFareMatrix, apiUpdateFarePricing, apiUpdateStatusFareMatrix } from '../../apis/fare.api';
 import { apiCreateTicketType, apiUpdateTicketType } from '../../apis/tickettype.api';
 import { useAdminStore } from '../../stores/admin.store';
 import type { FareMatrix, FareMatrixRequest, FarePricing, FarePricingRequest } from '../../types/fare.type';
@@ -178,6 +178,8 @@ export default function ManageTicketPage() {
       );
     }
 
+    filtered = filtered.filter((ticketType: TicketType) => ticketType.name !== "Vé đơn");
+
     if (ticketStatusFilter !== 'ALL') {
       const isActive = ticketStatusFilter === 'ACTIVE';
       filtered = filtered.filter(ticket => ticket.isActive === isActive);
@@ -267,20 +269,20 @@ export default function ManageTicketPage() {
         if (res && res.status === 200) {
           const updatedTicketType: TicketType = res.data;
           updateTicketType(updatedTicketType);
-          notification.success({ message: 'Update successfully' });
+          notification.success({ message: 'Cập nhật thành công' });
         } else {
           isError = true;
-          notification.error({ message: 'Fail to update, try again later' });
+          notification.error({ message: 'Có lỗi không mong muốn, vui lòng thử lại sau' });
         }
       } else {
         const res = await apiCreateTicketType(ticketTypeRequest);
         if (res && res.status === 200) {
           const newTicketType: TicketType = res.data;
           setTicketTypes([...ticketTypes, newTicketType]);
-          notification.success({ message: 'Create successfully' });
+          notification.success({ message: 'Tạo thành công' });
         } else {
           isError = true;
-          notification.error({ message: 'Fail to create, try again later' });
+          notification.error({ message: 'Có lỗi không mong muốn, vui lòng thử lại sau' });
         }
       }
     } finally {
@@ -306,9 +308,8 @@ export default function ManageTicketPage() {
       if (res && res.status === 200) {
         const updatedTicketType: TicketType = res.data;
         updateTicketType(updatedTicketType);
-        notification.success({ message: `${!data.isActive ? 'Activated' : 'Deactivated'} successfully` });
       } else {
-        notification.error({ message: 'Failed to update status, try again later' });
+        notification.error({ message: 'Có lỗi không mong muốn, vui lòng thử lại sau' });
       }
     } finally {
       setIsSubmitting(false);
@@ -317,22 +318,14 @@ export default function ManageTicketPage() {
 
   const handleToggleFareStatus = async (data: FareMatrix) => {
     setIsSubmitting(true);
-    const fareMatrixRequest: FareMatrixRequest = {
-      name: data.name,
-      endStationId: data.endStationId,
-      startStationId: data.startStationId,
-      isActive: !data.isActive,
-      price: data.price
-    };
 
     try {
-      const res = await apiUpdateFareMatrix(fareMatrixRequest, data.fareMatrixId);
+      const res = await apiUpdateStatusFareMatrix(data.fareMatrixId, !data.isActive);
       if (res && res.status === 200) {
         const updatedFareMatrix: FareMatrix = res.data;
         updateFareMatrix(updatedFareMatrix);
-        notification.success({ message: `${!data.isActive ? 'Activated' : 'Deactivated'} successfully` });
       } else {
-        notification.error({ message: 'Failed to update status, try again later' });
+        notification.error({ message: 'Có lỗi không mong muốn, vui lòng thử lại sau' });
       }
     } finally {
       setIsSubmitting(false);
@@ -398,20 +391,20 @@ export default function ManageTicketPage() {
           if (fareMatricesRes && fareMatricesRes.data) {
             setFareMatrices(fareMatricesRes.data);
           }
-          notification.success({ message: 'Update successfully' });
+          notification.success({ message: 'Cập nhật thành công' });
         } else {
           isError = true;
-          notification.error({ message: 'Fail to update, try again later' });
+          notification.error({ message: 'Có lỗi không mong muốn, vui lòng thử lại sau' });
         }
       } else {
         const res = await apiCreateFarePricing(farePricingRequest);
         if (res && res.status === 200) {
           const newFarePricing: FarePricing = res.data;
           setFarePricings([...farePricings, newFarePricing]);
-          notification.success({ message: 'Create successfully' });
+          notification.success({ message: 'Tạo thành công' });
         } else {
           isError = true;
-          notification.error({ message: 'Fail to create, try again later' });
+          notification.error({ message: 'Có lỗi không mong muốn, vui lòng thử lại sau' });
         }
       }
     } finally {

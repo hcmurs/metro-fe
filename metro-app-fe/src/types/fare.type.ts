@@ -1,27 +1,27 @@
 export interface FareMatrix {
-    fareMatrixId: number;
-    name: string;
-    price: number;
-    startStationId: number;
-    endStationId: number;
-   distanceInKm: number 
-    isActive: boolean;
-    createdAt: string;
-    updatedAt: string;
-  }
+  fareMatrixId: number;
+  name: string;
+  price: number;
+  startStationId: number;
+  endStationId: number;
+  distanceInKm: number
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface FareMatrixRequest {
-    price: number;
-    startStationId: number;
-    endStationId: number;
-    isActive: boolean;
-    name: string;
-    distanceInKm?: number
+  price: number;
+  startStationId: number;
+  endStationId: number;
+  isActive: boolean;
+  name: string;
+  distanceInKm?: number
 }
 
 export interface FindFareRequest {
-    startStationId: number;
-    endStationId: number;
+  startStationId: number;
+  endStationId: number;
 }
 
 

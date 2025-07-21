@@ -193,10 +193,10 @@ const Dashboard = () => {
           margin: 0,
           marginBottom: '8px'
         }}>
-          Metro Analytics Dashboard
+          Bảng điều khiển phân tích Metro
         </h1>
         <p style={{ color: '#666', marginBottom: '16px' }}>
-          Manage and analyze metro system usage data
+          Quản lý và phân tích dữ liệu sử dụng hệ thống tàu điện
         </p>
         <div className="flex items-center gap-3">
           <RangePicker

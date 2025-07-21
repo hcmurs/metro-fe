@@ -203,7 +203,7 @@ export default function VerifyRequestPage() {
             type="text"
             icon={<EyeOutlined />}
             onClick={() => handleViewRequest(record)}
-            title="View Details"
+            title="Xem chi tiết"
           />
         </Space>
       ),

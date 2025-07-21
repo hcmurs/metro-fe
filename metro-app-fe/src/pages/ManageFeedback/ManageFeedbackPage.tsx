@@ -188,7 +188,7 @@ export default function ManageFeedbackPage() {
             type="text"
             icon={<EyeOutlined />}
             onClick={() => handleViewFeedback(record)}
-            title="View Details"
+            title="Xem chi tiết"
           />
         </Space>
       ),

@@ -90,7 +90,7 @@ export default function RouteManagement() {
         }
         message.success("Route created successfully!");
       }
-      
+
       setShowModal(false);
       form.resetFields();
       setEditingRoute(null);
@@ -132,18 +132,18 @@ export default function RouteManagement() {
       title: "Delete Route",
       content: (
         <div>
-          <p>Are you sure you want to delete this route?</p>
+          <p>Bạn có chắc chắn muốn xóa tuyến đường này không?</p>
           <div className="mt-3 p-3 bg-gray-50 rounded">
-            <p><strong>Route Name:</strong> {route.routeName}</p>
-            <p><strong>Route Code:</strong> {route.routeCode}</p>
-            <p><strong>Distance:</strong> {route.distanceInKm} km</p>
+            <p><strong>Tên tuyến đường:</strong> {route.routeName}</p>
+            <p><strong>Mã lộ trình:</strong> {route.routeCode}</p>
+            <p><strong>Khoảng cách:</strong> {route.distanceInKm} km</p>
           </div>
-          <p className="mt-2 text-red-600 text-sm">This action cannot be undone.</p>
+          <p className="mt-2 text-red-600 text-sm">Không thể hoàn tác hành động này.</p>
         </div>
       ),
-      okText: "Delete",
+      okText: "Xóa",
       okType: "danger",
-      cancelText: "Cancel",
+      cancelText: "Hủy",
       onOk: async () => {
         try {
           await apiDeleteRoute(route.routeId);
@@ -168,10 +168,10 @@ export default function RouteManagement() {
         <div className="flex justify-between items-center mb-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
-              Route Management
+              Quản lý tuyến đường
             </h1>
             <p className="text-gray-600 mt-1">
-              Manage metro routes and their information
+              Quản lý các tuyến đường metro và thông tin của chúng
             </p>
           </div>
           <button
@@ -179,7 +179,7 @@ export default function RouteManagement() {
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
           >
             <Plus size={20} />
-            Add Route
+            Thêm tuyến đường
           </button>
         </div>
 
@@ -192,7 +192,7 @@ export default function RouteManagement() {
             />
             <input
               type="text"
-              placeholder="Search routes by name..."
+              placeholder="Tìm kiếm tuyến đường theo tên..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && handleSearch()}
@@ -203,7 +203,7 @@ export default function RouteManagement() {
             onClick={handleSearch}
             className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition-colors"
           >
-            Search
+            Tìm kiếm
           </button>
           <button
             onClick={() => {
@@ -212,7 +212,7 @@ export default function RouteManagement() {
             }}
             className="bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 rounded-lg transition-colors"
           >
-            Clear
+            Xóa
           </button>
         </div>
       </div>
@@ -261,15 +261,15 @@ export default function RouteManagement() {
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Navigation size={16} />
-                <span>Distance: {route.distanceInKm} km</span>
+                <span>Khoảng cách: {route.distanceInKm} km</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Clock size={16} />
-                <span>Created: {new Date(route.createdAt).toLocaleDateString()}</span>
+                <span>Tạo: {new Date(route.createdAt).toLocaleDateString()}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Clock size={16} />
-                <span>Updated: {new Date(route.updatedAt).toLocaleDateString()}</span>
+                <span>Cập nhật: {new Date(route.updatedAt).toLocaleDateString()}</span>
               </div>
             </div>
           </div>
@@ -279,7 +279,7 @@ export default function RouteManagement() {
       {routes.length === 0 && (
         <div className="text-center py-12">
           <Route className="mx-auto text-gray-400 mb-4" size={48} />
-          <p className="text-gray-500">No routes found</p>
+          <p className="text-gray-500">Không tìm thấy tuyến đường nào</p>
         </div>
       )}
 
@@ -288,7 +288,7 @@ export default function RouteManagement() {
         title={
           <div className="flex items-center gap-2">
             <Route className="text-blue-600" size={20} />
-            <span>{editingRoute ? "Edit Route" : "Add New Route"}</span>
+            <span>{editingRoute ? "Chỉnh sửa tuyến đường" : "Thêm tuyến đường mới"}</span>
           </div>
         }
         open={showModal}
@@ -304,38 +304,38 @@ export default function RouteManagement() {
           className="mt-4"
         >
           <Form.Item
-            label="Route Name"
+            label="Tên tuyến đường"
             name="routeName"
             rules={[
-              { required: true, message: "Please enter route name" },
-              { min: 2, message: "Route name must be at least 2 characters" }
+              { required: true, message: "Vui lòng nhập tên tuyến đường" },
+              { min: 2, message: "Tên tuyến đường phải có ít nhất 2 ký tự" }
             ]}
           >
-            <Input placeholder="Enter route name" />
+            <Input placeholder="Nhập tên tuyến đường" />
           </Form.Item>
 
           <Form.Item
-            label="Route Code"
+            label="Mã lộ trình"
             name="routeCode"
             rules={[
-              { required: true, message: "Please enter route code" },
-              { pattern: /^[A-Z0-9]+$/, message: "Route code should contain only uppercase letters and numbers" }
+              { required: true, message: "Vui lòng nhập mã lộ trình" },
+              { pattern: /^[A-Z0-9]+$/, message: "Mã tuyến đường chỉ được chứa chữ in hoa và số" }
             ]}
           >
-            <Input placeholder="e.g., RT001" />
+            <Input placeholder="Ví dụ: RT001" />
           </Form.Item>
 
           <Form.Item
-            label="Distance (km)"
+            label="Khoảng cách (km)"
             name="distanceInKm"
             rules={[
-              { required: true, message: "Please enter distance" },
-              { type: "number", min: 0.1, message: "Distance must be greater than 0" }
+              { required: true, message: "Vui lòng nhập khoảng cách" },
+              { type: "number", min: 0.1, message: "Khoảng cách phải lớn hơn 0" }
             ]}
           >
             <InputNumber
               className="w-full"
-              placeholder="Enter distance in kilometers"
+              placeholder="Nhập khoảng cách tính bằng km"
               step={0.1}
               min={0.1}
               precision={1}
@@ -344,10 +344,10 @@ export default function RouteManagement() {
 
           <div className="flex gap-3 pt-4">
             <Button onClick={handleCloseModal} className="flex-1">
-              Cancel
+              Hủy
             </Button>
             <Button type="primary" htmlType="submit" className="flex-1">
-              {editingRoute ? "Update Route" : "Create Route"}
+              {editingRoute ? "Cập nhật lộ trình" : "Tạo tuyến đường"}
             </Button>
           </div>
         </Form>
@@ -358,7 +358,7 @@ export default function RouteManagement() {
         title={
           <div className="flex items-center gap-2">
             <Route className="text-blue-600" size={20} />
-            <span>Route Details</span>
+            <span>Chi tiết tuyến đường</span>
           </div>
         }
         open={showDescriptionModal}
@@ -372,19 +372,19 @@ export default function RouteManagement() {
             <div className="bg-blue-50 p-4 rounded-lg">
               <h3 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
                 <Route size={16} />
-                Basic Information
+               Thông tin cơ bản
               </h3>
               <div className="space-y-3">
                 <div>
-                  <span className="text-blue-700 font-medium">Route Name:</span>
+                  <span className="text-blue-700 font-medium">Tên tuyến đường:</span>
                   <p className="text-blue-900 text-lg">{selectedRoute.routeName}</p>
                 </div>
                 <div>
-                  <span className="text-blue-700 font-medium">Route Code:</span>
+                  <span className="text-blue-700 font-medium">Mã tuyến đường:</span>
                   <p className="text-blue-900 font-mono">{selectedRoute.routeCode}</p>
                 </div>
                 <div>
-                  <span className="text-blue-700 font-medium">Route ID:</span>
+                  <span className="text-blue-700 font-medium">ID tuyến đường:</span>
                   <p className="text-blue-900">{selectedRoute.routeId}</p>
                 </div>
               </div>
@@ -394,10 +394,10 @@ export default function RouteManagement() {
             <div className="bg-green-50 p-4 rounded-lg">
               <h3 className="font-semibold text-green-900 mb-2 flex items-center gap-2">
                 <Navigation size={16} />
-                Distance Information
+                Thông tin khoảng cách
               </h3>
               <div>
-                <span className="text-green-700 font-medium">Total Distance:</span>
+                <span className="text-green-700 font-medium">Tổng khoảng cách:</span>
                 <p className="text-green-900 text-2xl font-bold">{selectedRoute.distanceInKm} km</p>
               </div>
             </div>
@@ -410,11 +410,11 @@ export default function RouteManagement() {
               </h3>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="text-gray-700 font-medium">Created At:</span>
+                  <span className="text-gray-700 font-medium">Ngày tạo:</span>
                   <p className="text-gray-900">{new Date(selectedRoute.createdAt).toLocaleString()}</p>
                 </div>
                 <div>
-                  <span className="text-gray-700 font-medium">Updated At:</span>
+                  <span className="text-gray-700 font-medium">Ngày cập nhật:</span>
                   <p className="text-gray-900">{new Date(selectedRoute.updatedAt).toLocaleString()}</p>
                 </div>
               </div>

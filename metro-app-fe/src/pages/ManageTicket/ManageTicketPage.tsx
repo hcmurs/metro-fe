@@ -921,7 +921,7 @@ export default function ManageTicketPage() {
                     render={({ field }) => (
                       <Input
                         {...field}
-                        placeholder="Enter ticket type name"
+                        placeholder="Nhập tên loại vé"
                         prefix={<Ticket size={20} />}
                       />
                     )}

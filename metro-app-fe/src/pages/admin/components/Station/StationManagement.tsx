@@ -138,21 +138,21 @@ export default function StationManagement() {
 
   const handleDelete = async (station: Station) => {
     Modal.confirm({
-      title: 'Delete Station',
+      title: 'Xóa trạm',
       content: (
         <div>
-          <p>Are you sure you want to delete this station?</p>
+          <p>Bạn có chắc chắn muốn xóa đài này không?</p>
           <div className="mt-2 p-3 bg-gray-50 rounded">
-            <p><strong>Station:</strong> {station.name}</p>
-            <p><strong>Code:</strong> {station.stationCode}</p>
-            <p><strong>Address:</strong> {station.address}</p>
+            <p><strong>Ga tàu:</strong> {station.name}</p>
+            <p><strong>Mã số:</strong> {station.stationCode}</p>
+            <p><strong>Địa chỉ:</strong> {station.address}</p>
           </div>
-          <p className="mt-2 text-red-600 text-sm">This action cannot be undone.</p>
+          <p className="mt-2 text-red-600 text-sm">Hành động này không thể hoàn tác.</p>
         </div>
       ),
-      okText: 'Delete',
+      okText: 'Xóa',
       okType: 'danger',
-      cancelText: 'Cancel',
+      cancelText: 'Hủy',
       onOk: async () => {
         try {
           await apiDeleteStation(station.stationId);
@@ -173,20 +173,20 @@ export default function StationManagement() {
     const nextStatus = statusCycle[(currentIndex + 1) % statusCycle.length];
 
     Modal.confirm({
-      title: 'Update Station Status',
+      title: 'Cập nhật trạng thái trạm',
       content: (
         <div>
-          <p>Are you sure you want to change the station status?</p>
+          <p>Bạn có chắc chắn muốn thay đổi trạng thái của đài không?</p>
           <div className="mt-2 p-3 bg-gray-50 rounded">
-            <p><strong>Station:</strong> {station.name}</p>
-            <p><strong>Current Status:</strong> {station.status}</p>
-            <p><strong>New Status:</strong> {nextStatus}</p>
+            <p><strong>Ga tàu:</strong> {station.name}</p>
+            <p><strong>Trạng thái hiện tại:</strong> {station.status}</p>
+            <p><strong>Trạng thái mới:</strong> {nextStatus}</p>
           </div>
         </div>
       ),
-      okText: 'Update Status',
+      okText: 'Cập nhật',
       okType: 'primary',
-      cancelText: 'Cancel',
+      cancelText: 'Hủy',
       onOk: async () => {
         try {
           const response = await apiUpdateStationStatus(station.stationId, nextStatus);
@@ -220,19 +220,19 @@ export default function StationManagement() {
     if (isActive) {
       badgeClass = "bg-green-100 text-green-800";
       icon = <CheckCircle size={12} />;
-      text = "Active";
+      text = "Hoạt động";
     } else if (isDecommissioned) {
       badgeClass = "bg-red-100 text-red-800";
       icon = <XCircle size={12} />;
-      text = "Decommissioned";
+      text = "Đã ngừng hoạt động";
     } else if (isMaintenance) {
       badgeClass = "bg-yellow-100 text-yellow-800";
       icon = <Clock size={12} />;
-      text = "Maintenance";
+      text = "Bảo trì";
     } else {
       badgeClass = "bg-gray-100 text-gray-800";
       icon = <XCircle size={12} />;
-      text = "Unknown";
+      text = "Không xác định";
     }
     
     return (
@@ -252,10 +252,10 @@ export default function StationManagement() {
         <div className="flex justify-between items-center mb-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
-              Station Management
+              Quản lý trạm
             </h1>
             <p className="text-gray-600 mt-1">
-              Manage metro stations and their information
+              Quản lý các nhà ga tàu điện và thông tin của họ
             </p>
           </div>
           <button
@@ -263,7 +263,7 @@ export default function StationManagement() {
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
           >
             <Plus size={20} />
-            Add Station
+            Thêm trạm
           </button>
         </div>
 
@@ -276,7 +276,7 @@ export default function StationManagement() {
             />
             <input
               type="text"
-              placeholder="Search stations by name..."
+              placeholder="Tìm kiếm các trạm theo tên..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && handleSearch()}
@@ -287,7 +287,7 @@ export default function StationManagement() {
             onClick={handleSearch}
             className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition-colors"
           >
-            Search
+            Tìm kiếm
           </button>
           <button
             onClick={() => {
@@ -296,7 +296,7 @@ export default function StationManagement() {
             }}
             className="bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 rounded-lg transition-colors"
           >
-            Clear
+            Xóa
           </button>
         </div>
       </div>
@@ -335,13 +335,13 @@ export default function StationManagement() {
 
                   <div className="grid grid-cols-2 gap-4 text-xs">
                     <div>
-                      <span className="text-gray-500">Latitude:</span>
+                      <span className="text-gray-500">Vĩ độ:</span>
                       <p className="font-medium text-gray-900">
                         {station.latitude.toFixed(6)}
                       </p>
                     </div>
                     <div>
-                      <span className="text-gray-500">Longitude:</span>
+                      <span className="text-gray-500">Kinh độ:</span>
                       <p className="font-medium text-gray-900">
                         {station.longitude.toFixed(6)}
                       </p>
@@ -351,7 +351,7 @@ export default function StationManagement() {
                   <div className="flex items-center gap-2 text-xs text-gray-500">
                     <Clock size={12} />
                     <span>
-                      Updated: {new Date(station.updatedAt).toLocaleDateString()}
+                      Đã cập nhật: {new Date(station.updatedAt).toLocaleDateString()}
                     </span>
                   </div>
                 </div>
@@ -362,7 +362,7 @@ export default function StationManagement() {
                     className="flex-1 bg-green-50 hover:bg-green-100 text-green-700 px-3 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm"
                   >
                     <Eye size={16} />
-                    Details
+                    Chi tiết
                   </button>
                   <button
                     onClick={() => handleStatusToggle(station)}
@@ -373,7 +373,7 @@ export default function StationManagement() {
                         ? 'bg-red-50 hover:bg-red-100 text-red-700'
                         : 'bg-green-50 hover:bg-green-100 text-green-700'
                     }`}
-                    title={`Change status from ${station.status}`}
+                    title={`Thay đổi trạng thái từ ${station.status}`}
                   >
                     {station.status === 'active' ? (
                       <Settings size={16} />
@@ -382,21 +382,21 @@ export default function StationManagement() {
                     ) : (
                       <RotateCcw size={16} />
                     )}
-                    Status
+                    Trạng thái
                   </button>
                   <button
                     onClick={() => handleEdit(station)}
                     className="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm"
                   >
                     <Edit size={16} />
-                    Edit
+                    Chỉnh sửa
                   </button>
                   <button
                     onClick={() => handleDelete(station)}
                     className="flex-1 bg-red-50 hover:bg-red-100 text-red-700 px-3 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm"
                   >
                     <Trash2 size={16} />
-                    Delete
+                    Xóa
                   </button>
                 </div>
               </div>
@@ -409,10 +409,10 @@ export default function StationManagement() {
         <div className="text-center py-12">
           <MapPin className="mx-auto text-gray-400 mb-4" size={48} />
           <h3 className="text-lg font-medium text-gray-900 mb-2">
-            No stations found
+            Không tìm thấy trạm nào
           </h3>
           <p className="text-gray-600">
-            Get started by adding your first station.
+            Bắt đầu bằng cách thêm trạm đầu tiên của bạn
           </p>
         </div>
       )}
@@ -422,7 +422,7 @@ export default function StationManagement() {
         title={
           <div className="flex items-center gap-2">
             <MapPin className="text-blue-600" size={20} />
-            <span>{editingStation ? "Edit Station" : "Add New Station"}</span>
+            <span>{editingStation ? "Chỉnh sửa trạm" : "Thêm trạm mới"}</span>
           </div>
         }
         open={showForm}
@@ -438,45 +438,45 @@ export default function StationManagement() {
           className="mt-4"
         >
           <Form.Item
-            label="Station Code"
+            label="Mã trạm"
             name="stationCode"
             rules={[
-              { required: true, message: "Please enter station code" },
-              { pattern: /^[A-Z0-9]+$/, message: "Station code should contain only uppercase letters and numbers" }
+              { required: true, message: "Vui lòng nhập mã trạm" },
+              { pattern: /^[A-Z0-9]+$/, message: "Mã trạm chỉ được chứa chữ in hoa và số" }
             ]}
           >
             <Input placeholder="e.g., ST001" />
           </Form.Item>
 
           <Form.Item
-            label="Station Name"
+            label="Tên trạm"
             name="name"
             rules={[
-              { required: true, message: "Please enter station name" },
-              { min: 2, message: "Station name must be at least 2 characters" }
+              { required: true, message: "Vui lòng nhập tên trạm" },
+              { min: 2, message: "Tên trạm phải có ít nhất 2 ký tự" }
             ]}
           >
-            <Input placeholder="Enter station name" />
+            <Input placeholder="Nhập tên trạm" />
           </Form.Item>
 
           <Form.Item
-            label="Address"
+            label="Địa chỉ"
             name="address"
             rules={[
-              { required: true, message: "Please enter address" },
-              { min: 10, message: "Address must be at least 10 characters" }
+              { required: true, message: "Vui lòng nhập địa chỉ" },
+              { min: 10, message: "Địa chỉ phải có ít nhất 10 ký tự" }
             ]}
           >
-            <Input.TextArea rows={3} placeholder="Enter full address" />
+            <Input.TextArea rows={3} placeholder="Nhập địa chỉ đầy đủ" />
           </Form.Item>
 
           <div className="grid grid-cols-2 gap-4">
             <Form.Item
-              label="Latitude"
+              label="Vĩ độ"
               name="latitude"
               rules={[
-                { required: true, message: "Please enter latitude" },
-                { type: "number", min: -90, max: 90, message: "Latitude must be between -90 and 90" }
+                { required: true, message: "Vui lòng nhập vĩ độ" },
+                { type: "number", min: -90, max: 90, message: "Vĩ độ phải nằm trong khoảng từ -90 đến 90" }
               ]}
             >
               <InputNumber
@@ -488,11 +488,11 @@ export default function StationManagement() {
             </Form.Item>
 
             <Form.Item
-              label="Longitude"
+              label="Kinh độ"
               name="longitude"
               rules={[
-                { required: true, message: "Please enter longitude" },
-                { type: "number", min: -180, max: 180, message: "Longitude must be between -180 and 180" }
+                { required: true, message: "Vui lòng nhập kinh độ" },
+                { type: "number", min: -180, max: 180, message: "Kinh độ phải nằm trong khoảng từ -180 đến 180" }
               ]}
             >
               <InputNumber
@@ -506,10 +506,10 @@ export default function StationManagement() {
 
           <div className="flex gap-3 pt-4">
             <Button onClick={handleCloseModal} className="flex-1">
-              Cancel
+              Hủy
             </Button>
             <Button type="primary" htmlType="submit" className="flex-1">
-              {editingStation ? "Update Station" : "Create Station"}
+              {editingStation ? "Cập nhật trạm" : "Tạo trạm"}
             </Button>
           </div>
         </Form>
@@ -520,7 +520,7 @@ export default function StationManagement() {
         title={
           <div className="flex items-center gap-2">
             <MapPin className="text-blue-600" size={20} />
-            <span>Station Details</span>
+            <span>Chi tiết trạm</span>
           </div>
         }
         open={showDescriptionModal}
@@ -534,19 +534,19 @@ export default function StationManagement() {
             <div className="bg-blue-50 p-4 rounded-lg">
               <h3 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
                 <MapPin size={16} />
-                Basic Information
+                Thông tin cơ bản
               </h3>
               <div className="space-y-3">
                 <div>
-                  <span className="text-blue-700 font-medium">Station Name:</span>
+                  <span className="text-blue-700 font-medium">Tên trạm:</span>
                   <p className="text-blue-900 text-lg">{selectedStation.name}</p>
                 </div>
                 <div>
-                  <span className="text-blue-700 font-medium">Station Code:</span>
+                  <span className="text-blue-700 font-medium">Mã trạm:</span>
                   <p className="text-blue-900 font-mono">{selectedStation.stationCode}</p>
                 </div>
                 <div>
-                  <span className="text-blue-700 font-medium">Address:</span>
+                  <span className="text-blue-700 font-medium">Địa chỉ:</span>
                   <p className="text-blue-900">{selectedStation.address}</p>
                 </div>
               </div>
@@ -556,15 +556,15 @@ export default function StationManagement() {
             <div className="bg-green-50 p-4 rounded-lg">
               <h3 className="font-semibold text-green-900 mb-2 flex items-center gap-2">
                 <MapPin size={16} />
-                Location Coordinates
+                Tọa độ vị trí
               </h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <span className="text-green-700 font-medium">Latitude:</span>
+                  <span className="text-green-700 font-medium">Vĩ độ:</span>
                   <p className="text-green-900 font-mono">{selectedStation.latitude.toFixed(6)}</p>
                 </div>
                 <div>
-                  <span className="text-green-700 font-medium">Longitude:</span>
+                  <span className="text-green-700 font-medium">Kinh độ:</span>
                   <p className="text-green-900 font-mono">{selectedStation.longitude.toFixed(6)}</p>
                 </div>
               </div>
@@ -574,25 +574,25 @@ export default function StationManagement() {
             <div className="bg-gray-50 p-4 rounded-lg">
               <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
                 <CheckCircle size={16} />
-                Status & Metadata
+                Trạng thái & Metadata
               </h3>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="text-gray-700 font-medium">Status:</span>
+                  <span className="text-gray-700 font-medium">Trạng thái:</span>
                   <div className="mt-1">
                     {getStatusBadge(selectedStation.status)}
                   </div>
                 </div>
                 <div>
-                  <span className="text-gray-700 font-medium">Station ID:</span>
+                  <span className="text-gray-700 font-medium">ID trạm:</span>
                   <p className="text-gray-900">{selectedStation.stationId}</p>
                 </div>
                 <div>
-                  <span className="text-gray-700 font-medium">Created At:</span>
+                  <span className="text-gray-700 font-medium">Được tạo vào lúc:</span>
                   <p className="text-gray-900">{new Date(selectedStation.createdAt).toLocaleString()}</p>
                 </div>
                 <div>
-                  <span className="text-gray-700 font-medium">Updated At:</span>
+                  <span className="text-gray-700 font-medium">Cập nhật vào lúc:</span>
                   <p className="text-gray-900">{new Date(selectedStation.updatedAt).toLocaleString()}</p>
                 </div>
               </div>

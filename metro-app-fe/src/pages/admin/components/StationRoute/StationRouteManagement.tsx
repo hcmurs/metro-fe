@@ -146,18 +146,18 @@ export default function StationRouteManagement() {
       title: "Delete Station Route",
       content: (
         <div>
-          <p>Are you sure you want to delete this station route?</p>
+          <p>Bạn có chắc chắn muốn xóa tuyến đường ga này không?</p>
           <div className="mt-3 p-3 bg-gray-50 rounded">
-            <p><strong>Station:</strong> {stationRoute.stationsResponse?.name || 'Unknown'}</p>
-            <p><strong>Route ID:</strong> {stationRoute.RouteId}</p>
-            <p><strong>Sequence Order:</strong> {stationRoute.sequenceOrder}</p>
+            <p><strong>Ga tàu:</strong> {stationRoute.stationsResponse?.name || 'Unknown'}</p>
+            <p><strong>ID tuyến đường:</strong> {stationRoute.RouteId}</p>
+            <p><strong>Trình tự:</strong> {stationRoute.sequenceOrder}</p>
           </div>
-          <p className="mt-2 text-red-600 text-sm">This action cannot be undone.</p>
+          <p className="mt-2 text-red-600 text-sm">Không thể hoàn tác hành động này.</p>
         </div>
       ),
-      okText: "Delete",
+      okText: "Xóa",
       okType: "danger",
-      cancelText: "Cancel",
+      cancelText: "Hủy",
       onOk: async () => {
         try {
           await apiDeleteStationRoute(stationRoute.id);
@@ -213,19 +213,19 @@ export default function StationRouteManagement() {
     if (isActive) {
       badgeClass = "bg-green-100 text-green-800";
       icon = <CheckCircle size={12} />;
-      text = "Active";
+      text = "Hoạt động";
     } else if (isDecommissioned) {
       badgeClass = "bg-red-100 text-red-800";
       icon = <XCircle size={12} />;
-      text = "Decommissioned";
+      text = "Đã ngừng hoạt động";
     } else if (isMaintenance) {
       badgeClass = "bg-yellow-100 text-yellow-800";
       icon = <Clock size={12} />;
-      text = "Maintenance";
+      text = "Bảo trì";
     } else {
       badgeClass = "bg-gray-100 text-gray-800";
       icon = <XCircle size={12} />;
-      text = "Unknown";
+      text = "Không xác định";
     }
     
     return (
@@ -252,10 +252,10 @@ export default function StationRouteManagement() {
         <div className="flex justify-between items-center mb-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
-              Station Route Management
+              Quản lý tuyến ga
             </h1>
             <p className="text-gray-600 mt-1">
-              Manage station assignments to routes and their sequence order
+              Quản lý các trạm được chỉ định cho các tuyến đường và thứ tự trình tự của chúng
             </p>
           </div>
           <button
@@ -264,19 +264,19 @@ export default function StationRouteManagement() {
             disabled={!selectedRouteId}
           >
             <Plus size={20} />
-            Add Station to Route
+            Thêm trạm vào tuyến
           </button>
         </div>
 
         {/* Route Selection */}
         <div className="flex gap-3 items-center">
-          <label className="text-sm font-medium text-gray-700">Select Route:</label>
+          <label className="text-sm font-medium text-gray-700">Chọn tuyến đường:</label>
           <select
             value={selectedRouteId || ""}
             onChange={(e) => setSelectedRouteId(Number(e.target.value))}
             className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
-            <option value="">Select a route</option>
+            <option value="">Chọn một tuyến đường</option>
             {routes.map((route) => (
               <option key={route.routeId} value={route.routeId}>
                 {route.routeName} ({route.routeCode})
@@ -297,10 +297,10 @@ export default function StationRouteManagement() {
         <div className="bg-white rounded-lg shadow-sm">
           <div className="p-6 border-b">
             <h2 className="text-lg font-semibold text-gray-900">
-              Stations on {selectedRoute?.routeName}
+              Trạm trên {selectedRoute?.routeName}
             </h2>
             <p className="text-sm text-gray-600 mt-1">
-              {sortedStationRoutes.length} stations assigned
+              {sortedStationRoutes.length} trạm được giao cho tuyến này
             </p>
           </div>
 
@@ -358,10 +358,10 @@ export default function StationRouteManagement() {
                           }`}
                           title={
                             stationRoute.status === "active"
-                              ? "Set to Maintenance"
+                              ? "Đặt thành Bảo trì"
                               : stationRoute.status === "maintenance"
-                              ? "Set to Decommissioned"
-                              : "Set to Active"
+                              ? "Đặt thành Đã ngừng hoạt động"
+                              : "Đặt thành Hoạt động"
                           }
                         >
                           {stationRoute.status === "active" ? (
@@ -391,11 +391,11 @@ export default function StationRouteManagement() {
                   <div className="mt-3 ml-12 flex items-center gap-4 text-xs text-gray-500">
                     <div className="flex items-center gap-1">
                       <Clock size={12} />
-                      <span>Created: {new Date(stationRoute.createdAt).toLocaleDateString()}</span>
+                      <span>Tạo: {new Date(stationRoute.createdAt).toLocaleDateString()}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <Clock size={12} />
-                      <span>Updated: {new Date(stationRoute.updatedAt).toLocaleDateString()}</span>
+                      <span>Cập nhật: {new Date(stationRoute.updatedAt).toLocaleDateString()}</span>
                     </div>
                   </div>
                 </div>
@@ -404,12 +404,12 @@ export default function StationRouteManagement() {
           ) : (
             <div className="text-center py-12">
               <MapPin className="mx-auto text-gray-400 mb-4" size={48} />
-              <p className="text-gray-500">No stations assigned to this route</p>
+              <p className="text-gray-500">Không có trạm nào được chỉ định cho tuyến đường này</p>
               <button
                 onClick={handleAdd}
                 className="mt-4 text-blue-600 hover:text-blue-700"
               >
-                Add the first station
+                Thêm trạm đầu tiên
               </button>
             </div>
           )}
@@ -417,7 +417,7 @@ export default function StationRouteManagement() {
       ) : (
         <div className="bg-white rounded-lg shadow-sm p-12 text-center">
           <Route className="mx-auto text-gray-400 mb-4" size={48} />
-          <p className="text-gray-500">Please select a route to manage its stations</p>
+          <p className="text-gray-500">Vui lòng chọn một tuyến đường để quản lý các trạm của nó</p>
         </div>
       )}
 
@@ -426,7 +426,7 @@ export default function StationRouteManagement() {
         title={
           <div className="flex items-center gap-2">
             <MapPin className="text-blue-600" size={20} />
-            <span>{editingStationRoute ? "Edit Station Route" : "Add Station to Route"}</span>
+            <span>{editingStationRoute ? "Chỉnh sửa tuyến ga" : "Thêm trạm vào tuyến"}</span>
           </div>
         }
         open={showModal}
@@ -442,12 +442,12 @@ export default function StationRouteManagement() {
           className="mt-4"
         >
           <Form.Item
-            label="Route"
+            label="Tuyến đường"
             name="routeId"
-            rules={[{ required: true, message: "Please select a route" }]}
+            rules={[{ required: true, message: "Vui lòng chọn một tuyến đường" }]}
           >
             <Select
-              placeholder="Select a route"
+              placeholder="Chọn một tuyến đường"
               showSearch
               optionFilterProp="children"
             >
@@ -460,12 +460,12 @@ export default function StationRouteManagement() {
           </Form.Item>
 
           <Form.Item
-            label="Station"
+            label="Ga tàu"
             name="stationId"
-            rules={[{ required: true, message: "Please select a station" }]}
+            rules={[{ required: true, message: "Vui lòng chọn một trạm" }]}
           >
             <Select
-              placeholder="Select a station"
+              placeholder="Chọn một trạm"
               showSearch
               optionFilterProp="children"
             >
@@ -478,13 +478,13 @@ export default function StationRouteManagement() {
           </Form.Item>
 
           <Form.Item
-            label="Sequence Order"
+            label="Trình tự thứ tự"
             name="sequenceOrder"
             rules={[
-              { required: true, message: "Please enter sequence order" },
-              { type: "number", min: 1, message: "Sequence order must be at least 1" }
+              { required: true, message: "Vui lòng nhập thứ tự trình tự" },
+              { type: "number", min: 1, message: "Thứ tự trình tự phải ít nhất là 1" }
             ]}
-            extra="Order in which this station appears on the route"
+            extra="Thứ tự mà nhà ga này xuất hiện trên tuyến đường"
           >
             <InputNumber
               className="w-full"
@@ -495,10 +495,10 @@ export default function StationRouteManagement() {
 
           <div className="flex gap-3 pt-4">
             <Button onClick={handleCloseModal} className="flex-1">
-              Cancel
+              Hủy
             </Button>
             <Button type="primary" htmlType="submit" className="flex-1">
-              {editingStationRoute ? "Update" : "Add"}
+              {editingStationRoute ? "Cập nhật" : "Thêm vào"}
             </Button>
           </div>
         </Form>
@@ -509,7 +509,7 @@ export default function StationRouteManagement() {
         title={
           <div className="flex items-center gap-2">
             <MapPin className="text-blue-600" size={20} />
-            <span>Station Route Details</span>
+            <span>Chi tiết tuyến ga</span>
           </div>
         }
         open={showDescriptionModal}
@@ -523,15 +523,15 @@ export default function StationRouteManagement() {
             <div className="bg-blue-50 p-4 rounded-lg">
               <h3 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
                 <Route size={16} />
-                Route Information
+                Thông tin tuyến đường
               </h3>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="text-blue-700 font-medium">Route ID:</span>
+                  <span className="text-blue-700 font-medium">ID tuyến đường:</span>
                   <p className="text-blue-900">{selectedStationRoute.RouteId}</p>
                 </div>
                 <div>
-                  <span className="text-blue-700 font-medium">Sequence Order:</span>
+                  <span className="text-blue-700 font-medium">Trình tự:</span>
                   <p className="text-blue-900">{selectedStationRoute.sequenceOrder}</p>
                 </div>
               </div>
@@ -541,33 +541,33 @@ export default function StationRouteManagement() {
             <div className="bg-green-50 p-4 rounded-lg">
               <h3 className="font-semibold text-green-900 mb-2 flex items-center gap-2">
                 <MapPin size={16} />
-                Station Information
+                Thông tin trạm
               </h3>
               <div className="space-y-3">
                 <div>
-                  <span className="text-green-700 font-medium">Station Name:</span>
+                  <span className="text-green-700 font-medium">Tên trạm:</span>
                   <p className="text-green-900 text-lg">{selectedStationRoute.stationsResponse.name}</p>
                 </div>
                 <div>
-                  <span className="text-green-700 font-medium">Station Code:</span>
+                  <span className="text-green-700 font-medium">Mã trạm:</span>
                   <p className="text-green-900 font-mono">{selectedStationRoute.stationsResponse.stationCode}</p>
                 </div>
                 <div>
-                  <span className="text-green-700 font-medium">Address:</span>
+                  <span className="text-green-700 font-medium">Địa chỉ:</span>
                   <p className="text-green-900">{selectedStationRoute.stationsResponse.address}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <span className="text-green-700 font-medium">Latitude:</span>
+                    <span className="text-green-700 font-medium">Vĩ độ:</span>
                     <p className="text-green-900">{selectedStationRoute.stationsResponse.latitude.toFixed(6)}</p>
                   </div>
                   <div>
-                    <span className="text-green-700 font-medium">Longitude:</span>
+                    <span className="text-green-700 font-medium">Kinh độ:</span>
                     <p className="text-green-900">{selectedStationRoute.stationsResponse.longitude.toFixed(6)}</p>
                   </div>
                 </div>
                 <div>
-                  <span className="text-green-700 font-medium">Station Status:</span>
+                  <span className="text-green-700 font-medium">Trạng thái trạm:</span>
                   <p className="text-green-900">{selectedStationRoute.stationsResponse.status}</p>
                 </div>
               </div>
@@ -577,25 +577,25 @@ export default function StationRouteManagement() {
             <div className="bg-gray-50 p-4 rounded-lg">
               <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
                 <CheckCircle size={16} />
-                Status & Metadata
+                Trạng thái & Metadata
               </h3>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="text-gray-700 font-medium">Status:</span>
+                  <span className="text-gray-700 font-medium">Trạng thái:</span>
                   <div className="mt-1">
                     {getStatusBadge(selectedStationRoute.status)}
                   </div>
                 </div>
                 <div>
-                  <span className="text-gray-700 font-medium">Is Deleted:</span>
-                  <p className="text-gray-900">{selectedStationRoute.isDeleted ? "Yes" : "No"}</p>
+                  <span className="text-gray-700 font-medium">Đã bị xóa:</span>
+                  <p className="text-gray-900">{selectedStationRoute.isDeleted ? "Đã xóa" : "Chưa xóa"}</p>
                 </div>
                 <div>
-                  <span className="text-gray-700 font-medium">Created At:</span>
+                  <span className="text-gray-700 font-medium">Được tạo vào:</span>
                   <p className="text-gray-900">{new Date(selectedStationRoute.createdAt).toLocaleString()}</p>
                 </div>
                 <div>
-                  <span className="text-gray-700 font-medium">Updated At:</span>
+                  <span className="text-gray-700 font-medium">Cập nhật vào:</span>
                   <p className="text-gray-900">{new Date(selectedStationRoute.updatedAt).toLocaleString()}</p>
                 </div>
               </div>

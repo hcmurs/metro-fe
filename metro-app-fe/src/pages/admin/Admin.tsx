@@ -55,26 +55,21 @@ export default function Admin() {
               to={'stations'}
               className={`${baseClass} ${choosen === 'stations' ? activeClass : ''}`}
             >
-              <MapPin size={20} /> Stations
+              <MapPin size={20} /> Ga
             </Link>
             <Link
               to={'routes'}
               className={`${baseClass} ${choosen === 'routes' ? activeClass : ''}`}
             >
-              <RouteIcon size={20} /> Routes
+              <RouteIcon size={20} /> Tuyến 
             </Link>
             <Link
               to={'station-routes'}
               className={`${baseClass} ${choosen === 'station-routes' ? activeClass : ''}`}
             >
-              <GitBranch size={20} /> Station Routes
+              <GitBranch size={20} /> Tuyến Ga
             </Link>
-            <Link
-              to={'route'}
-              className={`${baseClass} ${choosen === 'route' ? activeClass : ''}`}
-            >
-              <Train size={20} /> Ga
-            </Link>
+          
             <Link
               to={'tickets'}
               className={`${baseClass} ${choosen === 'tickets' ? activeClass : ''}`}

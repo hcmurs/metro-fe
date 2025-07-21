@@ -27,7 +27,7 @@ export default function MetroBlogCarousel() {
 
     return (
         <div className="">
-            <h2 className="text-center text-3xl font-bold mb-8">LATEST METRO BLOGS</h2>
+            <h2 className="text-center text-3xl font-bold mb-8">BLOG MỚI TRONG METRO</h2>
             <Swiper
                 modules={[Navigation]}
                 navigation
@@ -62,11 +62,11 @@ export default function MetroBlogCarousel() {
                                     </div>
                                     <div className="flex justify-between items-center text-sm text-gray-500 px-2">
                                         <span>{blog.readTime}</span>
-                                        <span>{blog.comments} comments</span>
+                                        <span>{blog.comments} bình luận</span>
                                     </div>
                                     <div className="mt-4 text-center">
                                         <button onClick={() => handleBlogDetail(blog.id)} className="cursor-pointer bg-slate-800 text-white px-4 py-2 rounded hover:bg-cyan-600">
-                                            Read Now
+                                            Đọc ngay
                                         </button>
                                     </div>
                                 </div>

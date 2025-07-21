@@ -35,7 +35,7 @@ export default function Order() {
     // Get order data from navigation state
     const state = location.state as OrderPageState;
     if (!state || !state.selectedPaymentMethod) {
-      toast.error("No order data found. Redirecting to buy ticket page.");
+      toast.error("Không có dữ liệu. Trở về trang mua vé");
       navigate(FE_PATH.BUY_TICKET);
       return;
     }
@@ -44,7 +44,7 @@ export default function Order() {
 
   const handlePayment = async () => {
     if (!orderData || !orderData.selectedPaymentMethod) {
-      toast.error("No payment method selected");
+      toast.error("Không có phương thức thanh toán");
       return;
     }
 
@@ -60,7 +60,7 @@ export default function Order() {
         if (response?.data) {
           createdOrderId = response.data.orderId;
         } else {
-          toast.error("Failed to create order: " + response?.message);
+          toast.error("Tạo đơn thất bại: " + response?.message);
           setLoading(false);
           return;
         }
@@ -71,7 +71,7 @@ export default function Order() {
         if (response?.data) {
           createdOrderId = response.data.orderId;
         } else {
-          toast.error("Failed to create order: " + response?.message);
+          toast.error("Tạo đơn thất bại: " + response?.message);
           setLoading(false);
           return;
         }
@@ -79,7 +79,7 @@ export default function Order() {
     } catch (error: any) {
       console.error("Error creating order:", error);
       toast.error(
-        error?.response?.message || "An error occurred while creating the order"
+        error?.response?.message || "Có lỗi gì đó bất thường!"
       );
       setLoading(false);
       return;
@@ -109,12 +109,12 @@ export default function Order() {
       }
 
       if (!paymentResponse) {
-        toast.error("Failed to initiate payment");
+        toast.error("Không thể khởi tạo thanh toán");
       }
     } catch (error: any) {
       toast.error(
         error?.response?.message ||
-          "Payment initiation failed. Please try again."
+          "Khởi tạo thanh toán thất bại. Vui lòng thử lại!"
       );
     } finally {
       setLoading(false);
@@ -175,7 +175,7 @@ export default function Order() {
               WebkitTextFillColor: "transparent",
             }}
           >
-            Complete Your Order
+            Xác nhận thanh toán
           </Title>
           <Text
             style={{
@@ -184,7 +184,7 @@ export default function Order() {
               fontWeight: "400",
             }}
           >
-            Review your ticket details and proceed with secure payment
+            Xem chi tiết vé
           </Text>
         </div>
 
@@ -216,7 +216,7 @@ export default function Order() {
                 <CheckCircleOutlined
                   style={{ marginRight: "0.5rem", fontSize: "1.25rem" }}
                 />
-                Order Summary
+                Tổng hợp
               </Title>
 
               {orderData.orderType === "single" ? (
@@ -433,7 +433,7 @@ export default function Order() {
                                 fontWeight: "600",
                               }}
                             >
-                              Journey Details
+                              Chi tiết tuyến đường
                             </Text>
                           </div>
                           <div
@@ -452,7 +452,7 @@ export default function Order() {
                                   marginBottom: "0.25rem",
                                 }}
                               >
-                                Distance
+                                Khoảng cách
                               </Text>
                               <Text
                                 strong
@@ -474,7 +474,7 @@ export default function Order() {
                                   marginBottom: "0.25rem",
                                 }}
                               >
-                                Est. Duration
+                                Thời gian
                               </Text>
                               <Text
                                 strong
@@ -496,7 +496,7 @@ export default function Order() {
                                   marginBottom: "0.25rem",
                                 }}
                               >
-                                Stops
+                                Số trạm dừng
                               </Text>
                               <Text
                                 strong
@@ -546,7 +546,7 @@ export default function Order() {
                               fontWeight: "600",
                             }}
                           >
-                            Ticket Validity
+                            Khoảng thời gian sử dụng vé
                           </Text>
                         </div>
                         <div
@@ -565,7 +565,7 @@ export default function Order() {
                                 marginBottom: "0.25rem",
                               }}
                             >
-                              Valid From
+                              Có thời hạn từ:
                             </Text>
                             <Text
                               strong
@@ -587,7 +587,7 @@ export default function Order() {
                                 marginBottom: "0.25rem",
                               }}
                             >
-                              Valid Until
+                              Có thời hạn đến: 
                             </Text>
                             <Text
                               strong
@@ -618,7 +618,7 @@ export default function Order() {
                               fontWeight: "500",
                             }}
                           >
-                            ⚠️ Journey tickets are valid for 30 days from purchase
+                            ⚠️ Hạn sử dụng vé trong vòng 30 ngày
                           </Text>
                         </div>
                       </div>
@@ -636,7 +636,7 @@ export default function Order() {
                       }}
                     >
                       <Text style={{ color: "#374151", fontWeight: "500" }}>
-                        Fare per ticket:
+                        Giá tiền :
                       </Text>
                       <Text
                         strong
@@ -658,7 +658,7 @@ export default function Order() {
                       }}
                     >
                       <Text style={{ color: "#374151", fontWeight: "500" }}>
-                        Quantity:
+                        Số lượng:
                       </Text>
                       <Text
                         strong
@@ -702,7 +702,7 @@ export default function Order() {
                           fontWeight: "600",
                         }}
                       >
-                        Metro Pass Ticket
+                        Vé tàu metro
                       </Text>
                     </div>
                     <div style={{ marginTop: "1rem" }}>
@@ -747,8 +747,8 @@ export default function Order() {
                           <ClockCircleOutlined
                             style={{ marginRight: "0.25rem" }}
                           />
-                          Valid for: {orderData.ticketType?.validityDuration}{" "}
-                          days
+                          Hạn sử dụng: {orderData.ticketType?.validityDuration}{" "}
+                          ngày
                         </Text>
                       </div>
 
@@ -784,7 +784,7 @@ export default function Order() {
                                 fontWeight: "600",
                               }}
                             >
-                              Pass Validity Period
+                              Khoảng thời gian sử dụng vé
                             </Text>
                           </div>
                           <div
@@ -803,7 +803,7 @@ export default function Order() {
                                   marginBottom: "0.25rem",
                                 }}
                               >
-                                Valid From
+                                Thời hạn từ:
                               </Text>
                               <Text
                                 strong
@@ -825,7 +825,7 @@ export default function Order() {
                                   marginBottom: "0.25rem",
                                 }}
                               >
-                                Valid Until
+                                Hết hạn:
                               </Text>
                               <Text
                                 strong
@@ -856,7 +856,7 @@ export default function Order() {
                                 fontWeight: "500",
                               }}
                             >
-                              ✅ Unlimited rides during validity period
+                              ✅ Vé có thời hạn kích hoạt trong vòng 90 ngày
                             </Text>
                           </div>
                         </div>
@@ -874,7 +874,7 @@ export default function Order() {
                       }}
                     >
                       <Text style={{ color: "#374151", fontWeight: "500" }}>
-                        Price per pass:
+                        Giá vé:
                       </Text>
                       <Text
                         strong
@@ -896,7 +896,7 @@ export default function Order() {
                       }}
                     >
                       <Text style={{ color: "#374151", fontWeight: "500" }}>
-                        Quantity:
+                        Số lượng:
                       </Text>
                       <Text
                         strong
@@ -935,7 +935,7 @@ export default function Order() {
                 <CreditCardOutlined
                   style={{ marginRight: "0.5rem", fontSize: "1.25rem" }}
                 />
-                Selected Payment Method
+                Chọn phương thức thanh toán
               </Title>
 
               {orderData.selectedPaymentMethod && (
@@ -998,7 +998,7 @@ export default function Order() {
                             marginRight: "0.5rem",
                           }}
                         />
-                        Secure payment processing
+                        Xử lí thanh toán
                       </div>
                     </div>
                     <div
@@ -1048,7 +1048,7 @@ export default function Order() {
                 <CalendarOutlined
                   style={{ marginRight: "0.5rem", fontSize: "1.25rem" }}
                 />
-                Purchase Information
+                Thông tin thanh toán
               </Title>
 
               <div
@@ -1072,7 +1072,7 @@ export default function Order() {
                           marginBottom: "0.5rem",
                         }}
                       >
-                        Order Type:
+                        Loại vé:
                       </Text>
                       <Tag
                         color={orderData.orderType === "single" ? "blue" : "green"}
@@ -1099,7 +1099,7 @@ export default function Order() {
                           marginBottom: "0.5rem",
                         }}
                       >
-                        Purchase Time:
+                        Thời gian mua:
                       </Text>
                       <Text
                         style={{
@@ -1132,7 +1132,7 @@ export default function Order() {
                           marginBottom: "0.5rem",
                         }}
                       >
-                        Quantity:
+                        Số lượng:
                       </Text>
                       <Text
                         style={{
@@ -1156,7 +1156,7 @@ export default function Order() {
                           marginBottom: "0.5rem",
                         }}
                       >
-                        Status:
+                        Trạng thái:
                       </Text>
                       <Tag
                         color="orange"
@@ -1167,7 +1167,7 @@ export default function Order() {
                           borderRadius: "6px",
                         }}
                       >
-                        Pending Payment
+                        Chờ thanh toán
                       </Tag>
                     </div>
                   </Col>
@@ -1199,7 +1199,7 @@ export default function Order() {
                   fontWeight: "600",
                 }}
               >
-                Order Total
+                Tổng tiền
               </Title>
 
               <div style={{ marginBottom: "2rem" }}>
@@ -1211,7 +1211,7 @@ export default function Order() {
                   }}
                 >
                   <Text style={{ fontSize: "1rem", color: "#374151" }}>
-                    Subtotal:
+                    Tiền vé:
                   </Text>
                   <Text style={{ fontSize: "1rem", fontWeight: "500" }}>
                     {orderData.orderSummary?.subtotal?.toLocaleString("vi-VN") || 
@@ -1226,7 +1226,7 @@ export default function Order() {
                   }}
                 >
                   <Text style={{ fontSize: "1rem", color: "#374151" }}>
-                    Processing Fee:
+                    Tiền phí:
                   </Text>
                   <Text style={{ fontSize: "1rem", fontWeight: "500" }}>
                     {orderData.orderSummary?.processingFee?.toLocaleString("vi-VN") || "0"} VND
@@ -1248,7 +1248,7 @@ export default function Order() {
                       fontWeight: "600",
                     }}
                   >
-                    Total:
+                    Tổng:
                   </Text>
                   <Text
                     strong
@@ -1282,7 +1282,7 @@ export default function Order() {
                     borderRadius: "12px",
                   }}
                 >
-                  Proceed to Payment
+                  Tiến hành thanh toán
                 </Button>
 
                 <Button
@@ -1297,7 +1297,7 @@ export default function Order() {
                     borderRadius: "12px",
                   }}
                 >
-                  Back to Tickets
+                  Trở về trang mua vé
                 </Button>
               </div>
 
@@ -1327,7 +1327,7 @@ export default function Order() {
                       fontSize: "1rem",
                     }}
                   />
-                  Your payment is secured with industry-standard encryption
+                  Thanh toán của bạn được bảo mật bằng mã hóa tiêu chuẩn công nghiệp
                 </Text>
               </div>
             </Card>

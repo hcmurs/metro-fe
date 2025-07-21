@@ -100,11 +100,11 @@ export default function MyTickets() {
           });
         }, 1000);
       } else {
-        toast.error("Failed to load QR code");
+        toast.error("Lỗi khi tải Qr Code");
       }
     } catch (error) {
-      console.error("Failed to load QR code:", error);
-      toast.error("Failed to load QR code");
+      console.error("Lỗi khi tải Qr Code:", error);
+      toast.error("Lỗi khi tải Qr Code");
     } finally {
       setLoadingQR((prev) => ({ ...prev, [ticket.ticketCode]: false }));
     }
@@ -190,7 +190,7 @@ export default function MyTickets() {
 
             <div style={{ marginBottom: "0.5rem" }}>
               <Text style={{ color: "#6b7280", fontSize: "0.9rem" }}>
-                <strong>Ticket Code:</strong> {ticket.ticketCode}
+                <strong>Mã vé:</strong> {ticket.ticketCode}
               </Text>
             </div>
 
@@ -207,7 +207,7 @@ export default function MyTickets() {
                     style={{ color: "#059669", marginRight: "0.5rem" }}
                   />
                   <Text style={{ fontSize: "0.85rem", color: "#6b7280" }}>
-                    Valid from: {formatDateTime(ticket.validFrom)}
+                    Thời hạn: {formatDateTime(ticket.validFrom)}
                   </Text>
                 </div>
               </Col>
@@ -223,7 +223,7 @@ export default function MyTickets() {
                     style={{ color: "#059669", marginRight: "0.5rem" }}
                   />
                   <Text style={{ fontSize: "0.85rem", color: "#6b7280" }}>
-                    Valid until: {formatDateTime(ticket.validUntil)}
+                    Hết hạn: {formatDateTime(ticket.validUntil)}
                   </Text>
                 </div>
               </Col>
@@ -261,7 +261,7 @@ export default function MyTickets() {
                   fontWeight: "600",
                 }}
               >
-                Show QR Code
+                Hiện QR Code
               </Button>
             </div>
           </Col>
@@ -279,7 +279,7 @@ export default function MyTickets() {
           <Empty
             description={
               <Text style={{ color: "#6b7280", fontSize: "1rem" }}>
-                No {activeTab.toLowerCase().replace("_", " ")} tickets found
+                Không thấy vé nào
               </Text>
             }
           />
@@ -350,7 +350,7 @@ export default function MyTickets() {
               WebkitTextFillColor: "transparent",
             }}
           >
-            My Tickets
+            Vé của tôi
           </Title>
           <Text
             style={{
@@ -359,7 +359,7 @@ export default function MyTickets() {
               fontWeight: "400",
             }}
           >
-            Manage and view all your metro tickets
+            Quản lý và xem tất cả vé của bạn
           </Text>
         </div>
 
@@ -392,7 +392,7 @@ export default function MyTickets() {
                   }}
                 >
                   <QrcodeOutlined style={{ marginRight: "0.5rem" }} />
-                  Available
+                  Chưa kích hoạt
                 </span>
               }
               key="NOT_USED"
@@ -410,7 +410,7 @@ export default function MyTickets() {
                   }}
                 >
                   <ClockCircleOutlined style={{ marginRight: "0.5rem" }} />
-                  Used
+                  Đã kích hoạt
                 </span>
               }
               key="USED"
@@ -428,7 +428,7 @@ export default function MyTickets() {
                   }}
                 >
                   <CalendarOutlined style={{ marginRight: "0.5rem" }} />
-                  Expired
+                  Hết hạn
                 </span>
               }
               key="EXPIRED"
@@ -474,7 +474,7 @@ export default function MyTickets() {
               </Text>
               <br />
               <Text style={{ color: "#6b7280", fontSize: "0.9rem" }}>
-                Ticket Code: {selectedTicket.ticketCode}
+                Mã vé: {selectedTicket.ticketCode}
               </Text>
             </div>
 
@@ -554,8 +554,8 @@ export default function MyTickets() {
                   >
                     <ClockCircleOutlined style={{ fontSize: "16px" }} />
                     {qrCountdown > 0
-                      ? `Expires in ${qrCountdown} seconds`
-                      : "QR Code has expired"}
+                      ? `Hết hạn trong ${qrCountdown} giây`
+                      : "QR Code đã hết hạn"}
                   </Text>
                 </div>
 
@@ -575,7 +575,7 @@ export default function MyTickets() {
                     paddingRight: "24px",
                   }}
                 >
-                  Refresh QR Code
+                  Tải lại QR Code
                 </Button>
               </div>
             }

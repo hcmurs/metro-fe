@@ -11,7 +11,7 @@ export default function ADS() {
       </div>
       <div>
         <button className="bg-[#cbfffa] text-slate-800 cursor-pointer px-6 py-3 rounded-md hover:bg-slate-800 hover:text-white transition-colors duration-300">
-          READ MORE
+          Đọc thêm
         </button>
       </div>
     </div>

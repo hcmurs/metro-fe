@@ -143,7 +143,7 @@ const MetroMap: React.FC = () => {
         setStationRoutes([]);
       }
     } catch (error) {
-      console.error("Error fetching station routes:", error);
+      console.error("Lỗi khi tải dữ liệu tuyến:", error);
       setStationRoutes([]);
     } finally {
       setStationRoutesLoading(false);
@@ -161,7 +161,7 @@ const MetroMap: React.FC = () => {
 
   // Fetch schedules for selected station
   const fetchSchedules = async (stationId: number) => {
-    console.log("Fetching schedules for station ID:", stationId);
+    console.log("Tải lịch tàu lỗi:", stationId);
     setSchedulesLoading(true);
     try {
       const response = await apiGetSchedulesByStation(stationId);
@@ -234,15 +234,15 @@ const MetroMap: React.FC = () => {
     if (isActive) {
       badgeClass = "bg-green-100 text-green-800";
       icon = <CheckCircle size={12} />;
-      text = "Active";
+      text = "Đang hoạt động";
     } else if (isDecommissioned) {
       badgeClass = "bg-red-100 text-red-800";
       icon = <XCircle size={12} />;
-      text = "Decommissioned";
+      text = "Đóng cửa";
     } else if (isMaintenance) {
       badgeClass = "bg-yellow-100 text-yellow-800";
       icon = <Settings size={12} />;
-      text = "Maintenance";
+      text = "Bảo trì";
     } else {
       badgeClass = "bg-gray-100 text-gray-800";
       icon = <XCircle size={12} />;
@@ -327,7 +327,7 @@ const MetroMap: React.FC = () => {
           setBusStations(busStationsResponse.data);
         }
       } catch (error) {
-        console.error("Error fetching metro data:", error);
+        console.error("Lỗi khi tải dữ liệu:", error);
       } finally {
         setLoading(false);
       }
@@ -357,7 +357,7 @@ const MetroMap: React.FC = () => {
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Metro Map</h1>
           <p className="text-lg text-gray-600">
-            Interactive metro system map with real-time station information
+            Bản đồ hệ thống tàu điện ngầm tương tác với thông tin nhà ga theo thời gian thực
           </p>
         </div>
 
@@ -373,7 +373,7 @@ const MetroMap: React.FC = () => {
               }`}
             >
               <MapIcon className="w-4 h-4 mr-2" />
-              Interactive Map
+              Bản đồ hệ thống tàu điện ngầm
             </button>
             <button
               onClick={() => setMapView("schematic")}
@@ -384,7 +384,7 @@ const MetroMap: React.FC = () => {
               }`}
             >
               <Navigation className="w-4 h-4 mr-2" />
-              Schematic View
+              Xem thứ tự tàu điện ngầm
             </button>
           </div>
         </div>
@@ -393,10 +393,10 @@ const MetroMap: React.FC = () => {
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4 flex items-center">
             <Navigation className="w-6 h-6 mr-2 text-blue-600" />
-            Select Metro Route
+            Chọn tuyến
           </h2>
           <p className="text-gray-600 mb-4">
-            Choose a metro route to view its stations and real-time information
+            Chọn tuyến tàu điện ngầm để xem các ga và thông tin thời gian thực
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -419,13 +419,13 @@ const MetroMap: React.FC = () => {
                   )}
                 </div>
                 <p className="text-sm text-gray-600 mb-2">
-                  {route.description || "Metro route"}
+                  {"Khoảng cách: "+route.distanceInKm + " km"|| "Metro route"}
                 </p>
                 <div className="flex items-center text-xs text-gray-500">
                   <MapPin className="w-3 h-3 mr-1" />
                   {selectedRouteId === route.routeId && stationRoutes.length > 0
-                    ? `${stationRoutes.length} stations`
-                    : "Click to view stations"}
+                    ? `${stationRoutes.length} Ga`
+                    : "Chọn để xem ga"}
                 </div>
               </button>
             ))}
@@ -436,12 +436,12 @@ const MetroMap: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="font-medium text-blue-900">
-                    {routes.find(r => r.routeId === selectedRouteId)?.routeName} Selected
+                    {routes.find(r => r.routeId === selectedRouteId)?.routeName} 
                   </h4>
                   <p className="text-sm text-blue-700">
                     {stationRoutesLoading 
-                      ? "Loading stations..." 
-                      : `${stationRoutes.length} stations loaded`}
+                      ? "Đang tải ga lên..." 
+                      : `${stationRoutes.length} ga đã tải`}
                   </p>
                 </div>
                 {stationRoutesLoading && (
@@ -458,7 +458,7 @@ const MetroMap: React.FC = () => {
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h2 className="text-2xl font-semibold text-gray-900 mb-6 flex items-center">
                 <MapIcon className="w-6 h-6 mr-2 text-blue-600" />
-                Interactive Metro Map
+                Bản đồ tàu điện ngầm 
               </h2>
 
               {!selectedRouteId ? (
@@ -466,10 +466,10 @@ const MetroMap: React.FC = () => {
                   <div className="text-center">
                     <MapIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-xl font-semibold text-gray-600 mb-2">
-                      Select a Route to View Stations
+                      Chọn một tuyến đường để xem các trạm
                     </h3>
                     <p className="text-gray-500">
-                      Choose a metro route above to see its stations on the map
+                      Chọn tuyến tàu điện ngầm ở trên để xem các ga của tuyến đó trên bản đồ
                     </p>
                   </div>
                 </div>
@@ -486,13 +486,13 @@ const MetroMap: React.FC = () => {
                           onChange={(e) => setShowBusStations(e.target.checked)}
                           className="rounded"
                         />
-                        <span>Show Bus Stations</span>
+                        <span>Xem các trạm xe buýt gần đây</span>
                       </label>
                     </div>
                     {showBusStations && (
                       <div className="text-xs text-gray-500">
-                        Showing {getDisplayedBusStations().length} of{" "}
-                        {busStations.length} bus stations
+                        Xem {getDisplayedBusStations().length} of{" "}
+                        {busStations.length} trạm xe buýt
                       </div>
                     )}
                   </div>
@@ -538,21 +538,21 @@ const MetroMap: React.FC = () => {
                                 <strong>Code:</strong> {stationRoute.stationsResponse.stationCode}
                               </p>
                               <p>
-                                <strong>Sequence:</strong> {stationRoute.sequenceOrder}
+                                <strong>Thứ tự:</strong> {stationRoute.sequenceOrder}
                               </p>
                               <p>
-                                <strong>Status:</strong>
+                                <strong>Trạng thái:</strong>
                                 <span className="ml-1">
                                   {getStatusBadge(stationRoute.status)}
                                 </span>
                               </p>
                               <p>
-                                <strong>Route:</strong>{" "}
+                                <strong>Tuyến:</strong>{" "}
                                 {routes.find(r => r.routeId === selectedRouteId)?.routeName}
                               </p>
                               {stationRoute.stationsResponse.address && (
                                 <p>
-                                  <strong>Address:</strong> {stationRoute.stationsResponse.address}
+                                  <strong>Địa chỉ:</strong> {stationRoute.stationsResponse.address}
                                 </p>
                               )}
                             </div>
@@ -560,7 +560,7 @@ const MetroMap: React.FC = () => {
                               onClick={() => handleStationRouteSelect(stationRoute)}
                               className="mt-2 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors"
                             >
-                              View Details
+                              Xem chi tiết
                             </button>
                           </div>
                         </Popup>
@@ -584,7 +584,7 @@ const MetroMap: React.FC = () => {
                               <strong>Code:</strong> {busStation.code}
                             </p>
                             <p>
-                              <strong>Status:</strong>
+                              <strong>Trạng thái:</strong>
                               <span
                                 className={`ml-1 font-medium ${
                                   busStation.isActive === 1
@@ -592,15 +592,15 @@ const MetroMap: React.FC = () => {
                                     : "text-gray-600"
                                 }`}
                               >
-                                {busStation.isActive === 1 ? "Active" : "Inactive"}
+                                {busStation.isActive === 1 ? "Hoạt động" : "Dừng hoạt động"}
                               </span>
                             </p>
                             <p>
-                              <strong>Type:</strong> Bus Station
+                              <strong>Loại:</strong> Trạm xe buýt
                             </p>
                             {busStation.address && (
                               <p>
-                                <strong>Address:</strong> {busStation.address}
+                                <strong>Địa chỉ:</strong> {busStation.address}
                               </p>
                             )}
                           </div>
@@ -608,7 +608,7 @@ const MetroMap: React.FC = () => {
                             onClick={() => handleBusStationSelect(busStation)}
                             className="mt-2 px-3 py-1 bg-amber-600 text-white text-xs rounded hover:bg-amber-700 transition-colors"
                           >
-                            View Details
+                            Xem chi tiết
                           </button>
                         </div>
                       </Popup>
@@ -629,10 +629,10 @@ const MetroMap: React.FC = () => {
         <Modal
           title={
             selectedStationRoute
-              ? `${selectedStationRoute.stationsResponse.name} Details`
+              ? `${selectedStationRoute.stationsResponse.name} Chi tiết`
               : selectedBusStation
-              ? `${selectedBusStation.name} Details`
-              : "Station Details"
+              ? `${selectedBusStation.name} Chi tiết`
+              : "Chi tiết"
           }
           open={!!(selectedStationRoute || selectedBusStation)}
           onCancel={handleCloseModal}
@@ -645,7 +645,7 @@ const MetroMap: React.FC = () => {
               <div className="bg-green-50 rounded-lg p-4">
                 <h3 className="text-lg font-semibold text-green-900 mb-3 flex items-center">
                   <MapPin className="w-5 h-5 mr-2" />
-                  Station Information
+                  Thông tin ga
                 </h3>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
@@ -687,7 +687,7 @@ const MetroMap: React.FC = () => {
               <div className="bg-blue-50 rounded-lg p-4">
                 <h3 className="text-lg font-semibold text-blue-900 mb-3 flex items-center">
                   <Clock className="w-5 h-5 mr-2" />
-                  Train Schedules
+                  Lịch tàu
                   {/* Debug info */}
                   <span className="ml-2 text-xs text-blue-600 font-normal">
                     (Station ID: {selectedStationRoute.stationsResponse.stationId})
@@ -699,7 +699,7 @@ const MetroMap: React.FC = () => {
                   onClick={() => fetchSchedules(selectedStationRoute.stationsResponse.stationId)}
                   className="mb-3 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors"
                 >
-                  🔄 Refresh Schedules
+                  🔄 Tải lại 
                 </button>
                 
                 {schedulesLoading ? (
@@ -715,10 +715,10 @@ const MetroMap: React.FC = () => {
                       >
                         <div className="flex justify-between items-center mb-2">
                           <span className="font-medium text-blue-900">
-                            Departure: {formatTime(schedule.timeDeparture)}
+                            Khởi hành: {formatTime(schedule.timeDeparture)}
                           </span>
                           <span className="text-blue-700">
-                            Arrival: {formatTime(schedule.timeArrival)}
+                            Đến: {formatTime(schedule.timeArrival)}
                           </span>
                         </div>
                         <div className="flex justify-between items-center text-xs text-blue-600">
@@ -749,7 +749,7 @@ const MetroMap: React.FC = () => {
               <div className="bg-amber-50 rounded-lg p-4">
                 <h3 className="text-lg font-semibold text-amber-900 mb-3 flex items-center">
                   <MapPin className="w-5 h-5 mr-2" />
-                  Bus Station Information
+                  Thông tin trạm xe buýt
                 </h3>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
@@ -767,7 +767,7 @@ const MetroMap: React.FC = () => {
                   <div>
                     <p className="text-amber-700 font-medium">Status</p>
                     <p className="text-amber-900">
-                      {busStationDetail.isActive === 1 ? "Active" : "Inactive"}
+                      {busStationDetail.isActive === 1 ? "Hoạt động" : "Dừng hoạt động"}
                     </p>
                   </div>
                   <div>
@@ -785,7 +785,7 @@ const MetroMap: React.FC = () => {
               <div className="bg-amber-50 rounded-lg p-4">
                 <h3 className="text-lg font-semibold text-amber-900 mb-3 flex items-center">
                   <Navigation className="w-5 h-5 mr-2" />
-                  Bus Routes
+                  Tuyến xe
                 </h3>
                 {busStationDetail.routes && busStationDetail.routes.length > 0 ? (
                   <div className="space-y-2 max-h-40 overflow-y-auto">
@@ -805,21 +805,21 @@ const MetroMap: React.FC = () => {
                                 : "bg-red-100 text-red-800"
                             }`}
                           >
-                            {route.is_active === 1 ? "Active" : "Inactive"}
+                            {route.is_active === 1 ? "Hoạt động" : "Dừng hoạt động"}
                           </span>
                         </div>
                         <div className="text-amber-700">
-                          <p>Distance: {route.distance} km</p>
-                          <p>Duration: {route.duration} min</p>
+                          <p>Khoảng cách: {route.distance} km</p>
+                          <p>Thời gian: {route.duration} phút</p>
                           <p>
-                            Schedule: {route.start_time} - {route.end_time}
+                            Lịch: {route.start_time} - {route.end_time}
                           </p>
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-amber-700">No bus routes available for this station.</p>
+                  <p className="text-amber-700">Không có tuyến xe buýt nào đến ga này.</p>
                 )}
               </div>
             </div>

@@ -17,7 +17,7 @@ export default function ADSImage() {
                         shadow-[0_10px_30px_rgba(0,0,0,0.7)]
                         flex flex-col items-center justify-center rounded-lg"
             >
-              <div className="text-2xl font-bold">TICKETING</div>
+              <div className="text-2xl font-bold">Vé</div>
               <Ticket size={100} className="text-teal-500" />
             </div>
             <div
@@ -25,7 +25,7 @@ export default function ADSImage() {
                         shadow-[0_10px_30px_rgba(0,0,0,0.7)]
                         flex flex-col items-center justify-center rounded-lg"
             >
-              <div className="text-2xl font-bold">ROUTE MAP</div>
+              <div className="text-2xl font-bold">Bản đồ tuyến</div>
               <Map size={100} className="text-orange-500" />
             </div>
           </div>
@@ -35,7 +35,7 @@ export default function ADSImage() {
                         shadow-[0_10px_30px_rgba(0,0,0,0.7)]
                         flex flex-col items-center justify-center rounded-lg"
             >
-              <div className="text-2xl font-bold">STATIONS</div>
+              <div className="text-2xl font-bold">Ga</div>
               <Landmark size={100} className="text-teal-500" />
             </div>
             <div
@@ -43,7 +43,7 @@ export default function ADSImage() {
                         shadow-[0_10px_30px_rgba(0,0,0,0.7)]
                         flex flex-col items-center justify-center rounded-lg"
             >
-              <div className="text-2xl font-bold">SCHEDULE</div>
+              <div className="text-2xl font-bold">Lịch</div>
               <CalendarClock size={100} className="text-orange-500" />
             </div>
           </div>

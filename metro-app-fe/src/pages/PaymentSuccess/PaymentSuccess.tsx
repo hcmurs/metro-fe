@@ -35,12 +35,12 @@ export default function PaymentSuccess() {
           // Extract order ID from the response or query params               
         } else {
           setError('Payment verification failed');
-          toast.error('Payment verification failed');
+          toast.error('Giao dịch thất bại');
         }
       } catch (err) {
         console.error('Payment callback error:', err);
-        setError('An error occurred while processing your payment');
-        toast.error('Payment processing failed');
+        setError('Có lỗi xảy ra khi giao dịch');
+        toast.error('Giao dịch thất bại');
       } finally {
         setLoading(false);
       }
@@ -82,10 +82,10 @@ export default function PaymentSuccess() {
           <Spin size="large" />
           <div style={{ marginTop: '1.5rem' }}>
             <Title level={3} style={{ color: '#6b7280', marginBottom: '0.5rem' }}>
-              Processing Payment
+              Đang giao dịch
             </Title>
             <Text style={{ color: '#9ca3af' }}>
-              Please wait while we verify your payment...
+              Đang xác nhận giao dịch
             </Text>
           </div>
         </Card>
@@ -125,7 +125,7 @@ export default function PaymentSuccess() {
                 key="home" 
                 type="primary" 
                 icon={<HomeOutlined />}
-                onClick={() => navigate(FE_PATH.HOME)}
+                onClick={() => navigate(FE_PATH.MY_TICKETS)}
                 style={{
                   borderRadius: '12px',
                   height: '48px',
@@ -133,7 +133,7 @@ export default function PaymentSuccess() {
                   fontWeight: '600'
                 }}
               >
-                Go Home
+                Xem vé
               </Button>,
               <Button 
                 key="retry" 
@@ -146,7 +146,7 @@ export default function PaymentSuccess() {
                   fontWeight: '600'
                 }}
               >
-                Buy Tickets
+                Mua vé khác
               </Button>
             ]}
           />
@@ -189,7 +189,7 @@ export default function PaymentSuccess() {
                 fontWeight: '700'
               }}
             >
-              Payment Successful!
+              Thanh toán thành công!
             </Title>
           }
           subTitle={
@@ -202,7 +202,7 @@ export default function PaymentSuccess() {
                   marginBottom: '1rem'
                 }}
               >
-                Your payment has been processed successfully.
+                Giao dịch của bạn đã hoàn thành!
               </Text>
               {paymentData && (
                 <div 
@@ -215,17 +215,11 @@ export default function PaymentSuccess() {
                   }}
                 >
                   <Title level={4} style={{ color: '#374151', marginBottom: '1rem' }}>
-                    Payment Details
+                    Chi tiết
                   </Title>
-                  {paymentData.transactionId && (
-                    <div style={{ marginBottom: '0.5rem' }}>
-                      <Text strong>Transaction ID: </Text>
-                      <Text>{paymentData.transactionId}</Text>
-                    </div>
-                  )}
                   {paymentData.amount && (
                     <div style={{ marginBottom: '0.5rem' }}>
-                      <Text strong>Amount: </Text>
+                      <Text strong>Giá tiền: </Text>
                       <Text>{paymentData.amount.toLocaleString()} VND</Text>
                     </div>
                   )}
@@ -245,7 +239,7 @@ export default function PaymentSuccess() {
               type="primary" 
               size="large"
               icon={<HomeOutlined />}
-              onClick={() => navigate(FE_PATH.HOME)}
+              onClick={() => navigate(FE_PATH.MY_TICKETS)}
               style={{
                 borderRadius: '12px',
                 height: '48px',
@@ -254,7 +248,7 @@ export default function PaymentSuccess() {
                 marginRight: '1rem'
               }}
             >
-              Go Home
+              Xem vé
             </Button>,
             <Button 
               key="buy-more" 
@@ -268,7 +262,7 @@ export default function PaymentSuccess() {
                 fontWeight: '600'
               }}
             >
-              Buy More Tickets
+              Mua thêm vé mới
             </Button>
           ]}
         />

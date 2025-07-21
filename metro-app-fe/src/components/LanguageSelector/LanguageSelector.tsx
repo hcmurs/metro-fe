@@ -15,7 +15,9 @@ const LanguageSelector: React.FC<Props> = ({ isDarkMode = true }) => {
   const { currentLanguage, changeLanguage } = useLanguage();
 
   const handleChange = (value: string) => {
+    console.log("LanguageSelector: Changing language to:", value);
     changeLanguage(value);
+    console.log("LanguageSelector: Language change called");
   };
 
   const options = Object.entries(languages).map(([code, { name, icon }]) => ({
@@ -39,8 +41,12 @@ const LanguageSelector: React.FC<Props> = ({ isDarkMode = true }) => {
         borderRadius: 4,
         color: isDarkMode ? "white" : "black",
       }}
-      dropdownStyle={{
-        backgroundColor: isDarkMode ? "#1f1f1f" : "white",
+      styles={{
+        popup: {
+          root: {
+            backgroundColor: isDarkMode ? "#1f1f1f" : "white",
+          }
+        }
       }}
       variant="borderless"
     />

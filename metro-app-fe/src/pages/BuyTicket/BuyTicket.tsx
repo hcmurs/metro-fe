@@ -71,7 +71,7 @@ export default function BuyTicket() {
           setPaymentMethods(activeMethods);
         }
       } catch (error) {
-        toast.error((error as Error)?.message || 'Failed to load data');
+        toast.error((error as Error)?.message || 'Không thể tải dữ liệu');
       } finally {
         setLoading(false);
       }
@@ -96,11 +96,11 @@ export default function BuyTicket() {
             // toast.success(`Loaded ${sortedStationRoutes.length} stations for selected route`);
           } else {
             setStationRoutes([]);
-            toast.warning('No stations found for selected route');
+            toast.warning('Không tìm thấy ga nào cho tuyến đường đã chọn');
           }
         } catch (error) {
           console.error('Error fetching station routes:', error);
-          toast.error('Failed to load stations for selected route');
+          toast.error('Không thể tải ga cho tuyến đường đã chọn');
           setStationRoutes([]);
         } finally {
           setStationLoading(false);
@@ -126,7 +126,7 @@ export default function BuyTicket() {
         const startStationRoute = stationRoutes.find(sr => sr.id === startStation);
         if (startStationRoute && startStationRoute.status !== 'active') {
           setStartStation(null);
-          toast.warning('Start station is no longer active and has been cleared');
+          toast.warning('Ga đi không còn hoạt động và đã được xóa');
         }
       }
       
@@ -135,7 +135,7 @@ export default function BuyTicket() {
         const endStationRoute = stationRoutes.find(sr => sr.id === endStation);
         if (endStationRoute && endStationRoute.status !== 'active') {
           setEndStation(null);
-          toast.warning('End station is no longer active and has been cleared');
+          toast.warning('Ga đến không còn hoạt động và đã được xóa');
         }
       }
     }
@@ -166,11 +166,11 @@ export default function BuyTicket() {
 
   const handlePassPurchase = async (ticketType: TicketType) => {
     if (paymentMethods.length === 0) {
-      toast.error('No payment methods available');
+      toast.error('Không có phương thức thanh toán nào');
       return;
     }
     if (selectedPaymentMethod === null) {
-      toast.error('Please select a payment method');
+      toast.error('Vui lòng chọn phương thức thanh toán');
       return;
     }
 
@@ -211,23 +211,23 @@ export default function BuyTicket() {
 
   const handleSingleTicketPurchase = async () => {
     if (!startStation || !endStation) {
-      toast.error('Please select both start and end stations.');
+      toast.error('Vui lòng chọn cả ga đi và ga đến.');
       return;
     }
     if (startStation === endStation) {
-      toast.error('Start and end stations cannot be the same.');
+      toast.error('Ga đi và ga đến không thể giống nhau.');
       return;
     }
     if (!fareMatrix) {
-      toast.error('Fare information not available.');
+      toast.error('Thông tin giá vé không có sẵn.');
       return;
     }
     if (paymentMethods.length === 0) {
-      toast.error('No payment methods available');
+      toast.error('Không có phương thức thanh toán nào');
       return;
     }
     if (selectedPaymentMethod === null) {
-      toast.error('Please select a payment method');
+      toast.error('Vui lòng chọn phương thức thanh toán');
       return;
     }
 
@@ -236,12 +236,12 @@ export default function BuyTicket() {
     const endStationRoute = stationRoutes.find(sr => sr.id === endStation);
     
     if (startStationRoute && startStationRoute.status !== 'active') {
-      toast.error('Cannot purchase ticket: Start station is not active');
+      toast.error('Không thể mua vé: Ga đi không hoạt động');
       return;
     }
     
     if (endStationRoute && endStationRoute.status !== 'active') {
-      toast.error('Cannot purchase ticket: End station is not active');
+      toast.error('Không thể mua vé: Ga đến không hoạt động');
       return;
     }
 
@@ -317,10 +317,10 @@ export default function BuyTicket() {
           }}
         >
           <ClockCircleOutlined style={{ marginRight: '0.5rem', fontSize: '1.25rem' }} />
-          Metro Pass Tickets
+          Vé Tháng Metro
         </Title>
         <Text style={{ color: '#6b7280', fontSize: '1rem', lineHeight: '1.5' }}>
-          Choose from our convenient pass options for unlimited travel
+          Chọn từ các tùy chọn vé tháng tiện lợi của chúng tôi để di chuyển không giới hạn
         </Text>
       </div>
 
@@ -398,7 +398,7 @@ export default function BuyTicket() {
                     }}
                   >
                     <ClockCircleOutlined style={{ marginRight: '0.25rem', fontSize: '1rem' }} />
-                    Valid for: {ticket.validityDuration} days
+                    Có hiệu lực trong: {ticket.validityDuration} ngày
                   </Text>
                 </div>
               </div>
@@ -427,11 +427,11 @@ export default function BuyTicket() {
               fontWeight: '600'
             }}
           >
-            Purchase Details
+            Chi tiết mua hàng
           </Title>
           <Row gutter={[16, 16]} align="middle">
             <Col span={8}>
-              <Text strong style={{ color: '#374151', fontSize: '1rem' }}>Pass: </Text>
+              <Text strong style={{ color: '#374151', fontSize: '1rem' }}>Vé tháng: </Text>
               <Text 
                 style={{
                   fontSize: '1.5rem',
@@ -445,7 +445,7 @@ export default function BuyTicket() {
               </Text>
             </Col>
             <Col span={8}>
-              <Text strong style={{ color: '#374151', fontSize: '1rem' }}>Total: </Text>
+              <Text strong style={{ color: '#374151', fontSize: '1rem' }}>Tổng cộng: </Text>
               <Text 
                 style={{
                   fontSize: '1.5rem',
@@ -474,7 +474,7 @@ export default function BuyTicket() {
                   borderRadius: '12px'
                 }}
               >
-                Purchase Now
+                Mua ngay
               </Button>
             </Col>
           </Row>
@@ -491,7 +491,7 @@ export default function BuyTicket() {
                 fontWeight: '600'
               }}
             >
-              Select Payment Method:
+              Chọn phương thức thanh toán:
             </Text>
             <Row gutter={[12, 12]}>
               {paymentMethods.map((method) => (
@@ -562,7 +562,7 @@ export default function BuyTicket() {
                         }}
                       >
                         <span style={{ marginRight: '0.5rem' }}>✓</span>
-                        Selected
+                        Đã chọn
                       </div>
                     )}
                   </Card>
@@ -603,7 +603,7 @@ export default function BuyTicket() {
             letterSpacing: '-0.025em'
           }}
         >
-          Single Journey Ticket
+          Vé Đơn
         </Title>
         <Text style={{ 
           color: '#6b7280', 
@@ -613,7 +613,7 @@ export default function BuyTicket() {
           margin: '0 auto',
           display: 'block'
         }}>
-          Plan your journey by selecting your route and destination stations
+          Lên kế hoạch cho hành trình của bạn bằng cách chọn tuyến đường và ga đích
         </Text>
       </div>
 
@@ -653,16 +653,16 @@ export default function BuyTicket() {
                 marginBottom: '0.5rem'
               }}
             >
-              Select Your Route
+              Chọn Tuyến đường của bạn
             </Title>
             <Text style={{ color: '#6b7280', fontSize: '1rem' }}>
-              Choose the metro line for your journey
+              Chọn tuyến metro cho hành trình của bạn
             </Text>
           </div>
           
           <div style={{ maxWidth: '600px', margin: '0 auto' }}>
             <Select
-              placeholder="Choose a metro route"
+              placeholder="Chọn một tuyến metro"
               value={selectedRoute}
               onChange={setSelectedRoute}
               style={{ 
@@ -732,10 +732,10 @@ export default function BuyTicket() {
               <EnvironmentOutlined style={{ fontSize: '1.5rem', color: '#ffffff' }} />
             </div>
             <Title level={4} style={{ color: '#1f2937', marginBottom: '0.5rem' }}>
-              Select a Route First
+              Chọn Tuyến đường trước
             </Title>
             <Text style={{ color: '#6b7280', fontSize: '1rem' }}>
-              Please choose a metro route above to see available stations
+              Vui lòng chọn một tuyến metro ở trên để xem các ga có sẵn
             </Text>
           </div>
         )}
@@ -761,10 +761,10 @@ export default function BuyTicket() {
                     marginBottom: '0.5rem'
                   }}
                 >
-                  Choose Your Stations
+                  Chọn Ga của bạn
                 </Title>
                 <Text style={{ color: '#6b7280', fontSize: '1rem' }}>
-                  Select your departure and arrival stations
+                  Chọn ga đi và ga đến của bạn
                 </Text>
               </div>
               <Row gutter={[24, 24]}>
@@ -805,11 +805,11 @@ export default function BuyTicket() {
                           fontWeight: '700'
                         }}
                       >
-                        From Station
+                        Ga đi
                       </Text>
                     </div>
                     <Select
-                      placeholder={stationLoading ? "Loading stations..." : "Select start station"}
+                      placeholder={stationLoading ? "Đang tải ga..." : "Chọn ga đi"}
                       value={startStation}
                       onChange={setStartStation}
                       style={{ width: '100%' }}
@@ -838,7 +838,7 @@ export default function BuyTicket() {
                             <div style={{ padding: '0.5rem 0' }}>
                               <div style={{ fontWeight: '600', color: '#1f2937' }}>
                                 {stationRoute.stationsResponse.name} ({stationRoute.stationsResponse.stationCode})
-                                {isInactive && ' (Unavailable)'}
+                                {isInactive && ' (Không khả dụng)'}
                               </div>
                               <div style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '2px' }}>
                                 {stationRoute.stationsResponse.address}
@@ -895,11 +895,11 @@ export default function BuyTicket() {
                           fontWeight: '700'
                         }}
                       >
-                        To Station
+                        Ga đến
                       </Text>
                     </div>
                     <Select
-                      placeholder={stationLoading ? "Loading stations..." : "Select destination station"}
+                      placeholder={stationLoading ? "Đang tải ga..." : "Chọn ga đến"}
                       value={endStation}
                       onChange={setEndStation}
                       style={{ width: '100%' }}
@@ -928,7 +928,7 @@ export default function BuyTicket() {
                             <div style={{ padding: '0.5rem 0' }}>
                               <div style={{ fontWeight: '600', color: '#1f2937' }}>
                                 {stationRoute.stationsResponse.name} ({stationRoute.stationsResponse.stationCode})
-                                {isInactive && ' (Unavailable)'}
+                                {isInactive && ' (Không khả dụng)'}
                               </div>
                               <div style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '2px' }}>
                                 {stationRoute.stationsResponse.address}
@@ -997,10 +997,10 @@ export default function BuyTicket() {
                     fontWeight: '700'
                   }}
                 >
-                  Journey Summary
+                  Tóm tắt Hành trình
                 </Title>
                 <Text style={{ color: '#6b7280', fontSize: '1rem' }}>
-                  Review your trip details and complete the purchase
+                  Xem lại chi tiết chuyến đi và hoàn tất việc mua
                 </Text>
               </div>
 
@@ -1044,7 +1044,7 @@ export default function BuyTicket() {
                           marginBottom: '1rem'
                         }}
                       >
-                        Journey Route
+                        Tuyến Hành trình
                       </Text>
                     </div>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
@@ -1074,7 +1074,7 @@ export default function BuyTicket() {
                       </div>
                     </div>
                     <div style={{ fontSize: '0.875rem', color: '#6b7280', fontWeight: '500' }}>
-                      Distance: {fareMatrix?.distanceInKm || 0} km
+                      Khoảng cách: {fareMatrix?.distanceInKm || 0} km
                     </div>
                   </div>
                 </Col>
@@ -1117,7 +1117,7 @@ export default function BuyTicket() {
                           marginBottom: '1rem'
                         }}
                       >
-                        Metro Line
+                        Tuyến Metro
                       </Text>
                     </div>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
@@ -1145,7 +1145,7 @@ export default function BuyTicket() {
                       </div>
                     </div>
                     <div style={{ fontSize: '0.875rem', color: '#6b7280', fontWeight: '500' }}>
-                      Total Distance: {routes.find(r => r.routeId === selectedRoute)?.distanceInKm}km
+                      Tổng khoảng cách: {routes.find(r => r.routeId === selectedRoute)?.distanceInKm}km
                     </div>
                   </div>
                 </Col>
@@ -1188,7 +1188,7 @@ export default function BuyTicket() {
                           marginBottom: '1rem'
                         }}
                       >
-                        Ticket Fare
+                        Giá Vé
                       </Text>
                     </div>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
@@ -1216,7 +1216,7 @@ export default function BuyTicket() {
                       </div>
                     </div>
                     <div style={{ fontSize: '0.875rem', color: '#6b7280', fontWeight: '500' }}>
-                      Single Journey
+                      Hành trình Đơn
                     </div>
                   </div>
                 </Col>
@@ -1234,10 +1234,10 @@ export default function BuyTicket() {
                       marginBottom: '0.5rem'
                     }}
                   >
-                    Choose Payment Method
+                    Chọn Phương thức Thanh toán
                   </Title>
                   <Text style={{ color: '#6b7280', fontSize: '1rem' }}>
-                    Select your preferred payment option
+                    Chọn tùy chọn thanh toán ưa thích của bạn
                   </Text>
                 </div>
                 <Row gutter={[24, 24]} justify="center">
@@ -1309,7 +1309,7 @@ export default function BuyTicket() {
                             }}
                           >
                             <span style={{ marginRight: '0.5rem' }}>✓</span>
-                            Selected
+                            Đã chọn
                           </div>
                         )}
                       </Card>
@@ -1346,7 +1346,7 @@ export default function BuyTicket() {
                     e.currentTarget.style.boxShadow = '0 8px 32px rgba(16, 185, 129, 0.4)';
                   }}
                 >
-                  Purchase Ticket
+                  Mua Vé
                 </Button>
               </div>
             </Card>
@@ -1427,7 +1427,7 @@ export default function BuyTicket() {
               lineHeight: '1.1'
             }}
           >
-            Buy Metro Tickets
+            Mua Vé Metro
           </Title>
           <Text 
             style={{ 
@@ -1440,7 +1440,7 @@ export default function BuyTicket() {
               display: 'block'
             }}
           >
-            Fast, convenient, and secure ticket purchasing for your metro journey
+            Mua vé nhanh chóng, tiện lợi và an toàn cho hành trình metro của bạn
           </Text>
         </div>
 
@@ -1479,7 +1479,7 @@ export default function BuyTicket() {
                     }}
                   >
                     <ClockCircleOutlined style={{ fontSize: '1.5rem' }} />
-                    Pass Tickets
+                    Vé Tháng
                   </div>
                 ),
                 children: <PassTicketsTab />
@@ -1500,7 +1500,7 @@ export default function BuyTicket() {
                     }}
                   >
                     <EnvironmentOutlined style={{ fontSize: '1.5rem' }} />
-                    Single Journey
+                    Hành trình Đơn
                   </div>
                 ),
                 children: <SingleTicketTab />

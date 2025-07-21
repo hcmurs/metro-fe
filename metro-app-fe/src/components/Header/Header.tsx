@@ -5,10 +5,13 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "../../contexts/AuthContext";
 import { FE_PATH } from "../../constants/path";
 import LanguageSelector from "../LanguageSelector/LanguageSelector";
+import { useLanguage } from "../../contexts/LanguageContext";
+import LanguageTest from "../LanguageTest";
 
 export default function Header() {
   const navigate = useNavigate();
-  const { t } = useTranslation("header");
+  const { t, i18n } = useTranslation("header");
+  const { currentLanguage } = useLanguage();
 
   const [isOpen, setIsOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -19,6 +22,12 @@ export default function Header() {
     contextLogout: logout,
     isAdmin,
   } = useAuth();
+
+  // Force re-render when language changes
+  useEffect(() => {
+    console.log("Language changed to:", currentLanguage);
+    console.log("Current i18n language:", i18n.language);
+  }, [currentLanguage, i18n.language]);
 
   const navigationItems = [
     { label: t("nav.home"), path: FE_PATH.HOME },
@@ -50,14 +59,15 @@ export default function Header() {
   };
 
   return (
-    <div className="sticky top-0 bg-white shadow-sm z-50">
-      <div className="flex items-center justify-between px-8 py-4">
-        <div
-          className="text-2xl font-bold text-slate-800 hover:cursor-pointer"
-          onClick={() => navigate("/")}
-        >
-          METRO
-        </div>
+    <>
+      <div className="sticky top-0 bg-white shadow-sm z-50">
+        <div className="flex items-center justify-between px-8 py-4">
+          <div
+            className="text-2xl font-bold text-slate-800 hover:cursor-pointer"
+            onClick={() => navigate("/")}
+          >
+            METRO
+          </div>
 
         {!isAdmin && (
           <nav className="hidden lg:flex gap-6 text-sm font-medium text-slate-800 items-center">
@@ -226,6 +236,8 @@ export default function Header() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+   
+    </>
   );
 }

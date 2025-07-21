@@ -1,11 +1,9 @@
 export interface StationRequest {
-    routeId: number,
     stationCode: string,
     name: string,
     address: string,
     latitude: number,
     longitude: number,
-    sequenceOrder: number
 }
 
 export interface StationRouteRequest {
@@ -22,8 +20,8 @@ export interface Station {
     latitude: number,
     longitude: number,
     status: string,
-    createAt: string,
-    updateAt: string,
+    createdAt: string,
+    updatedAt: string,
     isDeleted: boolean
 }
 
@@ -34,8 +32,8 @@ export interface StationRouteResponse{
     stationsResponse: Station
     status: Status
     isDeleted: boolean,
-    createAt: string,
-    updateAt: string,
+    createdAt: string,
+    updatedAt: string,
 }
 
 export interface BusStation{

@@ -183,18 +183,13 @@ export default function StationRouteManagement() {
     }
     
     try {
-      const response = await apiUpdateStationRouteStatus(id, newStatus);
-      if (response?.data) {
-        // Update the station route status in the local state
-        setStationRoutes(
-          stationRoutes.map((sr) =>
-            sr.id === id ? { ...sr, status: newStatus } : sr
-          )
-        );
-        message.success(`Status updated to ${newStatus}!`);
-      } else {
-        message.error("Failed to update status");
-      }
+      await apiUpdateStationRouteStatus(id, newStatus);
+      setStationRoutes(
+        stationRoutes.map((sr) =>
+          sr.id === id ? { ...sr, status: newStatus } : sr
+        )
+      );
+      message.success(`Status updated to ${newStatus}!`);
     } catch (error) {
       console.error("Error updating status:", error);
       message.error("Failed to update status");

@@ -37,12 +37,6 @@ export default function Admin() {
               <LayoutDashboard size={20} /> Thống kê
             </Link>
             <Link
-              to={'logs'}
-              className={`${baseClass} ${choosen === 'logs' ? activeClass : ''}`}
-            >
-              <User size={20} /> Thống kê vé
-            </Link>
-            <Link
               to={'requests'}
               className={`${baseClass} ${choosen === 'requests' ? activeClass : ''}`}
             >

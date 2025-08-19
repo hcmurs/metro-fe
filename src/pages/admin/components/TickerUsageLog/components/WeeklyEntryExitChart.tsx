@@ -1,10 +1,15 @@
-import React from 'react';
 import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer
-} from 'recharts';
-import type { TicketUsageLog } from '../Type/ticketUsageLogType';
+  Bar,
+  BarChart,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import type { TicketUsageLog } from "../Type/ticketUsageLogType";
 
-const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const processWeeklyData = (logs: TicketUsageLog[]) => {
   const result = Array.from({ length: 7 }, (_, i) => ({
@@ -13,10 +18,10 @@ const processWeeklyData = (logs: TicketUsageLog[]) => {
     exit: 0,
   }));
 
-  logs.forEach(log => {
+  logs.forEach((log) => {
     const date = new Date(log.usageTime);
     const dayIndex = date.getDay(); // 0 (Sun) - 6 (Sat)
-    if (log.usageType === 'ENTRY') result[dayIndex].entry += 1;
+    if (log.usageType === "ENTRY") result[dayIndex].entry += 1;
     else result[dayIndex].exit += 1;
   });
 

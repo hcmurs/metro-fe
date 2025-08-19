@@ -1,26 +1,60 @@
-import { CalendarOutlined, CheckOutlined, CloseOutlined, CreditCardOutlined, ExclamationCircleOutlined, EyeOutlined, FileTextOutlined, FilterOutlined, ReadOutlined, SearchOutlined } from '@ant-design/icons';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Card, Col, Form, Image, Input, Layout, message, Modal, notification, Row, Select, Space, Table, Tag } from 'antd';
-import { useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { apiVerifyRequest } from '../../apis/user.api';
-import { useAdminStore } from '../../stores/admin.store';
-import type { StudentRequest, User } from '../../types/user.type';
+import {
+  CalendarOutlined,
+  CheckOutlined,
+  CloseOutlined,
+  CreditCardOutlined,
+  ExclamationCircleOutlined,
+  EyeOutlined,
+  FileTextOutlined,
+  FilterOutlined,
+  ReadOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  Image,
+  Input,
+  Layout,
+  message,
+  Modal,
+  notification,
+  Row,
+  Select,
+  Space,
+  Table,
+  Tag,
+} from "antd";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
+import { apiVerifyRequest } from "../../apis/user.api";
+import { useAdminStore } from "../../stores/admin.store";
+import type { StudentRequest, User } from "../../types/user.type";
 
 const { Content } = Layout;
 const { Search } = Input;
 const { Option } = Select;
 
 const rejectSchema = z.object({
-  rejectionReason: z.string().min(1, "Lí do từ chối là bắt buộc").max(500, "Lí do từ chối không được quá 500 ký tự"),
+  rejectionReason: z
+    .string()
+    .min(1, "Lí do từ chối là bắt buộc")
+    .max(500, "Lí do từ chối không được quá 500 ký tự"),
 });
 
 type RejectFormInputs = z.infer<typeof rejectSchema>;
 
 export default function VerifyRequestPage() {
-  const [filteredRequests, setFilteredRequests] = useState<StudentRequest[]>([]);
-  const [selectedRequest, setSelectedRequest] = useState<StudentRequest | null>(null);
+  const [filteredRequests, setFilteredRequests] = useState<StudentRequest[]>(
+    []
+  );
+  const [selectedRequest, setSelectedRequest] = useState<StudentRequest | null>(
+    null
+  );
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -86,7 +120,8 @@ export default function VerifyRequestPage() {
     setSelectedRequest(record);
     setShowModal(true);
 
-    const user: User | null = users.find(u => u.userId === record.userId) || null;
+    const user: User | null =
+      users.find((u) => u.userId === record.userId) || null;
     setSelectedUser(user);
   };
 
@@ -157,11 +192,13 @@ export default function VerifyRequestPage() {
       ),
     },
     {
-      title: 'Người tạo',
-      dataIndex: 'userId',
-      key: 'userId',
-      render: (text: string, record: StudentRequest) => (
-        <div>{users.find((user: User) => user.userId === record.userId)?.email}</div>
+      title: "Người tạo",
+      dataIndex: "userId",
+      key: "userId",
+      render: (record: StudentRequest) => (
+        <div>
+          {users.find((user: User) => user.userId === record.userId)?.email}
+        </div>
       ),
     },
     {
@@ -184,8 +221,8 @@ export default function VerifyRequestPage() {
           {status === "PENDING"
             ? "Chờ duyệt"
             : status === "APPROVED"
-              ? "Thành công"
-              : "Từ chối"}
+            ? "Thành công"
+            : "Từ chối"}
         </Tag>
       ),
     },
@@ -195,8 +232,8 @@ export default function VerifyRequestPage() {
       key: "createdAt",
     },
     {
-      title: 'Hành động',
-      key: 'actions',
+      title: "Hành động",
+      key: "actions",
       render: (record: StudentRequest) => (
         <Space size="small">
           <Button
@@ -376,12 +413,16 @@ export default function VerifyRequestPage() {
                       </div>
                       <div>
                         <span className="font-bold">Trạng thái: </span>
-                        <Tag color={getStatusTagColor(selectedRequest.requestStatus)}>
+                        <Tag
+                          color={getStatusTagColor(
+                            selectedRequest.requestStatus
+                          )}
+                        >
                           {selectedRequest.requestStatus === "PENDING"
                             ? "Chờ duyệt"
                             : selectedRequest.requestStatus === "APPROVED"
-                              ? "Thành công"
-                              : "Từ chối"}
+                            ? "Thành công"
+                            : "Từ chối"}
                         </Tag>
                       </div>
                       <div>
@@ -420,7 +461,9 @@ export default function VerifyRequestPage() {
                         {selectedUser.email}
                       </div>
                       <div>
-                        <span className="font-bold">Thời gian tạo tài khoản:</span>{" "}
+                        <span className="font-bold">
+                          Thời gian tạo tài khoản:
+                        </span>{" "}
                         {selectedUser.createdAt}
                       </div>
                     </Space>
@@ -435,9 +478,9 @@ export default function VerifyRequestPage() {
                     </div>
                     <div className="border border-[#f0f0f0] rounded-lg p-4 bg-[#fafafa] flex justify-center items-center">
                       {selectedRequest.citizenIdentityCardImage &&
-                        selectedRequest.citizenIdentityCardImage.startsWith(
-                          "data:image"
-                        ) ? (
+                      selectedRequest.citizenIdentityCardImage.startsWith(
+                        "data:image"
+                      ) ? (
                         <Image
                           src={selectedRequest.citizenIdentityCardImage}
                           alt="CCCD"
@@ -457,9 +500,9 @@ export default function VerifyRequestPage() {
                     </div>
                     <div className="border border-[#f0f0f0] rounded-lg p-4 bg-[#fafafa] flex justify-center items-center">
                       {selectedRequest.studentCardImage &&
-                        selectedRequest.studentCardImage.startsWith(
-                          "data:image"
-                        ) ? (
+                      selectedRequest.studentCardImage.startsWith(
+                        "data:image"
+                      ) ? (
                         <Image
                           src={selectedRequest.studentCardImage}
                           alt="Thẻ sinh viên"

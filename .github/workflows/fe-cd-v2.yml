@@ -23,8 +23,8 @@ jobs:
           git clone git@github.com:lcaohoanq/metro-fe-prod.git production-repo
           # Remove existing source files (except .git and other hidden files)
           find production-repo -mindepth 1 -not -path '*/\.*' -delete
-          # Copy entire metro-app-fe source to production repo
-          cp -r * production-repo/
+          # Copy entire metro-app-fe source to production repo (excluding production-repo directory)
+          find . -maxdepth 1 -not -name '.' -not -name 'production-repo' -not -name '.git*' -exec cp -r {} production-repo/ \;
           cd production-repo
           git pull
           git add .

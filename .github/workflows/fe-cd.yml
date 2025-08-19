@@ -2,8 +2,6 @@ name: Vercel CD for metro-fe
 on:
   push:
     branches: ["hehe"]
-    paths:
-      - "metro-app-fe/**"
 
 jobs:
   build-and-deploy:
@@ -16,14 +14,12 @@ jobs:
         with:
           node-version: 18.x
           cache: "npm"
-          cache-dependency-path: metro-app-fe/package-lock.json # Add this line
+          cache-dependency-path: package-lock.json # Add this line
 
       - name: Install dependencies
-        working-directory: metro-app-fe
         run: npm install
 
       - name: Build the project
-        working-directory: metro-app-fe
         run: npm run build
 
       - name: Deploy to Production Repo
@@ -43,7 +39,7 @@ jobs:
 
           git clone git@github.com:lcaohoanq/metro-fe-prod.git production-repo
           rm -rf production-repo/dist
-          cp -r metro-app-fe/dist production-repo/
+          cp -r dist production-repo/
 
           cd production-repo
           git pull

@@ -24,7 +24,7 @@ import RoleRoute from "./RoleRoute";
 import TicketUsageLog from "../pages/admin/components/TickerUsageLog/TicketUsageLog";
 import { Spin } from "antd";
 import BlogManagement from "../pages/admin/components/BlogManagement";
-import LoginPage from "../pages/Login/LoginPage";
+import LoginPage from "../pages/login/LoginPage";
 
 export default function MainRoute() {
   const { isLoading } = useAuth();
@@ -95,7 +95,7 @@ export default function MainRoute() {
           <Route path="feedbacks" element={<ManageFeedbackPage />} />
           <Route path="tickets" element={<ManageTicketPage />} />
           <Route path="blogs" element={<BlogManagement />} />
-          <Route path="logs" element={<TicketUsageLog/>} />
+          <Route path="logs" element={<TicketUsageLog />} />
         </Route>
       </Route>
     </Routes>
